@@ -1,0 +1,9 @@
+{
+  "id": "chs-drg-2.0",
+  "label": "CHS-DRG 2.0",
+  "packages": {
+    "drgCommon": "chs-2.0",
+    "clinicalIcd": "gl-2022",
+    "insuranceIcd": "yb-2.0"
+  }
+}

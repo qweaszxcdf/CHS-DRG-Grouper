@@ -1,0 +1,22 @@
+{
+  "packageId": "replace-me",
+  "status": "draft",
+  "owner": "",
+  "authoritativeSourceUrl": "",
+  "version": "",
+  "publicationDate": "",
+  "acquiredAt": "",
+  "sourceFiles": [{ "filename": "", "sha256": "" }],
+  "license": {
+    "name": "",
+    "url": "",
+    "redistributionAllowed": false,
+    "modificationAllowed": false,
+    "derivedDataRedistributionAllowed": false,
+    "evidence": ""
+  },
+  "transform": { "commands": [], "outputs": [] },
+  "attribution": "",
+  "reviewedBy": "",
+  "reviewedAt": ""
+}

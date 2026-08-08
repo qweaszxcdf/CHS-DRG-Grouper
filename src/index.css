@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark theme tokens (default) — comfortable low-contrast dark UI */
+  --bg: #0b1220; /* page background */
+  --surface: #0f1724; /* primary card/panel */
+  --surface-2: #111827; /* secondary surface */
+  --surface-3: #0b1220; /* accent surface */
+  --muted-surface: #0b1624;
+  --text: rgba(230, 240, 255, 0.95);
+  --muted-text: rgba(200, 210, 230, 0.72);
+  --border: rgba(255,255,255,0.06);
+  --accent: #60a5fa; /* soft blue */
+  --btn-bg: #0f1724;
+  --shadow: 0 6px 18px rgba(2,6,23,0.6);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Page defaults use variables so dark mode is consistent */
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 { font-size: 1.9rem; }
+
+/* Buttons use tokenized colors */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.35em 0.7em;
+  font-size: 0.9em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--btn-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.15s, transform 0.06s;
+}
+button:hover { border-color: var(--accent); }
+button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
+
+/* Make Tailwind's white/gray backgrounds comfortable in dark mode by remapping common utility classes */
+/* These are intentionally broad to reduce bright white surfaces */
+.bg-white { background-color: var(--surface) !important; color: var(--text) !important; }
+.bg-gray-50 { background-color: var(--surface-2) !important; }
+.bg-gray-100 { background-color: var(--surface-2) !important; }
+.bg-gray-200 { background-color: var(--surface-2) !important; }
+.bg-blue-50 { background-color: rgba(12, 18, 28, 0.6) !important; }
+
+/* Muted greens for success/result panels */
+.bg-green-50 { background-color: rgba(34, 60, 46, 0.45) !important; }
+.bg-green-100 { background-color: rgba(34, 60, 46, 0.55) !important; }
+.border-green-200 { border-color: rgba(34,60,46,0.35) !important; }
+.text-green-600 { color: #7dd3fc !important; }
+
+/* Muted reds for errors */
+.bg-red-50 { background-color: rgba(64, 16, 20, 0.45) !important; }
+.bg-red-100 { background-color: rgba(64, 16, 20, 0.55) !important; }
+.border-red-200 { border-color: rgba(120,24,24,0.3) !important; }
+
+/* Semantic status colors for CC / MCC and badges */
+.bg-error { background-color: #7f1d1d !important; color: #ffffff !important; }
+.border-error { border-color: #7f1d1d !important; }
+.text-error { color: #fecaca !important; }
+
+.bg-warning { background-color: #b45309 !important; color: #ffffff !important; }
+.border-warning { border-color: #b45309 !important; }
+.text-warning { color: #fef3c7 !important; }
+
+.bg-success { background-color: #15803d !important; color: #ffffff !important; }
+.border-success { border-color: #15803d !important; }
+.text-success { color: #bbf7d0 !important; }
+
+/* Muted background variants used for match trace */
+.bg-success-muted { background-color: rgba(21,128,61,0.12) !important; }
+.bg-error-muted { background-color: rgba(127,29,29,0.10) !important; }
+
+/* Softer blues for header/buttons */
+.bg-blue-600 { background-color: #164e8c !important; }
+.bg-blue-700 { background-color: #113e6b !important; }
+.hover\:bg-blue-700:hover { background-color: #113e6b !important; }
+.hover\:bg-blue-100:hover { background-color: rgba(20,30,40,0.35) !important; }
+
+/* Reduce brightness of green buttons/text */
+.text-green-600 { color: #60a5fa !important; }
+.border-green-200 { border-color: rgba(96,165,250,0.12) !important; }
+
+.border { border-color: var(--border) !important; }
+.rounded-xl { box-shadow: var(--shadow); }
+
+/* Inputs and selects */
+input, select, textarea {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Code / monospace blocks */
+pre, code { color: var(--text); }

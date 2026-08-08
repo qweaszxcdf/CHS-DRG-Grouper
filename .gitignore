@@ -1,0 +1,20 @@
+# Dependencies and build output
+node_modules/
+dist/
+dist-*/
+coverage/
+
+# Local configuration and logs
+.env*
+!.env.example
+*.local
+*.log
+
+# Keep private or patient-derived material outside the repository
+private-data/
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/
+*.sw?

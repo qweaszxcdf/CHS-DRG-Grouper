@@ -1,0 +1,9 @@
+{
+  "id": "chs-3.0",
+  "strategy": {
+    "allowedInvalidPrincipalProcedures": ["33.2402"],
+    "autoDetectNewTechnique": true,
+    "mdcyPrincipalDiagnosisOnly": true,
+    "allowSecondarySectionPrimaryFallback": true
+  }
+}

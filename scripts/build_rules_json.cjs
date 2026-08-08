@@ -1,0 +1,716 @@
+// Node.js build script to generate browser-friendly JSON files for rules and code lists
+const fs = require('fs');
+const path = require('path');
+
+// Generic DAT loader: supports 'index' (code->value), and 'simple'/'gray' (code->true)
+function loadDat(filePath, type) {
+  const isIndex = type === 'index';
+  const isCodeOnly = type === 'simple' || type === 'gray';
+  if (!isIndex && !isCodeOnly) throw new Error(`Unsupported DAT type '${type}' for ${filePath}`);
+  if (!fs.existsSync(filePath)) throw new Error(`Missing required DAT file: ${filePath}`);
+
+  const index = {};
+  let lines;
+  try {
+    lines = fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
+  } catch (error) {
+    throw new Error(`Unable to read required DAT file ${filePath}: ${error.message}`, { cause: error });
+  }
+  for (const raw of lines) {
+    const s = raw.trim();
+    if (!s) continue;
+
+    const firstSpace = s.search(/\s/);
+    const code = firstSpace < 0 ? s : s.slice(0, firstSpace);
+    if (!code) continue;
+
+    if (isCodeOnly) {
+      index[code] = true;
+      continue;
+    }
+
+    const value = s.slice(firstSpace).trim();
+    if (!value) continue;
+    index[code] = value;
+  }
+
+  return index;
+}
+
+const dataDir = path.resolve(__dirname, '../src/data');
+const versionsDir = path.join(dataDir, 'versions');
+const commonPackagesDir = path.join(dataDir, 'drg-common');
+
+let version;
+let versionConfig;
+let subgroupConditions;
+let rulesDir;
+let commonRulesDir;
+let outputDir;
+let commonOutputDir;
+let buildScope;
+
+// Module-level regex constants — compiled once, reused across all calls
+const _hanRe = /[\p{Script=Han}]/u;
+const _icdLikeRe = /^[A-Za-z0-9][A-Za-z0-9.+\-*xX/†]*$/;
+const _firstTokenRe = /^\S+/;
+const _codeStartRe = /^[A-Za-z]\d|^\d/;
+const _codeExtractRe = /^([A-Za-z0-9.+\-*xX/†]+)/;
+const _suffixRe = /_([nab])$/;   // DRG variant suffix: n=new-technique, a=alternate, b=backup
+const _upperStartRe = /^[A-Z]/;  // diagnosis prefix cluster (ICD alpha)
+const _digitStartRe = /^[0-9]/;  // procedure prefix cluster (ICD-9-CM-3 numeric)
+const _anyDigitRe = /[0-9]/;     // char4 digit check for standard subgroup codes
+
+let ccCodes;
+let mccCodes;
+let cceCodes;
+let zdInvalid;
+let ssInvalid;
+
+/**
+ * Read DRG.dat and return a map: code -> { description, weight, weightTier2 }
+ *
+ * The first weight column is the base weight; the second (optional)
+ * column is the tier‑2 hospital weight.  A literal slash (`/`) in either
+ * column indicates a special‑payment DRG and is retained verbatim in the
+ * resulting map rather than being converted to `null` or a number.
+ *
+ * @param {string} filePath
+ * @returns {Object}
+ */
+function readDrgDat(filePath) {
+  const out = {};
+  if (!fs.existsSync(filePath)) throw new Error(`Missing required DRG file: ${filePath}`);
+  let raw;
+  try {
+    raw = fs.readFileSync(filePath, 'utf8');
+  } catch (error) {
+    throw new Error(`Unable to read required DRG file ${filePath}: ${error.message}`, { cause: error });
+  }
+  const lines = raw.split(/\r?\n/);
+  const quotePattern = /^"|"$/g;
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex];
+    if (!line) continue;
+    const parts = line.split('\t');
+    if (parts.length < 2) continue;
+    const code = parts[0].trim();
+    const desc = parts[1].trim().replace(quotePattern, '');
+    if (Object.prototype.hasOwnProperty.call(out, code)) {
+      throw new Error(`Duplicate DRG code '${code}' in DRG.dat at line ${lineIndex + 1}`);
+    }
+    // first weight column is the "base" weight, second (optional) column is
+    // the tier‑2 hospital weight.  In the old format there was only one
+    // value; new DAT files have two numbers separated by tabs.
+    const rawWeight = parts.length >= 3 ? parts[2].trim().replace(quotePattern, '') : null;
+    const rawWeight2 = parts.length >= 4 ? parts[3].trim().replace(quotePattern, '') : null;
+
+    // helper within loop for clarity
+    const parseWeight = (val) => {
+      if (!val) return null;
+      if (val === '/') return '/';
+      const n = parseFloat(val);
+      return isNaN(n) ? null : n;
+    };
+
+    const weight = parseWeight(rawWeight);
+    const weightTier2 = parseWeight(rawWeight2);
+
+    out[code] = {
+      description: desc,
+      weight: weight === null ? null : weight,
+      // optional extra field for tier‑2 hospitals; slash marker already
+      // resides in the variable if present, so mirror the null check.
+      weightTier2: weightTier2 === null ? null : weightTier2
+    };
+  }
+  if (Object.keys(out).length === 0) throw new Error(`Required DRG file contains no valid entries: ${filePath}`);
+  return out;
+}
+
+let drgMap;
+
+/**
+ * Read rule files from a directory and return parsed entries.
+ * Expected filename format: <CODE>_<Name>.<ext>
+ * Returns an array of { code, name, type, filename, content }.
+ * @param {string} dirPath
+ * @param {string} type
+ * @returns {Array}
+ */
+function getRulesFromDir(dirPath, type) {
+  if (!fs.existsSync(dirPath)) throw new Error(`Missing required ${type} rules directory: ${dirPath}`);
+  if (!fs.statSync(dirPath).isDirectory()) throw new Error(`Expected ${type} rules directory: ${dirPath}`);
+  const files = fs.readdirSync(dirPath).filter(f => !f.startsWith('.')).sort();
+  const results = [];
+
+  for (const file of files) {
+    const parsed = path.parse(file);
+    const baseName = parsed.name; // filename without extension
+    const firstUnderscoreIndex = baseName.indexOf('_');
+    if (firstUnderscoreIndex <= 0) {
+      throw new Error(`Invalid ${type} rule filename '${file}' in ${dirPath}; expected <code>_<name>`);
+    }
+
+    const code = baseName.substring(0, firstUnderscoreIndex);
+    const name = baseName.substring(firstUnderscoreIndex + 1);
+    const filePath = path.join(dirPath, file);
+
+    let stat;
+    let content;
+    try {
+      stat = fs.statSync(filePath);
+      content = fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+      throw new Error(`Unable to read ${type} rule ${filePath}: ${error.message}`, { cause: error });
+    }
+    if (!stat.isFile()) throw new Error(`Expected ${type} rule file: ${filePath}`);
+    results.push({ code, name, type, filename: file, content });
+  }
+
+  if (results.length === 0) throw new Error(`Required ${type} rules directory contains no rule files: ${dirPath}`);
+  return results;
+}
+
+/**
+ * Validate that expected rules directories exist (ADRG, MDC).
+ * Returns an array of missing directories (empty = all present).
+ * @param {string} baseRulesDir
+ */
+function validateRulesDir(baseRulesDir) {
+  const missing = [];
+  const expected = ['ADRG', 'MDC'];
+  for (const d of expected) {
+    if (!fs.existsSync(path.join(baseRulesDir, d))) missing.push(d);
+  }
+  return missing;
+}
+
+
+
+/**
+ * Load and expand `subgroup_patches.json` (synchronous).
+ * - Expands `$ref`, `procedureCodesRef`, and `diagnosisCodesRef` against `shared`.
+ * - Returns `expanded` object or `null` if file/mapping missing.
+ */
+function loadExpandedPatches() {
+  const patchesPath = path.resolve(process.env.DRG_PATCHES_FILE || path.join(rulesDir, 'subgroup_patches.json'));
+  if (!fs.existsSync(patchesPath)) return null;
+  try {
+    const raw = fs.readFileSync(patchesPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.patches) return null;
+    const expanded = {};
+    for (const [k, v] of Object.entries(parsed.patches)) {
+      try {
+        if (!v || typeof v !== 'object') { expanded[k] = v; continue; }
+        let base = {};
+        if (v.$ref) {
+          if (!parsed.shared) {
+            console.warn(`subgroup_patches.json: $ref for patch '${k}' but 'shared' section is missing`);
+          } else if (!parsed.shared[v.$ref]) {
+            console.warn(`subgroup_patches.json: $ref '${v.$ref}' for patch '${k}' not found in shared`);
+          } else {
+            const sharedRef = parsed.shared[v.$ref];
+            if (Array.isArray(sharedRef)) base = { procedureCodes: sharedRef.slice() };
+            else if (sharedRef && typeof sharedRef === 'object') base = Object.assign({}, sharedRef);
+            else base = { value: sharedRef };
+          }
+        }
+        if (v.procedureCodesRef) {
+          const sharedProc = parsed.shared && parsed.shared[v.procedureCodesRef];
+          if (Array.isArray(base.procedureCodes)) {
+            base.procedureCodes = Array.from(new Set([...(base.procedureCodes || []), ...(Array.isArray(sharedProc) ? sharedProc : [])]));
+          } else {
+            base.procedureCodes = Array.isArray(sharedProc) ? sharedProc.slice() : (Array.isArray(base.procedureCodes) ? base.procedureCodes.slice() : []);
+          }
+        }
+        if (v.diagnosisCodesRef) {
+          const sharedDiag = parsed.shared && parsed.shared[v.diagnosisCodesRef];
+          if (Array.isArray(base.diagnosisCodes)) {
+            base.diagnosisCodes = Array.from(new Set([...(base.diagnosisCodes || []), ...(Array.isArray(sharedDiag) ? sharedDiag : [])]));
+          } else {
+            base.diagnosisCodes = Array.isArray(sharedDiag) ? sharedDiag.slice() : (Array.isArray(base.diagnosisCodes) ? base.diagnosisCodes.slice() : []);
+          }
+        }
+        for (const [ok, ov] of Object.entries(v)) {
+          if (ok === '$ref' || ok === 'procedureCodesRef' || ok === 'diagnosisCodesRef') continue;
+          if (Array.isArray(ov)) base[ok] = ov.slice();
+          else if (ov && typeof ov === 'object') base[ok] = Object.assign({}, ov);
+          else base[ok] = ov;
+        }
+        expanded[k] = base;
+      } catch (entryErr) {
+        console.error(`Error expanding patch '${k}':`, entryErr && entryErr.message ? entryErr.message : entryErr);
+      }
+    }
+    return expanded;
+  } catch (err) {
+    console.error('Error loading subgroup_patches.json:', err && err.message ? err.message : err);
+    return null;
+  }
+}
+
+// Derive subgroup rule logic (same as before)
+function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
+  const adrgCodeInput = adrgData.code;
+  const rule = {
+    drgCode,
+    drgName,
+    adrgCode: adrgCodeInput,
+    conditions: [],
+    diagnosisCodes: [],
+    procedureCodes: [],
+    diagnosisPrefixes: [],
+    procedurePrefixes: []
+  };
+  const patches = patchesLookup || null;
+  const normalizedDrgName = String(drgName || '').replace(/\s+/g, ' ').trim();
+  const nameConditions = [];
+
+  const agePatterns = [
+    [/小于等于\s*(\d+)\s*岁/, 'AGE_LE_'],
+    [/小于\s*(\d+)\s*岁/, 'AGE_LT_'],
+    [/大于等于\s*(\d+)\s*岁/, 'AGE_GE_'],
+    [/大于\s*(\d+)\s*岁/, 'AGE_GT_'],
+    [/(\d+)\s*岁以上/, 'AGE_GE_'],
+  ];
+  for (const [pattern, conditionPrefix] of agePatterns) {
+    const match = normalizedDrgName.match(pattern);
+    if (match) {
+      nameConditions.push(conditionPrefix + match[1]);
+      break;
+    }
+  }
+
+  const nameHasNoCC = /不伴(?:严重|一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName);
+  if (nameHasNoCC) nameConditions.push('NO_CC');
+  else if (/伴严重(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_MCC');
+  else if (/伴(?:一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_CC');
+  if (/死亡转归/.test(normalizedDrgName)) nameConditions.push('DEATH');
+
+  const nameComplicationConditions = nameConditions.filter(condition => ['WITH_MCC', 'WITH_CC', 'NO_CC'].includes(condition));
+  const nameAgeConditions = nameConditions.filter(condition => condition.startsWith('AGE_'));
+  const nameOtherConditions = nameConditions.filter(condition => !condition.startsWith('AGE_') && !['WITH_MCC', 'WITH_CC', 'NO_CC'].includes(condition));
+  rule.conditions.push(...nameAgeConditions, ...nameComplicationConditions, ...nameOtherConditions);
+  const char4 = drgCode.charAt(3);
+  const configuredCondition = subgroupConditions[char4];
+  if (configuredCondition) {
+    rule.conditions.push(configuredCondition);
+  } else if (char4 === '_') {
+    const clusterPart = drgCode.substring(4);
+    if (clusterPart && clusterPart !== '9') {
+      const parts = clusterPart.split('_');
+      const cleanPrefix = parts[0] || '';
+      if (_upperStartRe.test(cleanPrefix)) {
+        rule.conditions.push('SPECIFIC_DIAGNOSIS_PREFIX');
+        rule.diagnosisPrefixes.push(cleanPrefix);
+      } else if (_digitStartRe.test(cleanPrefix) && cleanPrefix !== '9') {
+        rule.conditions.push('SPECIFIC_PROCEDURE_PREFIX');
+        rule.procedurePrefixes.push(cleanPrefix);
+      }
+    } else if (clusterPart === '9') {
+      rule.conditions.push('ADRG_ONLY');
+    }
+  } else if (/机器人辅助手术$/.test(normalizedDrgName) || /椎管内镇痛$/.test(normalizedDrgName)) {
+    rule.conditions.push('NEW_TECHNIQUE');
+  }
+
+  const entry = patches ? (patches[drgCode] || null) : null;
+  if (entry) {
+    if (!rule.drgName || rule.drgName.trim() === '') rule.drgName = entry.name || adrgData.name || drgName || drgCode;
+    const procList = Array.isArray(entry.procedures) ? entry.procedures : (Array.isArray(entry.procedureCodes) ? entry.procedureCodes : []);
+    const diagList = Array.isArray(entry.diagnoses) ? entry.diagnoses : (Array.isArray(entry.diagnosisCodes) ? entry.diagnosisCodes : []);
+    if (procList.length > 0) {
+      rule.procedureCodes = Array.from(new Set([...(rule.procedureCodes || []), ...procList]));
+      if (!rule.conditions.includes('SPECIFIC_PROCEDURE')) rule.conditions.push('SPECIFIC_PROCEDURE');
+    }
+    if (diagList.length > 0) {
+      rule.diagnosisCodes = Array.from(new Set([...(rule.diagnosisCodes || []), ...diagList]));
+      if (!rule.conditions.includes('SPECIFIC_DIAGNOSIS')) rule.conditions.push('SPECIFIC_DIAGNOSIS');
+    }
+    if (entry.conditions && Array.isArray(entry.conditions) && entry.conditions.length > 0) {
+      rule.conditions.push(...entry.conditions);
+    }
+  }
+
+  const suffixMatch = drgCode.match(_suffixRe);
+  const suffix = suffixMatch ? suffixMatch[1] : null;
+  if (suffix) {
+    if (suffix === 'n') { if (!rule.conditions.includes('NEW_TECHNIQUE')) rule.conditions.push('NEW_TECHNIQUE'); }
+  }
+  const invalidConditionIndex = rule.conditions.findIndex(condition => typeof condition !== 'string');
+  if (invalidConditionIndex >= 0) {
+    const invalidCondition = rule.conditions[invalidConditionIndex];
+    throw new TypeError(`Invalid subgroup condition for ${drgCode} at index ${invalidConditionIndex}: expected string, received ${invalidCondition === null ? 'null' : typeof invalidCondition}`);
+  }
+  if (rule.conditions.length === 0) rule.conditions.push('ADRG_ONLY');
+  rule.conditions = [...new Set(rule.conditions)];
+  return rule;
+}
+
+/**
+ * parseMDCCodes — readable, regex-based parser for MDC token lists.
+ * - Splits on newlines or commas, trims each segment,
+ *   extracts the first whitespace-delimited token and validates it.
+ * - Returns a deduplicated array of ICD-like tokens (preserves token case).
+ */
+function parseMDCCodes(text) {
+  if (!text) return [];
+
+  const seen = new Set();
+  const out = [];
+
+  // Split into human-friendly segments and validate each token declaratively.
+  const parts = String(text).split(/[\n,]/);
+  for (let i = 0; i < parts.length; i++) {
+    const part = String(parts[i] || '').trim();
+    if (!part) continue;
+    const m = _firstTokenRe.exec(part);
+    if (!m) continue;
+    const token = m[0];
+    // skip non-code tokens (Chinese headers, descriptions)
+    if (_hanRe.test(token)) continue;
+    // require entire token to match ICD-like shape
+    if (!_icdLikeRe.test(token)) continue;
+    if (!seen.has(token)) {
+      seen.add(token);
+      out.push(token);
+    }
+  }
+
+  return out;
+}
+
+/**
+ * parseMDCZRule — declarative, regex-based parser for MDCZ rule text.
+ * - Splits text into lines, trims them, skips lines containing '包含以下',
+ *   treats non-code-starting lines as category headers, and extracts
+ *   the leading ICD-like token from code lines.
+ */
+function parseMDCZRule(text) {
+  if (typeof text !== 'string' || !text.trim()) return {};
+
+  const result = {};
+  let currentCategory = '未分类';
+  result[currentCategory] = [];
+
+  const lines = String(text).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    if (line.indexOf('包含以下') !== -1) continue;
+    // header if it doesn't look like a code line
+    if (!_codeStartRe.test(line)) {
+      currentCategory = line;
+      if (!result[currentCategory]) result[currentCategory] = [];
+      continue;
+    }
+    // extract leading token (captures †, *, +, / etc.)
+    const m = line.match(_codeExtractRe);
+    if (m) result[currentCategory].push(m[1]);
+  }
+
+  if (result['未分类'] && result['未分类'].length === 0) delete result['未分类'];
+  return result;
+}
+
+// Helpers: small, focused functions used by main
+async function writeJsonFiles(writeJobs) {
+  const pfs = fs.promises;
+  try {
+    await pfs.mkdir(path.dirname(writeJobs[0][0]), { recursive: true });
+    await Promise.all(writeJobs.map(([fp, content]) => pfs.writeFile(fp, content)));
+  } catch (err) {
+    console.error('Error writing JSON files:', err && err.message ? err.message : err);
+    process.exitCode = 1;
+    throw err;
+  }
+}
+
+async function buildMdcRules(mdcRulesRaw) {
+  const mdcRules = [];
+  for (const item of mdcRulesRaw) {
+    const copy = { ...item };
+    try {
+      if (copy.type === 'MDC') {
+        if (copy.code === 'MDCZ') copy.mdczCategories = parseMDCZRule(copy.content);
+        else if (copy.code !== 'MDCA' && copy.code !== 'MDCP') copy.identifyingDiagnoses = parseMDCCodes(copy.content);
+        else copy.identifyingDiagnoses = [];
+      }
+    } catch (e) {
+      console.warn(`Error parsing MDC '${copy.code}':`, e && e.message ? e.message : e);
+      copy.identifyingDiagnoses = copy.identifyingDiagnoses || [];
+    }
+    mdcRules.push(copy);
+  }
+  return mdcRules;
+}
+
+async function buildAdrgRules(adrgRulesRaw, parseRule) {
+  const adrgRules = [];
+  const adrgParseErrors = [];
+  const adrgValidationErrors = [];
+
+  for (const item of adrgRulesRaw) {
+    const copy = { ...item };
+    try {
+      if (copy.type === 'ADRG') {
+        copy.rule = parseRule(copy.content);
+        // The official ADRG name is the source of this explicit rule flag.
+        const isMultiSiteAdrg = String(copy.name || '').includes('多部位');
+        if (isMultiSiteAdrg) copy.rule.multiSite = true;
+        if (copy.rule && copy.rule._logicCompileError) {
+          adrgValidationErrors.push({ code: copy.code, filename: copy.filename, error: copy.rule._logicCompileError });
+        }
+      }
+    } catch (e) {
+      adrgParseErrors.push({ code: copy.code, filename: copy.filename, error: e && e.message ? e.message : String(e) });
+    }
+    adrgRules.push(copy);
+  }
+
+  if (adrgParseErrors.length > 0 || adrgValidationErrors.length > 0) {
+    console.error('ADRG build-time errors detected:');
+    if (adrgParseErrors.length > 0) {
+      console.error('Parsing errors:');
+      for (const err of adrgParseErrors) console.error(`${err.filename}: ${err.error}`);
+    }
+    if (adrgValidationErrors.length > 0) {
+      console.error('Validation/logic compilation errors:');
+      for (const err of adrgValidationErrors) console.error(`${err.filename}: ${err.error}`);
+    }
+    process.exitCode = 1;
+    throw new Error('ADRG rule parse/validation errors');
+  }
+
+  return adrgRules;
+}
+
+async function deriveAndOrderSubgroups(drgMap, adrgRules, patches) {
+  const adrgContext = {};
+  for (const a of adrgRules) adrgContext[a.code] = a;
+
+  const subgroupRules = [];
+  const skippedDRGList = [];
+
+  for (const [drgCode, drgInfo] of Object.entries(drgMap)) {
+    const adrgCode = drgCode.substring(0, 3);
+    const adrgData = adrgContext[adrgCode];
+    if (!adrgData) { skippedDRGList.push(drgCode); continue; }
+    const rule = deriveSubgroupRule(drgCode, drgInfo.description, adrgData, patches);
+    subgroupRules.push(rule);
+  }
+
+  // Reorder variants before base
+  const charMap = { 'E': '1', 'F': '3', 'G': '5', 'H': '9', 'A': '1', 'B': '3', 'C': '5', 'D': '9' };
+  const grouped = new Map();
+  for (const r of subgroupRules) {
+    let code = r.drgCode;
+    let base = code.replace(_suffixRe, '').replace(/([A-Z])$/, (m) => charMap[m]);
+    if (!grouped.has(base)) grouped.set(base, { base: null, variants: [] });
+    if (base !== code) grouped.get(base).variants.push(r); else grouped.get(base).base = r;
+  }
+  const reorderedRules = [];
+  for (const group of grouped.values()) {
+    for (const v of group.variants) reorderedRules.push(v);
+    if (group.base) reorderedRules.push(group.base);
+  }
+
+  return { reorderedRules, skippedDRGList };
+}
+
+function logRuleSummary(mdcRules, adrgRules, drgRules, patches) {
+  const conditionCounts = new Map();
+  for (const rule of drgRules) {
+    for (const condition of rule.conditions || []) {
+      conditionCounts.set(condition, (conditionCounts.get(condition) || 0) + 1);
+    }
+  }
+
+  console.log(`Rule summary: MDC=${mdcRules.length}, ADRG=${adrgRules.length}, DRG=${drgRules.length}, patches=${Object.keys(patches || {}).length}`);
+  console.log('Condition counts:');
+  for (const [condition, count] of [...conditionCounts.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    console.log(`  ${condition}: ${count}`);
+  }
+}
+
+function configureBuildContext(scope, config, commonPackage) {
+  version = config.id;
+  versionConfig = config;
+  subgroupConditions = versionConfig.subgroupConditions || {};
+  buildScope = scope;
+
+  const versionDir = path.join(versionsDir, version);
+  const commonPackageDir = path.join(commonPackagesDir, commonPackage);
+  rulesDir = path.join(versionDir, 'raw');
+  commonRulesDir = path.join(commonPackageDir, 'raw');
+  outputDir = path.join(versionDir, 'generated');
+  commonOutputDir = path.join(commonPackageDir, 'generated');
+
+  for (const [target, description] of [
+    [rulesDir, `DRG version ${version}`],
+    [commonRulesDir, `DRG common package ${commonPackage}`],
+  ]) {
+    if (!fs.existsSync(target)) throw new Error(`Missing ${description}: ${target}`);
+  }
+
+  ccCodes = loadDat(path.join(commonRulesDir, 'CC.dat'), 'index');
+  mccCodes = loadDat(path.join(commonRulesDir, 'MCC.dat'), 'index');
+  cceCodes = loadDat(path.join(commonRulesDir, 'CCE.dat'), 'index');
+  zdInvalid = loadDat(path.join(commonRulesDir, 'ZD_INVALID.dat'), 'gray');
+  ssInvalid = loadDat(path.join(commonRulesDir, 'SS_INVALID.dat'), 'gray');
+  drgMap = readDrgDat(path.join(rulesDir, 'DRG.dat'));
+}
+
+// Main build flow
+async function buildPackage(scope, config, commonPackage) {
+  configureBuildContext(scope, config, commonPackage);
+  const buildCommon = buildScope === 'all' || buildScope === 'common';
+  const buildVersion = buildScope === 'all' || buildScope === 'version';
+  console.log(`\n=== Building DRG rules (${version}) [${buildScope.toUpperCase()}] ===`);
+  console.log(buildCommon
+    ? 'Preparing parsed MDC/ADRG rules in build step...'
+    : 'Loading generated ADRG rules from the DRG common package...');
+
+  // Dynamic import of the lightweight parsing core so build scripts don't import UI/runtime-only code.
+  let mdcRules = [];
+  let adrgRules = [];
+  if (buildCommon) {
+    const ruleParserPath = pathToFileUrl(path.resolve(__dirname, '../src/lib/ruleParserCore.js'));
+    let parseRule = null;
+    try {
+      const rp = await import(ruleParserPath);
+      parseRule = rp.parseRule;
+      if (typeof parseRule !== 'function') throw new Error('ruleParserCore must export parseRule');
+    } catch (e) {
+      console.error('Failed to import ruleParserCore for build-time parsing — build cannot continue:', e && e.message ? e.message : e);
+      throw e;
+    }
+
+    const missingRuleDirs = validateRulesDir(commonRulesDir);
+    if (missingRuleDirs.length) {
+      throw new Error(`Missing required rules directories in ${commonRulesDir}: ${missingRuleDirs.join(', ')}`);
+    }
+    const adrgRulesRaw = getRulesFromDir(path.join(commonRulesDir, 'ADRG'), 'ADRG');
+    const mdcRulesRaw = getRulesFromDir(path.join(commonRulesDir, 'MDC'), 'MDC');
+    mdcRules = await buildMdcRules(mdcRulesRaw);
+    adrgRules = await buildAdrgRules(adrgRulesRaw, parseRule);
+  } else {
+    const adrgPath = path.join(commonOutputDir, 'adrg_rules.json');
+    if (!fs.existsSync(adrgPath)) {
+      throw new Error(`Missing DRG common dependency: ${adrgPath}`);
+    }
+    adrgRules = JSON.parse(fs.readFileSync(adrgPath, 'utf8'));
+  }
+
+  const keepContent = process.env.KEEP_CONTENT === '1';
+  const adrgRulesForWrite = keepContent ? adrgRules : adrgRules.map(({ content, ...rest }) => rest);
+  const mdcRulesForWrite = keepContent ? mdcRules : mdcRules.map(({ content, ...rest }) => rest);
+
+  if (buildCommon) {
+    await writeJsonFiles([
+      [path.join(commonOutputDir, 'cc_codes.json'), JSON.stringify(ccCodes, null, 2)],
+      [path.join(commonOutputDir, 'mcc_codes.json'), JSON.stringify(mccCodes, null, 2)],
+      [path.join(commonOutputDir, 'cce_codes.json'), JSON.stringify(cceCodes, null, 2)],
+      [path.join(commonOutputDir, 'zd_invalid.json'), JSON.stringify(zdInvalid, null, 2)],
+      [path.join(commonOutputDir, 'ss_invalid.json'), JSON.stringify(ssInvalid, null, 2)],
+      [path.join(commonOutputDir, 'adrg_rules.json'), JSON.stringify(adrgRulesForWrite, null, 2)],
+      [path.join(commonOutputDir, 'mdc_rules.json'), JSON.stringify(mdcRulesForWrite, null, 2)],
+    ]);
+    console.log('DRG common package generated.');
+  }
+
+  if (!buildVersion) return;
+
+  console.log('Deriving DRG subgroup rules...');
+  const patches = loadExpandedPatches();
+  const { reorderedRules, skippedDRGList } = await deriveAndOrderSubgroups(drgMap, adrgRules, patches);
+
+  console.log(`Generated ${reorderedRules.length} DRG subgroup rules (variants before base, order preserved).`);
+
+  if (skippedDRGList.length > 0) {
+    throw new Error(`DRGs reference missing ADRGs: ${skippedDRGList.join(', ')}`);
+  }
+
+  logRuleSummary(mdcRules, adrgRules, reorderedRules, patches);
+
+  // Write version-specific outputs.
+  const writeJobs = [
+    [path.join(outputDir, 'drg.json'), JSON.stringify(drgMap, null, 2)],
+    [path.join(outputDir, 'drg_rules.json'), JSON.stringify(reorderedRules, null, 2)],
+  ];
+  
+  try {
+    await writeJsonFiles(writeJobs);
+  } catch (err) {
+    throw err;
+  }
+
+  try {
+    const skippedPath = path.join(dataDir, 'skipped_drgs.json');
+    if (fs.existsSync(skippedPath)) fs.unlinkSync(skippedPath);
+  } catch (e) { }
+
+  console.log('Build complete: JSON files generated for browser use.');
+}
+
+function pathToFileUrl(p) {
+  let resolved = path.resolve(p);
+  if (process.platform === 'win32') resolved = '/' + resolved.replace(/\\/g, '/');
+  return `file://${resolved}`;
+}
+
+function readConfigs() {
+  return fs.readdirSync(versionsDir, { withFileTypes: true })
+    .filter(entry => entry.isDirectory())
+    .map(entry => {
+      const configPath = path.join(versionsDir, entry.name, 'config.json');
+      if (!fs.existsSync(configPath)) throw new Error(`Missing version config: ${configPath}`);
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      if (config.id !== entry.name || !config.packages?.drgCommon) {
+        throw new Error(`Invalid config for ${entry.name}: id and packages.drgCommon are required`);
+      }
+      return config;
+    })
+    .sort((left, right) => left.id.localeCompare(right.id, 'en'));
+}
+
+async function runCli() {
+  const configs = readConfigs();
+  const [scope = 'all', requestedId] = process.argv.slice(2);
+  if (!['all', 'common', 'version'].includes(scope)) {
+    throw new Error('Usage: build_rules_json.cjs [all | common <package-id> | version <version-id>]');
+  }
+
+  if (scope === 'common') {
+    if (!requestedId) throw new Error('DRG common package ID is required');
+    const config = configs.find(item => item.packages.drgCommon === requestedId);
+    if (!config) throw new Error(`DRG common package is not referenced by any version: ${requestedId}`);
+    await buildPackage('common', config, requestedId);
+    return;
+  }
+
+  if (scope === 'version') {
+    const selected = requestedId
+      ? configs.filter(item => item.id === requestedId)
+      : configs;
+    if (selected.length === 0) throw new Error(`Unknown DRG version: ${requestedId}`);
+    for (const config of selected) {
+      await buildPackage('version', config, config.packages.drgCommon);
+    }
+    return;
+  }
+
+  const commonPackages = [...new Set(configs.map(item => item.packages.drgCommon))].sort();
+  for (const packageId of commonPackages) {
+    const config = configs.find(item => item.packages.drgCommon === packageId);
+    await buildPackage('common', config, packageId);
+  }
+  for (const config of configs) {
+    await buildPackage('version', config, config.packages.drgCommon);
+  }
+}
+
+runCli().catch(err => {
+  console.error('Build failed:', err && err.message ? err.message : err);
+  process.exitCode = 1;
+});

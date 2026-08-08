@@ -1,0 +1,58 @@
+{
+  "name": "drg-grouper-open-source",
+  "version": "0.1.0",
+  "private": true,
+  "description": "数据驱动的 DRG 分组引擎与网页界面，内置多版本 DRG 规则和 ICD 数据。",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qweaszxcdf/drg-grouper.git"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "npm@11.12.1",
+  "scripts": {
+    "dev": "vite",
+    "build:rules": "node scripts/build_rules_json.cjs",
+    "build:package:drg-common": "node scripts/build_rules_json.cjs common",
+    "build:package:drg-version": "node scripts/build_rules_json.cjs version",
+    "build:package:clinical-icd": "node scripts/build_icd_mappings.cjs clinical",
+    "build:package:insurance-icd": "node scripts/build_icd_mappings.cjs insurance",
+    "build:crosswalk": "node scripts/build_icd_mappings.cjs crosswalk",
+    "build:version-data": "node scripts/generate_version_data.cjs",
+    "build:icd-mappings": "node scripts/build_icd_mappings.cjs all",
+    "build:data": "npm run build:rules && npm run build:icd-mappings && npm run build:version-data",
+    "build": "vite build",
+    "build:lite": "VITE_LITE=true vite build",
+    "build:release": "npm run build:data && npm run build && npm run build:lite",
+    "serve-api": "node scripts/group_api_server.mjs",
+    "lint": "eslint .",
+    "test": "node --test",
+    "check": "npm run lint && npm test && npm run build:release",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^0.556.0",
+    "papaparse": "^5.5.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "pinyin-pro": "^3.28.0",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.17",
+    "vite": "^7.2.4"
+  }
+}
