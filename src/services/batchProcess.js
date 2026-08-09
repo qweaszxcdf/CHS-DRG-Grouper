@@ -17,6 +17,7 @@ const DELIMITER_BY_OPTION = Object.freeze({
   TAB: '\t',
   PLUS: '+',
 });
+const DAY_SURGERY_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
 function mapOptionToChar(opt, custom) {
   if (opt === 'CUSTOM') return custom || '|';
   return DELIMITER_BY_OPTION[opt] || custom || '|';
@@ -118,6 +119,22 @@ export function loadParsedFile(parsedRows, { delimiterOption = 'PIPE', customDel
       const multiSiteRaw = mapping.multiSiteKey ? cleanCell(row?.[mapping.multiSiteKey]) : '';
       const multiSiteValue = String(multiSiteRaw ?? '').trim();
       if (multiSiteValue !== '') info.multiSite = multiSiteValue;
+    } catch { /* ignore */ }
+
+    for (const [field, mappingKey] of [
+      ['icuHours', 'icuHoursKey'],
+      ['lengthOfStay', 'lengthOfStayKey'],
+    ]) {
+      try {
+        const rawValue = mapping[mappingKey] ? cleanCell(row?.[mapping[mappingKey]]) : '';
+        if (rawValue !== '') info[field] = String(rawValue).trim();
+      } catch { /* ignore */ }
+    }
+
+    try {
+      const daySurgeryRaw = mapping.daySurgeryKey ? cleanCell(row?.[mapping.daySurgeryKey]) : '';
+      const daySurgeryValue = String(daySurgeryRaw ?? '').trim().toLowerCase();
+      if (daySurgeryValue !== '') info.daySurgery = DAY_SURGERY_TRUTHY.has(daySurgeryValue);
     } catch { /* ignore */ }
 
     if (Object.keys(info).length) patientInfo = info;

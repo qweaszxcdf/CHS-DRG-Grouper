@@ -49,6 +49,9 @@ export function useBatchHandlers({
   setPreviewDischargeKey,
   setPreviewNewTechniqueKey,
   setPreviewMultiSiteKey,
+  setPreviewIcuHoursKey,
+  setPreviewLengthOfStayKey,
+  setPreviewDaySurgeryKey,
   setPreviewGenderKey,
   setDiagDelimiterOption,
   setDiagCustomDelimiter,
@@ -171,6 +174,9 @@ export function useBatchHandlers({
                 dischargeKey: guessedDischarge,
                 newTechKey: guessedNewTechnique,
                 multiSiteKey: guessedMultiSite,
+                icuHoursKey: guessedIcuHours,
+                lengthOfStayKey: guessedLengthOfStay,
+                daySurgeryKey: guessedDaySurgery,
                 genderKey: guessedGender,
               } = getMappingKeys(s);
 
@@ -183,6 +189,9 @@ export function useBatchHandlers({
               setPreviewDischargeKey(prev => (prev && prev.length) ? prev : guessedDischarge);
               setPreviewNewTechniqueKey(prev => (prev && prev.length) ? prev : guessedNewTechnique);
               setPreviewMultiSiteKey(prev => (prev && prev.length) ? prev : guessedMultiSite);
+              setPreviewIcuHoursKey(prev => (prev && prev.length) ? prev : guessedIcuHours);
+              setPreviewLengthOfStayKey(prev => (prev && prev.length) ? prev : guessedLengthOfStay);
+              setPreviewDaySurgeryKey(prev => (prev && prev.length) ? prev : guessedDaySurgery);
               setPreviewGenderKey(prev => (prev && prev.length) ? prev : guessedGender);
 
               try {
@@ -271,6 +280,9 @@ export function useBatchHandlers({
     setPreviewDischargeKey,
     setPreviewNewTechniqueKey,
     setPreviewMultiSiteKey,
+    setPreviewIcuHoursKey,
+    setPreviewLengthOfStayKey,
+    setPreviewDaySurgeryKey,
     setPreviewGenderKey,
     workerRef,
     setParsedRows,

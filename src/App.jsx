@@ -77,6 +77,9 @@ function App() {
   const [previewDischargeKey, setPreviewDischargeKey] = useState('');
   const [previewNewTechniqueKey, setPreviewNewTechniqueKey] = useState('');
   const [previewMultiSiteKey, setPreviewMultiSiteKey] = useState('');
+  const [previewIcuHoursKey, setPreviewIcuHoursKey] = useState('');
+  const [previewLengthOfStayKey, setPreviewLengthOfStayKey] = useState('');
+  const [previewDaySurgeryKey, setPreviewDaySurgeryKey] = useState('');
   const [previewGenderKey, setPreviewGenderKey] = useState('');
   // Header filters (per-field) for long-file UX
   const [headerFilterDiag, setHeaderFilterDiag] = useState('');
@@ -114,6 +117,9 @@ function App() {
   const previewDischargeRef = useRef(previewDischargeKey);
   const previewNewTechniqueRef = useRef(previewNewTechniqueKey);
   const previewMultiSiteRef = useRef(previewMultiSiteKey);
+  const previewIcuHoursRef = useRef(previewIcuHoursKey);
+  const previewLengthOfStayRef = useRef(previewLengthOfStayKey);
+  const previewDaySurgeryRef = useRef(previewDaySurgeryKey);
   const previewGenderRef = useRef(previewGenderKey);
   const [batchDelimiterOption, setBatchDelimiterOption] = useState('PIPE');
   const [batchCustomDelimiter, setBatchCustomDelimiter] = useState('|');
@@ -134,6 +140,9 @@ function App() {
     previewDischargeRef.current = '';
     previewNewTechniqueRef.current = '';
     previewMultiSiteRef.current = '';
+    previewIcuHoursRef.current = '';
+    previewLengthOfStayRef.current = '';
+    previewDaySurgeryRef.current = '';
     previewGenderRef.current = '';
     setPreviewIdKey('');
     setPreviewDiagsKey([]);
@@ -144,6 +153,9 @@ function App() {
     setPreviewDischargeKey('');
     setPreviewNewTechniqueKey('');
     setPreviewMultiSiteKey('');
+    setPreviewIcuHoursKey('');
+    setPreviewLengthOfStayKey('');
+    setPreviewDaySurgeryKey('');
     setPreviewGenderKey('');
     setPreviewSampleIndex(0);
   }, []);
@@ -178,6 +190,9 @@ function App() {
     previewDischargeRef.current = previewDischargeKey;
     previewNewTechniqueRef.current = previewNewTechniqueKey;
     previewMultiSiteRef.current = previewMultiSiteKey;
+    previewIcuHoursRef.current = previewIcuHoursKey;
+    previewLengthOfStayRef.current = previewLengthOfStayKey;
+    previewDaySurgeryRef.current = previewDaySurgeryKey;
     previewGenderRef.current = previewGenderKey;
   }, [
     previewIdKey,
@@ -189,6 +204,9 @@ function App() {
     previewDischargeKey,
     previewNewTechniqueKey,
     previewMultiSiteKey,
+    previewIcuHoursKey,
+    previewLengthOfStayKey,
+    previewDaySurgeryKey,
     previewGenderKey,
   ]);
 
@@ -265,10 +283,10 @@ function App() {
   // Default: collapsed. If any mapping key is present, auto-expand so users see mapped fields.
   const [previewPatientInfoExpanded, setPreviewPatientInfoExpanded] = useState(false);
   useEffect(() => {
-    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewDischargeKey || previewNewTechniqueKey || previewMultiSiteKey || previewGenderKey) {
+    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewDischargeKey || previewNewTechniqueKey || previewMultiSiteKey || previewIcuHoursKey || previewLengthOfStayKey || previewDaySurgeryKey || previewGenderKey) {
       setPreviewPatientInfoExpanded(true);
     }
-  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewDischargeKey, previewNewTechniqueKey, previewMultiSiteKey, previewGenderKey]);
+  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewDischargeKey, previewNewTechniqueKey, previewMultiSiteKey, previewIcuHoursKey, previewLengthOfStayKey, previewDaySurgeryKey, previewGenderKey]);
 
   // Handlers that update both state and immediate ref to avoid races in async handlers
   const handlePreviewIdChange = (val) => { invalidateBatchState(); previewIdRef.current = val; setPreviewIdKey(val); };
@@ -296,6 +314,9 @@ function App() {
   const handlePreviewDischargeChange = (val) => { invalidateBatchState(); previewDischargeRef.current = val; setPreviewDischargeKey(val); };
   const handlePreviewNewTechChange = (val) => { invalidateBatchState(); previewNewTechniqueRef.current = val; setPreviewNewTechniqueKey(val); };
   const handlePreviewMultiSiteChange = (val) => { invalidateBatchState(); previewMultiSiteRef.current = val; setPreviewMultiSiteKey(val); };
+  const handlePreviewIcuHoursChange = (val) => { invalidateBatchState(); previewIcuHoursRef.current = val; setPreviewIcuHoursKey(val); };
+  const handlePreviewLengthOfStayChange = (val) => { invalidateBatchState(); previewLengthOfStayRef.current = val; setPreviewLengthOfStayKey(val); };
+  const handlePreviewDaySurgeryChange = (val) => { invalidateBatchState(); previewDaySurgeryRef.current = val; setPreviewDaySurgeryKey(val); };
   const handlePreviewGenderChange = (val) => { invalidateBatchState(); previewGenderRef.current = val; setPreviewGenderKey(val); };
   // Track inputs that failed normalization so we can inspect and iterate on heuristics
   const failedNormalizationRef = useRef(new Map());
@@ -332,6 +353,9 @@ function App() {
     previewDischargeRef,
     previewNewTechniqueRef,
     previewMultiSiteRef,
+    previewIcuHoursRef,
+    previewLengthOfStayRef,
+    previewDaySurgeryRef,
     previewGenderRef,
     failedNormalizationRef,
     setNormMisses,
@@ -377,6 +401,9 @@ function App() {
     setPreviewDischargeKey,
     setPreviewNewTechniqueKey,
     setPreviewMultiSiteKey,
+    setPreviewIcuHoursKey,
+    setPreviewLengthOfStayKey,
+    setPreviewDaySurgeryKey,
     setPreviewGenderKey,
     setDiagDelimiterOption,
     setDiagCustomDelimiter,
@@ -433,6 +460,9 @@ function App() {
       previewDischargeKey,
       previewNewTechniqueKey,
       previewMultiSiteKey,
+      previewIcuHoursKey,
+      previewLengthOfStayKey,
+      previewDaySurgeryKey,
       previewGenderKey,
       normMisses,
       previewSampleIndex,
@@ -469,6 +499,9 @@ function App() {
       handlePreviewDischargeChange,
       handlePreviewNewTechChange,
       handlePreviewMultiSiteChange,
+      handlePreviewIcuHoursChange,
+      handlePreviewLengthOfStayChange,
+      handlePreviewDaySurgeryChange,
       handlePreviewGenderChange,
       setPreviewSampleIndex,
       getMappingKeys,

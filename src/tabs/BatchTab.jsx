@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { FileUp, Download } from "lucide-react";
 
+const NEW_TECHNIQUE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
+const MULTI_SITE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
+const DAY_SURGERY_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
+
 const DELIMITER_BY_OPTION = {
   PIPE: '|',
   COMMA: ',',
@@ -9,8 +13,6 @@ const DELIMITER_BY_OPTION = {
   PLUS: '+',
 };
 
-const NEW_TECHNIQUE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
-const MULTI_SITE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
 
 const resolveDelimiter = (option, customDelimiter, fallback = '|') => (
   DELIMITER_BY_OPTION[option] ?? (customDelimiter || fallback)
@@ -154,6 +156,9 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     previewDischargeKey,
     previewNewTechniqueKey,
     previewMultiSiteKey,
+    previewIcuHoursKey,
+    previewLengthOfStayKey,
+    previewDaySurgeryKey,
     previewGenderKey,
     normMisses,
     previewSampleIndex,
@@ -188,6 +193,9 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     handlePreviewDischargeChange,
     handlePreviewNewTechChange,
     handlePreviewMultiSiteChange,
+    handlePreviewIcuHoursChange,
+    handlePreviewLengthOfStayChange,
+    handlePreviewDaySurgeryChange,
     handlePreviewGenderChange,
     setPreviewSampleIndex,
     getMappingKeys,
@@ -276,7 +284,7 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
 
     if (parsedPreview.headerKeys) {
       const sample = sampleRow || {};
-      const { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, genderKey } = getMappingKeys(sample);
+      const { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, icuHoursKey, lengthOfStayKey, daySurgeryKey, genderKey } = getMappingKeys(sample);
       idVal = cleanCell(sample[idKey] != null ? sample[idKey] : '');
       rawDiags = previewRawDiags && previewRawDiags.length ? previewRawDiags : getSampleCols(sample, diagsKey, previewDiagDelimiterResolved, cleanCell);
       rawProcs = previewRawProcs && previewRawProcs.length ? previewRawProcs : getSampleCols(sample, procsKey, previewProcDelimiterResolved, cleanCell);
@@ -288,6 +296,9 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
       try { if (genderKey) { const v = cleanCell(sample[genderKey]); if (v !== '') samplePatientInfo.gender = String(v).trim(); } } catch { /* ignore */ }
       try { if (newTechKey) { const v = cleanCell(sample[newTechKey]); if (NEW_TECHNIQUE_TRUTHY.has(String(v).trim().toLowerCase())) { samplePatientInfo.newTechnique = true; } } } catch { /* ignore */ }
       try { if (multiSiteKey) { const v = cleanCell(sample[multiSiteKey]); if (MULTI_SITE_TRUTHY.has(String(v).trim().toLowerCase())) { samplePatientInfo.multiSite = true; } } } catch { /* ignore */ }
+      try { if (icuHoursKey) { const v = cleanCell(sample[icuHoursKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.icuHours = Math.trunc(n); } } } catch { /* ignore */ }
+      try { if (lengthOfStayKey) { const v = cleanCell(sample[lengthOfStayKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.lengthOfStay = Math.trunc(n); } } } catch { /* ignore */ }
+      try { if (daySurgeryKey) { const v = cleanCell(sample[daySurgeryKey]); if (DAY_SURGERY_TRUTHY.has(String(v).trim().toLowerCase())) samplePatientInfo.daySurgery = true; } } catch { /* ignore */ }
     }
 
     const convDiags = (previewConvDiags && previewRawDiags && previewRawDiags.length && previewRawDiags === rawDiags)
@@ -663,6 +674,30 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
                         <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
                           <span className="whitespace-nowrap">Multi-site</span>
                           <select title={previewMultiSiteKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewMultiSiteKey} onChange={e => handlePreviewMultiSiteChange(e.target.value)}>
+                            <option title="(none)" value="">(none)</option>
+                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                          </select>
+                        </label>
+
+                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                          <span className="whitespace-nowrap">ICU hours</span>
+                          <select title={previewIcuHoursKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewIcuHoursKey} onChange={e => handlePreviewIcuHoursChange(e.target.value)}>
+                            <option title="(none)" value="">(none)</option>
+                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                          </select>
+                        </label>
+
+                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                          <span className="whitespace-nowrap">Length of stay</span>
+                          <select title={previewLengthOfStayKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewLengthOfStayKey} onChange={e => handlePreviewLengthOfStayChange(e.target.value)}>
+                            <option title="(none)" value="">(none)</option>
+                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                          </select>
+                        </label>
+
+                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                          <span className="whitespace-nowrap">Day surgery</span>
+                          <select title={previewDaySurgeryKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewDaySurgeryKey} onChange={e => handlePreviewDaySurgeryChange(e.target.value)}>
                             <option title="(none)" value="">(none)</option>
                             {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
                           </select>

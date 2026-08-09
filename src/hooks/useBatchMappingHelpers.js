@@ -14,6 +14,9 @@ export function useBatchMappingHelpers({
   previewDischargeRef,
   previewNewTechniqueRef,
   previewMultiSiteRef,
+  previewIcuHoursRef,
+  previewLengthOfStayRef,
+  previewDaySurgeryRef,
   previewGenderRef,
   failedNormalizationRef,
   setNormMisses,
@@ -214,6 +217,9 @@ export function useBatchMappingHelpers({
     const dischargeCandidates = ['discharge', 'discharge_status', 'dischargeStatus', '出院状态', 'discharge_status'];
     const newTechniqueCandidates = ['new_technique', 'newtechnique', 'new-technique', '新技术', 'new technique', 'is_new_tech', 'newtech'];
     const multiSiteCandidates = ['multi_site', 'multisite', 'multi-site', '多部位', '多部位手术', '多部位关节置换'];
+    const icuHoursCandidates = ['icu_hours', 'icuhours', 'icu-hours', 'icu hour', 'icu hours', '重症监护小时', 'icu时长', 'icu小时'];
+    const lengthOfStayCandidates = ['length_of_stay', 'lengthofstay', 'length-of-stay', 'los', '住院日', '住院天数', '住院日数'];
+    const daySurgeryCandidates = ['day_surgery', 'daysurgery', 'day-surgery', '日间手术', '日间手术标志', '日间'];
     const genderCandidates = ['gender', 'sex', 'patient_sex', 'gender_code', '性别', '性别代码'];
 
     const idKey = (previewIdRef.current || '') || findFieldNameFuzzy(sample, idCandidates) || findFieldName(sample, idCandidates) || '';
@@ -256,9 +262,12 @@ export function useBatchMappingHelpers({
     const dischargeKey = (previewDischargeRef.current || '') || findFieldNameFuzzy(sample, dischargeCandidates) || findFieldName(sample, dischargeCandidates) || '';
     const newTechKey = (previewNewTechniqueRef.current || '') || findFieldNameFuzzy(sample, newTechniqueCandidates) || findFieldName(sample, newTechniqueCandidates) || '';
     const multiSiteKey = (previewMultiSiteRef.current || '') || findFieldNameFuzzy(sample, multiSiteCandidates) || findFieldName(sample, multiSiteCandidates) || '';
+    const icuHoursKey = (previewIcuHoursRef.current || '') || findFieldNameFuzzy(sample, icuHoursCandidates) || findFieldName(sample, icuHoursCandidates) || '';
+    const lengthOfStayKey = (previewLengthOfStayRef.current || '') || findFieldNameFuzzy(sample, lengthOfStayCandidates) || findFieldName(sample, lengthOfStayCandidates) || '';
+    const daySurgeryKey = (previewDaySurgeryRef.current || '') || findFieldNameFuzzy(sample, daySurgeryCandidates) || findFieldName(sample, daySurgeryCandidates) || '';
     const genderKey = (previewGenderRef.current || '') || findFieldNameFuzzy(sample, genderCandidates) || findFieldName(sample, genderCandidates) || '';
 
-    return { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, genderKey };
+    return { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, icuHoursKey, lengthOfStayKey, daySurgeryKey, genderKey };
   }, [
     previewIdRef,
     previewDiagsRef,
@@ -267,9 +276,12 @@ export function useBatchMappingHelpers({
     previewAgeDaysRef,
     previewBirthWeightRef,
     previewDischargeRef,
-    previewNewTechniqueRef,
-    previewMultiSiteRef,
-    previewGenderRef,
+  previewNewTechniqueRef,
+  previewMultiSiteRef,
+  previewIcuHoursRef,
+  previewLengthOfStayRef,
+  previewDaySurgeryRef,
+  previewGenderRef,
     findFieldName,
     findFieldNameFuzzy,
     findFieldNameByNormalizedAlias,
