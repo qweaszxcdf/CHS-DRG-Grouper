@@ -67,12 +67,6 @@ function ActionButtons({ onGroupSingle, onGroupAllOrders, onClear, permRunning, 
     </div>
   );
 }
-function SpecialPaymentBadge({ compact = false }) {
-  const classes = compact
-    ? 'ml-2 inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-xs font-bold whitespace-nowrap'
-    : 'ml-2 inline-flex items-center px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-bold whitespace-nowrap';
-  return <span className={classes} role={compact ? undefined : 'status'} aria-label="特殊支付">特殊支付</span>;
-}
 export default function SingleTab({ searchSource, lite = false, version = DEFAULT_RULE_VERSION, codeIndexRevision = 0 }) {
   const [loadedRuleSet, setLoadedRuleSet] = useState(() => {
     try { return loadRuleSet(version); } catch { return null; }
@@ -122,6 +116,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const [diagnoses, setDiagnoses] = useState(['']);
   const [procedures, setProcedures] = useState(['']);
   const [result, setResult] = useState(null);
+  const [hasGrouped, setHasGrouped] = useState(false);
   const [patientGender, setPatientGender] = useState('1');
   const [patientAge, setPatientAge] = useState('30');
   const [patientAgeInDays, setPatientAgeInDays] = useState('');
@@ -143,11 +138,11 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const setProcRef = (el, idx) => { procInputRefs.current[idx] = el; };
   const focusDiagAt = (idx) => { const el = diagInputRefs.current[idx]; if (el && typeof el.focus === 'function') el.focus(); };
   const focusProcAt = (idx) => { const el = procInputRefs.current[idx]; if (el && typeof el.focus === 'function') el.focus(); };
-  const getPatientInfo = () => (
+  const getPatientInfo = useCallback(() => (
     buildPatientInfo
       ? buildPatientInfo({ gender: patientGender, age: patientAge, ageInDays: patientAgeInDays, birthWeight: patientBirthWeight, dischargeStatus: patientDischargeStatus, newTechnique: patientNewTechnique, multiSite: patientMultiSite })
       : { gender: patientGender }
-  );
+  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite]);
   const handlePatientAgeChange = (value) => {
     setPatientAge(value);
     if (String(value).trim() !== '') setPatientAgeInDays('');
@@ -385,11 +380,12 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       setProcedureInfos(normalized.infos);
     }
   };
-  const handleGroupSingle = async () => {
+  const handleGroupSingle = useCallback(async () => {
     const requestId = ++groupRequestRef.current;
     const info = getPatientInfo();
     const out = groupSingle ? await groupSingle(diagnoses, procedures, info, searchSource, version) : null;
     if (requestId !== groupRequestRef.current) return;
+    setHasGrouped(true);
     setPermResults(null);
     setPermRunning(false);
     if (out) {
@@ -403,9 +399,23 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         patientInfo: out.patientInfo
       });
     }
-  };
+  }, [diagnoses, procedures, getPatientInfo, searchSource, version]);
+  const handleGroupSingleRef = useRef(handleGroupSingle);
+  useEffect(() => {
+    handleGroupSingleRef.current = handleGroupSingle;
+  }, [handleGroupSingle]);
+
+  const previousVersionRef = useRef(version);
+  useEffect(() => {
+    const previousVersion = previousVersionRef.current;
+    previousVersionRef.current = version;
+    if (previousVersion === version || !hasGrouped) return;
+    handleGroupSingleRef.current();
+  }, [version, hasGrouped]);
+
   const handleFlushAll = () => {
     groupRequestRef.current += 1;
+    setHasGrouped(false);
     setDiagnoses(['']);
     setProcedures(['']);
     setDiagnosisInfos([createEmptyInfo()]);
@@ -735,7 +745,6 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         <div className="flex items-center gap-2">
           {r.summary.weight != null && <div className="text-sm font-mono font-semibold text-blue-300">{r.summary.weight === '/' ? '特殊支付' : r.summary.weight}</div>}
           {r.summary.weightTier2 != null && <div className="text-sm font-mono font-semibold text-yellow-300">{r.summary.weightTier2 === '/' ? '特殊支付' : r.summary.weightTier2}</div>}
-          {(r.summary.weight === '/' || r.summary.weightTier2 === '/') && <SpecialPaymentBadge compact />}
         </div>
       </div>
       <div className="text-xs mt-1 text-gray-400">Examples ({r.examples.length}):</div>
@@ -854,11 +863,10 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
               )}
               {!lite && result.weightTier2 != null && (
                 <div className="text-right">
-                  <span className="block text-sm text-gray-300">二级医院权重</span>
-                  <span className="text-2xl font-mono font-bold text-yellow-300">{result.weightTier2 === '/' ? '特殊支付' : result.weightTier2}</span>
+                  <span className="block text-sm text-gray-300">{version.startsWith('cn-drg') ? '低风险死亡病组' : '二级医院权重'}</span>
+                  <span className="text-2xl font-mono font-bold text-yellow-300">{result.weightTier2 === '/' ? version.startsWith('cn-drg') ? '是' : '特殊支付' : result.weightTier2}</span>
                 </div>
               )}
-              {(result.weight === '/' || result.weightTier2 === '/') && <SpecialPaymentBadge />}
             </div>
           </div>
           {result.matchTrace && (

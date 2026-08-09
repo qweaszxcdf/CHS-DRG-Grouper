@@ -54,7 +54,6 @@ const strategyDefaults = Object.freeze({
   invalidPrincipalProcedureAction: 'null-slot',
   allowedInvalidPrincipalProcedures: [],
   allowedGrayPrincipalProcedures: ['99.1000'],
-  autoDetectNewTechnique: false,
   mdcyPrincipalDiagnosisOnly: true,
   allowSecondarySectionPrimaryFallback: false,
 });
@@ -81,7 +80,6 @@ const allowedInvalidPrincipalProcedureActions = new Set([
 ]);
 
 const booleanStrategyFields = Object.freeze([
-  'autoDetectNewTechnique',
   'mdcyPrincipalDiagnosisOnly',
   'allowSecondarySectionPrimaryFallback',
 ]);
@@ -192,6 +190,8 @@ function validateStrategy(commonPackageId, suppliedStrategy) {
     ...strategyDefaults,
     ...(suppliedStrategy || {}),
   };
+  // Deprecated legacy option: new-technique status is never inferred from procedures.
+  delete strategy.autoDetectNewTechnique;
 
   if (
     !allowedInvalidPrincipalProcedureActions.has(

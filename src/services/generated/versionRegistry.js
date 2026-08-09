@@ -3,7 +3,7 @@ import { versionDataById } from './versionData.js';
 
 export const DEFAULT_RULE_VERSION = "shanghai-drg-2.0";
 
-export const DEFAULT_VERSION_STRATEGY = Object.freeze({"invalidPrincipalProcedureAction":"null-slot","allowedInvalidPrincipalProcedures":[],"allowedGrayPrincipalProcedures":["99.1000"],"autoDetectNewTechnique":false,"mdcyPrincipalDiagnosisOnly":true,"allowSecondarySectionPrimaryFallback":false});
+export const DEFAULT_VERSION_STRATEGY = Object.freeze({"invalidPrincipalProcedureAction":"null-slot","allowedInvalidPrincipalProcedures":[],"allowedGrayPrincipalProcedures":["99.1000"],"mdcyPrincipalDiagnosisOnly":true,"allowSecondarySectionPrimaryFallback":false});
 
 export function resolveVersionStrategy(strategy = {}) {
   return Object.freeze({
@@ -23,7 +23,7 @@ export const VERSION_REGISTRY = Object.freeze({
     id: "chs-drg-3.0",
     label: "CHS-DRG 3.0",
     packages: {"drgCommon":"chs-3.0","clinicalIcd":"gl-2022","insuranceIcd":"yb-2.0"},
-    strategy: Object.freeze({"allowedInvalidPrincipalProcedures":["33.2402"],"autoDetectNewTechnique":true,"allowSecondarySectionPrimaryFallback":true}),
+    strategy: Object.freeze({"allowedInvalidPrincipalProcedures":["33.2402"],"allowSecondarySectionPrimaryFallback":true}),
   }),
   "shanghai-drg-2.0": Object.freeze({
     id: "shanghai-drg-2.0",

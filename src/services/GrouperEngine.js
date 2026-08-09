@@ -325,9 +325,8 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
 
     // --- Step 4: Find DRG within ADRG ---
     let matchedDRG = null;
-    const requiresNewTechnique = strategy.autoDetectNewTechnique && effectiveProcedures.some(p => /^17\.4[1-5]/.test(p) || p?.startsWith('03.91'));
-    const subgroupPatientInfo = requiresNewTechnique ? { ...patientInfo, newTechnique: true } : patientInfo;
-    const { matchedDRG: subgroupDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, subgroupPatientInfo, principalDiagnosis, principalProcedure, matchTrace);
+    // New-technique status must be supplied explicitly in patientInfo; do not infer it from procedure codes.
+    const { matchedDRG: subgroupDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, patientInfo, principalDiagnosis, principalProcedure, matchTrace);
     if (subgroupDRG) matchedDRG = subgroupDRG; 
 
     const out = {
