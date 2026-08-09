@@ -224,6 +224,15 @@ function matchesRule(rule, patient) {
     }
   }
 
+  if (rule?.intensiveCare === true) {
+    const intensiveCare = patient?.patientInfo?.intensiveCare === true;
+    matchInfo.details.intensiveCare = {
+      matched: intensiveCare,
+      reason: intensiveCare ? 'patientInfo.intensiveCare is true' : 'rule.intensiveCare requires patientInfo.intensiveCare=true',
+    };
+    if (!intensiveCare) return matchInfo;
+  }
+
   if (rule.requiredReferencedADRGs && Array.isArray(rule.requiredReferencedADRGs) && rule.requiredReferencedADRGs.length > 0) {
     const procedureSet = ensureProcedureLookup().allSet;
     const requiredDetails = rule.requiredReferencedADRGs.map((refCode) => {

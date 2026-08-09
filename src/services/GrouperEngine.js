@@ -15,7 +15,7 @@ export function createGrouperEngine({ ruleSet, strategy }) {
 const { MDCs, isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
 const drgMap = loadDRGMap();
 const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, strategy);
-const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet);
+const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule);
 
 // Public re-exports (kept for compatibility; prefer importing from `src/services/grouper/*` directly)
 
@@ -125,7 +125,13 @@ function normalizePatientInfo(patientInfo = {}) {
         throw new TypeError('patientInfo must be a JSON object');
     }
     const normalized = { ...patientInfo };
-    for (const [field, minimum] of [['age', 0], ['ageInDays', 0], ['birthWeight', 1]]) {
+    for (const [field, minimum] of [
+        ['age', 0],
+        ['ageInDays', 0],
+        ['birthWeight', 1],
+        ['icuHours', 0],
+        ['lengthOfStay', 0],
+    ]) {
         const raw = normalized[field];
         if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
             delete normalized[field];
@@ -157,7 +163,7 @@ function normalizePatientInfo(patientInfo = {}) {
     } else {
         delete normalized.gender;
     }
-    for (const field of ['newTechnique', 'multiSite']) {
+    for (const field of ['newTechnique', 'multiSite', 'intensiveCare', 'daySurgery']) {
         const raw = normalized[field];
         if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
             delete normalized[field];
@@ -314,7 +320,7 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
         ruleMatchDetail = adrgRes.ruleMatchDetail;
     }
     // 4. Check if matched ADRG should be redirected to QY group
-    // Rule: If ADRG second letter > 'P' (medical groups R-Z) AND principal procedure exists
+    // Rule: If ADRG second letter > 'Q' (medical groups R-Z) AND principal procedure exists
     // Then redirect to QY (surgical procedure unrelated to diagnosis)
     const qyRedirect = checkQYRedirect(matchedADRG, matchedMDC, principalProcedure, matchTrace);
     if (qyRedirect) return qyRedirect;
@@ -324,10 +330,9 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     }
 
     // --- Step 4: Find DRG within ADRG ---
-    let matchedDRG = null;
-    // New-technique status must be supplied explicitly in patientInfo; do not infer it from procedure codes.
-    const { matchedDRG: subgroupDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, patientInfo, principalDiagnosis, principalProcedure, matchTrace);
-    if (subgroupDRG) matchedDRG = subgroupDRG; 
+    // DRGs are evaluated once, in their DRG.dat order. A specialdrg source only
+    // attaches an ADRG-style matcher to the corresponding DRG candidate.
+    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, effectiveProcedures, patientInfo, principalDiagnosis, principalProcedure, matchTrace);
 
     const out = {
         drg: matchedDRG ? matchedDRG.code : "0000",

@@ -4,8 +4,8 @@ import { loadRuleSet, loadRuleSetAsync } from '../services/ruleSetLoader.js';
 import { searchCodes } from '../services/CodeSearch';
 import { convertGLtoYBCode } from '../services/CodeConversion';
 import { buildPatientInfo, groupSingle, groupAllOrders } from '../services/singleEntry';
-import { ensureSingleTrailingEmpty, reorderWithInfos, normalizeCodesAndInfos, namesSignificantlyDiffer } from './shared.jsx';
 import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.js';
+import { ensureSingleTrailingEmpty, reorderWithInfos, normalizeCodesAndInfos, namesSignificantlyDiffer } from './shared.jsx';
 const createEmptyInfo = (overrides = {}) => ({ desc: '', type: '', searchResults: [], showDropdown: false, highlightedIndex: -1, ...overrides });
 const normalizeInfoLength = (infos, targetLength) => {
   const next = [...(infos || [])];
@@ -124,6 +124,10 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const [patientDischargeStatus, setPatientDischargeStatus] = useState('alive');
   const [patientNewTechnique, setPatientNewTechnique] = useState(false);
   const [patientMultiSite, setPatientMultiSite] = useState(false);
+  const [patientIntensiveCare, setPatientIntensiveCare] = useState(false);
+  const [patientIcuHours, setPatientIcuHours] = useState('');
+  const [patientLengthOfStay, setPatientLengthOfStay] = useState('');
+  const [patientDaySurgery, setPatientDaySurgery] = useState(false);
   const [showPatientInfo, setShowPatientInfo] = useState(false);
   const [diagnosisInfos, setDiagnosisInfos] = useState([]);
   const [procedureInfos, setProcedureInfos] = useState([createEmptyInfo()]);
@@ -140,9 +144,21 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const focusProcAt = (idx) => { const el = procInputRefs.current[idx]; if (el && typeof el.focus === 'function') el.focus(); };
   const getPatientInfo = useCallback(() => (
     buildPatientInfo
-      ? buildPatientInfo({ gender: patientGender, age: patientAge, ageInDays: patientAgeInDays, birthWeight: patientBirthWeight, dischargeStatus: patientDischargeStatus, newTechnique: patientNewTechnique, multiSite: patientMultiSite })
+      ? buildPatientInfo({
+        gender: patientGender,
+        age: patientAge,
+        ageInDays: patientAgeInDays,
+        birthWeight: patientBirthWeight,
+        dischargeStatus: patientDischargeStatus,
+        newTechnique: patientNewTechnique,
+        multiSite: patientMultiSite,
+        intensiveCare: patientIntensiveCare,
+        icuHours: patientIcuHours,
+        lengthOfStay: patientLengthOfStay,
+        daySurgery: patientDaySurgery,
+      })
       : { gender: patientGender }
-  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite]);
+  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite, patientIntensiveCare, patientIcuHours, patientLengthOfStay, patientDaySurgery]);
   const handlePatientAgeChange = (value) => {
     setPatientAge(value);
     if (String(value).trim() !== '') setPatientAgeInDays('');
@@ -427,6 +443,10 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     setPatientDischargeStatus('alive');
     setPatientNewTechnique(false);
     setPatientMultiSite(false);
+    setPatientIntensiveCare(false);
+    setPatientIcuHours('');
+    setPatientLengthOfStay('');
+    setPatientDaySurgery(false);
     setShowPatientInfo(false);
     setResult(null);
     setPermResults(null);
@@ -514,17 +534,27 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     {
       label: 'Age (years)',
       className: '',
-      control: <input value={patientAge} onChange={(e) => handlePatientAgeChange(e.target.value)} placeholder="e.g. 0.5" className="mt-1 w-full p-2 border dark-border rounded" />
+      control: <input type="number" min="0" step="1" value={patientAge} onChange={(e) => handlePatientAgeChange(e.target.value)} placeholder="e.g. 0.5" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
       label: 'Age (days)',
       className: '',
-      control: <input value={patientAgeInDays} onChange={(e) => handlePatientAgeInDaysChange(e.target.value)} placeholder="e.g. 20" className="mt-1 w-full p-2 border dark-border rounded" />
+      control: <input type="number" min="0" max="365" step="1" value={patientAgeInDays} onChange={(e) => handlePatientAgeInDaysChange(e.target.value)} placeholder="e.g. 20" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
       label: 'Birth weight (grams)',
       className: 'col-span-2',
-      control: <input value={patientBirthWeight} onChange={(e) => setPatientBirthWeight(e.target.value)} placeholder="e.g. 3200" className="mt-1 w-full p-2 border dark-border rounded" />
+      control: <input type="number" min="1" step="1" value={patientBirthWeight} onChange={(e) => setPatientBirthWeight(e.target.value)} placeholder="e.g. 3200" className="mt-1 w-full p-2 border dark-border rounded" />
+    },
+    {
+      label: 'ICU duration (hours)',
+      className: '',
+      control: <input type="number" min="0" step="1" value={patientIcuHours} onChange={(e) => setPatientIcuHours(e.target.value)} placeholder="e.g. 120" className="mt-1 w-full p-2 border dark-border rounded" />
+    },
+    {
+      label: 'Length of stay (days)',
+      className: '',
+      control: <input type="number" min="0" step="1" value={patientLengthOfStay} onChange={(e) => setPatientLengthOfStay(e.target.value)} placeholder="e.g. 7" className="mt-1 w-full p-2 border dark-border rounded" />
     }
   ];
 
@@ -556,6 +586,26 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
             className="mr-2 w-4 h-4"
           />
           <label htmlFor="multisite-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Multi-site joint replacement (多部位关节置换)</label>
+        </div>
+        <div className="col-span-2 flex items-center mt-2">
+          <input
+            type="checkbox"
+            id="intensive-care-checkbox"
+            checked={patientIntensiveCare}
+            onChange={e => setPatientIntensiveCare(e.target.checked)}
+            className="mr-2 w-4 h-4"
+          />
+          <label htmlFor="intensive-care-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Intensive care (重症监护)</label>
+        </div>
+        <div className="col-span-2 flex items-center mt-2">
+          <input
+            type="checkbox"
+            id="day-surgery-checkbox"
+            checked={patientDaySurgery}
+            onChange={e => setPatientDaySurgery(e.target.checked)}
+            className="mr-2 w-4 h-4"
+          />
+          <label htmlFor="day-surgery-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Day surgery (日间手术)</label>
         </div>
       </div>
     </div>

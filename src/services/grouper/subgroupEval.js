@@ -1,4 +1,4 @@
-export function createSubgroupEvaluator(ruleSet) {
+export function createSubgroupEvaluator(ruleSet, matchesAdrgRule) {
   const { loadDRGSubgroupRulesForADRG, loadCCCodes, loadMCCCodes, loadCCECodes } = ruleSet;
 
 /*
@@ -21,10 +21,24 @@ function ruleNeedsCC(rule) {
   return needs;
 }
 
+function calculateCCStatus(diagnoses, principalDiagnosis) {
+  if (!Array.isArray(diagnoses) || diagnoses.length <= 1) return 'none';
+  const exclusionId = _cceList[principalDiagnosis] || null;
+  for (let index = 1; index < diagnoses.length; index += 1) {
+    const diagnosis = diagnoses[index];
+    if (_mccList[diagnosis] && _mccList[diagnosis] !== exclusionId) return 'mcc';
+  }
+  for (let index = 1; index < diagnoses.length; index += 1) {
+    const diagnosis = diagnoses[index];
+    if (_ccList[diagnosis] && _ccList[diagnosis] !== exclusionId) return 'cc';
+  }
+  return 'none';
+}
+
 /**
  * Evaluate a single DRG subgroup rule against patient data.
  * - rule.conditions is an array of tokens (e.g. 'SPECIFIC_DIAGNOSIS', 'WITH_MCC')
- * - patientData contains primaryDiagnosis, primaryProcedure, age, dischargeStatus, newTechnique
+ * - patientData contains primaryDiagnosis, primaryProcedure and normalized patient attributes
  * - ccStatus is one of 'none'|'cc'|'mcc'
  *
  * Returns { matched: boolean, reason: string }
@@ -73,25 +87,29 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
       continue;
     }
 
-    // --- 3. 动态年龄校验 (⭐ 核心升级：完美融合正则与动态数值)
-    const match = condition.match(/^AGE_(LT|LE|GT|GE)_(\d+)$/);
-    if (match) {
-      if (patientData.age === undefined || patientData.age === null) return { matched: false, reason: 'Age not provided' };
+    // --- 3. Numeric patient attributes
+    const numericMatch = condition.match(/^(AGE|ICU_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
+    if (numericMatch) {
+      const [, dimension, operator, rawLimit] = numericMatch;
+      const dimensions = {
+        AGE: { field: 'age', label: 'Age' },
+        ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
+        LOS: { field: 'lengthOfStay', label: 'Length of stay' },
+      };
+      const { field, label } = dimensions[dimension];
+      const value = patientData[field];
+      if (value === undefined || value === null) return { matched: false, reason: `${label} not provided` };
 
-      const operator = match[1];          // 拿到 'LT', 'LE', 'GT', 或 'GE'
-      const limit = parseInt(match[2], 10); // 动态解析出任何数字（如 18, 65, 21）
-      const age = patientData.age;
-
-      // 动态规则矩阵映射
+      const limit = parseInt(rawLimit, 10);
       const isMatched =
-        operator === 'LT' ? age < limit :
-          operator === 'LE' ? age <= limit :
-            operator === 'GT' ? age > limit :
-              operator === 'GE' ? age >= limit : false;
+        operator === 'LT' ? value < limit :
+          operator === 'LE' ? value <= limit :
+            operator === 'GT' ? value > limit :
+              operator === 'GE' ? value >= limit : false;
 
       if (!isMatched) {
         const opSymbols = { LT: '<', LE: '<=', GT: '>', GE: '>=' };
-        return { matched: false, reason: `Age ${age} is not ${opSymbols[operator]} ${limit}` };
+        return { matched: false, reason: `${label} ${value} is not ${opSymbols[operator]} ${limit}` };
       }
       continue;
     }
@@ -101,6 +119,16 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
       if (patientData.dischargeStatus !== 'death' && patientData.dischargeStatus !== 5 && patientData.dischargeStatus !== '5') {
         return { matched: false, reason: 'Outcome is not Death' };
       }
+      continue;
+    }
+
+    if (condition === 'INTENSIVE_CARE') {
+      if (!patientData.intensiveCare) return { matched: false, reason: 'Intensive care required but not present' };
+      continue;
+    }
+
+    if (condition === 'DAY_SURGERY') {
+      if (!patientData.daySurgery) return { matched: false, reason: 'Day surgery required but not present' };
       continue;
     }
 
@@ -139,39 +167,17 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
    * Evaluate detailed subgroup (DRG) rules for a matched ADRG.
    * - Returns { matchedDRG, matchedSubgroup } where matchedSubgroup contains the matching rule and matchResult.
    */
-function evaluateADRGSubgroups(matchedADRG, diagnoses, patientInfo, principalDiagnosis, principalProcedure, matchTrace) {
+function evaluateADRGSubgroups(matchedADRG, diagnoses, procedures, patientInfo, principalDiagnosis, principalProcedure, matchTrace) {
     const candidateRules = matchedADRG ? loadDRGSubgroupRulesForADRG(matchedADRG.code) : [];
     if (!candidateRules || candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
 
-    matchTrace.push({ stage: 'Subgroup', description: `Evaluating ${candidateRules.length} detailed rules for ${matchedADRG.code}` });
+    matchTrace.push({ stage: 'Subgroup', description: `Evaluating ${candidateRules.length} detailed rules (${candidateRules.map(r => r.drgCode).join(', ')})` });
 
     let ccStatus = 'none';
     const hasAnyCCRule = candidateRules.some(ruleNeedsCC);
 
     if (hasAnyCCRule && Array.isArray(diagnoses) && diagnoses.length > 1) {
-      const exclusionId = _cceList[principalDiagnosis] || null;
-      let hasMCC = false;
-      let hasCC = false;
-
-      for (let i = 1; i < diagnoses.length; i++) {
-        const dx = diagnoses[i];
-        if (_mccList[dx] && _mccList[dx] !== exclusionId) {
-          hasMCC = true;
-          break;
-        }
-      }
-
-      if (!hasMCC) {
-        for (let i = 1; i < diagnoses.length; i++) {
-          const dx = diagnoses[i];
-          if (_ccList[dx] && _ccList[dx] !== exclusionId) {
-            hasCC = true;
-            break;
-          }
-        }
-      }
-
-      ccStatus = hasMCC ? 'mcc' : (hasCC ? 'cc' : 'none');
+      ccStatus = calculateCCStatus(diagnoses, principalDiagnosis);
       matchTrace.push({ stage: 'CC/MCC', status: ccStatus, description: `Calculated CC Status: ${ccStatus}` });
     }
 
@@ -180,16 +186,33 @@ function evaluateADRGSubgroups(matchedADRG, diagnoses, patientInfo, principalDia
       primaryProcedure: principalProcedure,
       age: patientInfo?.age,
       dischargeStatus: patientInfo?.dischargeStatus,
-      newTechnique: !!patientInfo?.newTechnique
+      newTechnique: !!patientInfo?.newTechnique,
+      intensiveCare: !!patientInfo?.intensiveCare,
+      icuHours: patientInfo?.icuHours,
+      lengthOfStay: patientInfo?.lengthOfStay,
+      daySurgery: !!patientInfo?.daySurgery
     };
+    const patient = { diagnoses, procedures, patientInfo };
 
     let matchedSubgroup = null;
 
     for (const rule of candidateRules) {
+      let adrgMatchResult = null;
+      if (rule.adrgRule) {
+        if (typeof matchesAdrgRule !== 'function') continue;
+        adrgMatchResult = matchesAdrgRule(rule.adrgRule, patient);
+        if (!adrgMatchResult.matched) continue;
+      }
       const matchResult = evaluateDRGRule(rule, patientData, ccStatus);
       if (matchResult.matched) {
-        matchedSubgroup = { ...rule, matchResult };
-        matchTrace.push({ stage: 'Subgroup', matched: true, code: matchedSubgroup.drgCode, description: matchedSubgroup.drgName, detail: matchResult });
+        matchedSubgroup = { ...rule, matchResult, adrgMatchResult };
+        matchTrace.push({
+          stage: 'Subgroup',
+          matched: true,
+          code: matchedSubgroup.drgCode,
+          description: matchedSubgroup.drgName,
+          detail: adrgMatchResult ? { adrgRule: adrgMatchResult, conditions: matchResult } : matchResult,
+        });
         break;
       }
     }
@@ -199,5 +222,6 @@ function evaluateADRGSubgroups(matchedADRG, diagnoses, patientInfo, principalDia
     const matchedDRG = matchedSubgroup ? { code: matchedSubgroup.drgCode, description: matchedSubgroup.drgName } : null;
     return { matchedDRG, matchedSubgroup };
   }
+
   return { evaluateADRGSubgroups };
 }

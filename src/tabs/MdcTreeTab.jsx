@@ -1024,7 +1024,7 @@ export default function MdcTreeTab({ version }) {
     if (!normalized) return false;
 
     // Composite code queries can include + and wildcard * tokens (e.g., A01.002+G01*)
-    // Allow a trailing dot as valid prefix syntax (d00. -> d00.d01).
+    // Allow a trailing dot as valid prefix syntax (k80. -> k80.101).
     const tokens = splitQueryParts(normalized);
     return tokens.every((token) => CODE_QUERY_TOKEN_RE.test(token));
   }, [query]);
