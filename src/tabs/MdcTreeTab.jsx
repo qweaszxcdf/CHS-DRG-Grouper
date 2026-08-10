@@ -92,6 +92,11 @@ function getRuleTokenSearchTokens(rule) {
       }
     }
   }
+  if (srcRule.adrgRule?.sections && typeof srcRule.adrgRule.sections === 'object') {
+    for (const section of Object.values(srcRule.adrgRule.sections)) {
+      if (Array.isArray(section)) rawTokens.push(...section);
+    }
+  }
 
   const normalized = [];
   for (const token of rawTokens) {
@@ -99,6 +104,24 @@ function getRuleTokenSearchTokens(rule) {
     if (norm) normalized.push(norm);
   }
   return normalized;
+}
+
+function getSubgroupAdrgRuleCodes(rule) {
+  const diagnosisCodes = [];
+  const procedureCodes = [];
+  const sections = rule?.adrgRule?.sections;
+  if (!sections || typeof sections !== 'object') return { diagnosisCodes, procedureCodes };
+
+  for (const [sectionName, codes] of Object.entries(sections)) {
+    if (!Array.isArray(codes)) continue;
+    const normalizedCodes = codes.map(code => normalizeText(String(code || ''))).filter(Boolean);
+    if (sectionName.includes('诊断')) diagnosisCodes.push(...normalizedCodes);
+    else if (sectionName.includes('手术') || sectionName.includes('操作')) procedureCodes.push(...normalizedCodes);
+  }
+  return {
+    diagnosisCodes: [...new Set(diagnosisCodes)],
+    procedureCodes: [...new Set(procedureCodes)],
+  };
 }
 
 /**
@@ -304,7 +327,18 @@ function buildDrgByAdrgMap(drgRules, drgMap) {
     const drgName = String((mapItem && mapItem.description) || item.drgName || '');
     const tokenSearchTokens = getRuleTokenSearchTokens(item);
     const conditions = Array.isArray(item.conditions) ? item.conditions : [];
-    const hasSpecific = conditions.some((condition) => typeof condition === 'string' && condition.startsWith('SPECIFIC'));
+    const adrgRuleCodes = getSubgroupAdrgRuleCodes(item);
+    const hasAdrgDiagnosisCodes = adrgRuleCodes.diagnosisCodes.length > 0;
+    const hasAdrgProcedureCodes = adrgRuleCodes.procedureCodes.length > 0;
+    const hasSpecific = hasAdrgDiagnosisCodes
+      || hasAdrgProcedureCodes
+      || conditions.some((condition) => typeof condition === 'string' && condition.startsWith('SPECIFIC'));
+    const procedureCodes = Array.isArray(item.procedureCodes)
+      ? item.procedureCodes.map((code) => normalizeText(String(code || ''))).filter(Boolean)
+      : [];
+    const diagnosisCodes = Array.isArray(item.diagnosisCodes)
+      ? item.diagnosisCodes.map((code) => normalizeText(String(code || ''))).filter(Boolean)
+      : [];
 
     const drg = {
       code: drgCode,
@@ -318,19 +352,15 @@ function buildDrgByAdrgMap(drgRules, drgMap) {
       _ruleEvalMeta: {
         hasSpecific,
         isAdrgOnly: conditions.includes('ADRG_ONLY') && !hasSpecific,
-        hasSpecificProcedure: conditions.includes('SPECIFIC_PROCEDURE'),
+        hasSpecificProcedure: conditions.includes('SPECIFIC_PROCEDURE') || hasAdrgProcedureCodes,
         hasSpecificProcedurePrefix: conditions.includes('SPECIFIC_PROCEDURE_PREFIX'),
-        hasSpecificDiagnosis: conditions.includes('SPECIFIC_DIAGNOSIS'),
+        hasSpecificDiagnosis: conditions.includes('SPECIFIC_DIAGNOSIS') || hasAdrgDiagnosisCodes,
         hasSpecificDiagnosisPrefix: conditions.includes('SPECIFIC_DIAGNOSIS_PREFIX'),
-        procedureCodes: Array.isArray(item.procedureCodes)
-          ? item.procedureCodes.map((code) => normalizeText(String(code || ''))).filter(Boolean)
-          : [],
+        procedureCodes: [...new Set([...procedureCodes, ...adrgRuleCodes.procedureCodes])],
         procedurePrefixes: Array.isArray(item.procedurePrefixes)
           ? item.procedurePrefixes.map((prefix) => normalizeText(prefix)).filter(Boolean)
           : [],
-        diagnosisCodes: Array.isArray(item.diagnosisCodes)
-          ? item.diagnosisCodes.map((code) => normalizeText(String(code || ''))).filter(Boolean)
-          : [],
+        diagnosisCodes: [...new Set([...diagnosisCodes, ...adrgRuleCodes.diagnosisCodes])],
         diagnosisPrefixes: Array.isArray(item.diagnosisPrefixes)
           ? item.diagnosisPrefixes.map((prefix) => normalizeText(prefix)).filter(Boolean)
           : [],
@@ -608,6 +638,18 @@ function buildParsedMappedNames(parsedViewerType, parsedViewerResult, ybDiagName
     const rules = Array.isArray(parsed) ? parsed : [];
     for (const rule of rules) {
       const drgLabel = String(rule?.drgCode || '').trim() || 'DRG';
+
+      const adrgSections = rule?.adrgRule?.sections;
+      if (adrgSections && typeof adrgSections === 'object') {
+        for (const [sectionName, codes] of Object.entries(adrgSections)) {
+          const isProc = String(sectionName || '').includes('手术') || String(sectionName || '').includes('操作');
+          const items = (Array.isArray(codes) ? codes : []).map((code) => ({
+            code,
+            name: (isProc ? (ybProcNames || {}) : (ybDiagNames || {}))[code] || '',
+          }));
+          if (items.length > 0) out.push({ label: `${drgLabel} ${sectionName}`, items });
+        }
+      }
 
       const diagItems = (Array.isArray(rule?.diagnosisCodes) ? rule.diagnosisCodes : []).map((code) => ({
         code,

@@ -99,6 +99,14 @@ function buildParsedMappedNames(parsedViewerType, parsedViewerResult) {
     for (const rule of rules) {
       const drgLabel = String(rule?.drgCode || '').trim() || 'DRG';
 
+      const adrgSections = rule?.adrgRule?.sections;
+      if (adrgSections && typeof adrgSections === 'object') {
+        for (const [sectionName, codes] of Object.entries(adrgSections)) {
+          const items = mapCodesToItems(codes, isProcedureSection(sectionName));
+          if (items.length > 0) out.push({ label: `${drgLabel} ${sectionName}`, items });
+        }
+      }
+
       const diagItems = mapCodesToItems(Array.isArray(rule?.diagnosisCodes) ? rule.diagnosisCodes : [], false);
       if (diagItems.length > 0) out.push({ label: `${drgLabel} Diagnosis`, items: diagItems });
 
@@ -177,6 +185,25 @@ function classifySubgroupProcedureMatch(rule, procedureCode) {
   const conditions = Array.isArray(rule?.conditions) ? rule.conditions : [];
   const hasSpecific = conditions.includes('SPECIFIC_PROCEDURE');
   const hasPrefix = conditions.includes('SPECIFIC_PROCEDURE_PREFIX');
+  const adrgProcedureCodes = [];
+  const adrgSections = rule?.adrgRule?.sections;
+  if (adrgSections && typeof adrgSections === 'object') {
+    for (const [sectionName, codes] of Object.entries(adrgSections)) {
+      if (!isProcedureSection(sectionName) || String(sectionName).includes('其他') || !Array.isArray(codes)) continue;
+      adrgProcedureCodes.push(...codes);
+    }
+  }
+
+  if (adrgProcedureCodes.length > 0) {
+    const exactMatched = adrgProcedureCodes.some((c) => codeMatchesRuleCode(procedureCode, c));
+    const prefixMatched = !hasPrefix || matchesPrefixList(procedureCode, rule?.procedurePrefixes);
+    const matched = exactMatched && prefixMatched;
+    return {
+      include: matched,
+      type: matched ? 'exact' : null,
+      reason: matched ? 'DRG adrgRule requires this primary procedure' : null,
+    };
+  }
 
   if (hasSpecific) {
     const matched = Array.isArray(rule?.procedureCodes) && rule.procedureCodes.some((c) => codeMatchesRuleCode(procedureCode, c));

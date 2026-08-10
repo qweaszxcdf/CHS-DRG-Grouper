@@ -330,7 +330,7 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     }
 
     // --- Step 4: Find DRG within ADRG ---
-    // DRGs are evaluated once, in their DRG.dat order. A specialdrg source only
+    // DRGs are evaluated once, in their DRG.dat order. A raw/subgroup_rules source
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
     const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, effectiveProcedures, patientInfo, principalDiagnosis, principalProcedure, matchTrace);
 

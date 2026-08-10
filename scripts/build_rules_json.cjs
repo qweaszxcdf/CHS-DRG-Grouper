@@ -59,7 +59,6 @@ const _codeExtractRe = /^([A-Za-z0-9.+\-*xX/†]+)/;
 const _suffixRe = /_([nab])$/;   // DRG variant suffix: n=new-technique, a=alternate, b=backup
 const _upperStartRe = /^[A-Z]/;  // diagnosis prefix cluster (ICD alpha)
 const _digitStartRe = /^[0-9]/;  // procedure prefix cluster (ICD-9-CM-3 numeric)
-const _anyDigitRe = /[0-9]/;     // char4 digit check for standard subgroup codes
 
 let ccCodes;
 let mccCodes;
@@ -136,23 +135,28 @@ let drgMap;
  * Returns an array of { code, name, type, filename, content }.
  * @param {string} dirPath
  * @param {string} type
+ * @param {Iterable<string>|null} knownCodes Optional codes used for filenames whose codes contain underscores.
  * @returns {Array}
  */
-function getRulesFromDir(dirPath, type) {
+function getRulesFromDir(dirPath, type, knownCodes = null) {
   if (!fs.existsSync(dirPath)) throw new Error(`Missing required ${type} rules directory: ${dirPath}`);
   if (!fs.statSync(dirPath).isDirectory()) throw new Error(`Expected ${type} rules directory: ${dirPath}`);
   const files = fs.readdirSync(dirPath).filter(f => !f.startsWith('.')).sort();
   const results = [];
+  const codeCandidates = knownCodes
+    ? [...knownCodes].sort((left, right) => right.length - left.length || left.localeCompare(right))
+    : null;
 
   for (const file of files) {
     const parsed = path.parse(file);
     const baseName = parsed.name; // filename without extension
-    const firstUnderscoreIndex = baseName.indexOf('_');
-    if (firstUnderscoreIndex <= 0) {
+    const knownCode = codeCandidates?.find(candidate => baseName.startsWith(`${candidate}_`)) || null;
+    const firstUnderscoreIndex = knownCode ? knownCode.length : baseName.indexOf('_');
+    if (firstUnderscoreIndex <= 0 || (codeCandidates && !knownCode)) {
       throw new Error(`Invalid ${type} rule filename '${file}' in ${dirPath}; expected <code>_<name>`);
     }
 
-    const code = baseName.substring(0, firstUnderscoreIndex);
+    const code = knownCode || baseName.substring(0, firstUnderscoreIndex);
     const name = baseName.substring(firstUnderscoreIndex + 1);
     const filePath = path.join(dirPath, file);
 
@@ -185,74 +189,27 @@ function validateRulesDir(baseRulesDir) {
   }
   return missing;
 }
+function removeRedundantPrimaryPrefix(rule, { condition, prefixesField, category }) {
+  const prefixes = rule[prefixesField];
+  const sections = rule.adrgRule?.sections;
+  if (!Array.isArray(prefixes) || prefixes.length === 0 || !sections || typeof sections !== 'object') return;
 
+  const categorySections = Object.entries(sections).filter(([sectionName]) => (
+    category === 'diagnosis'
+      ? sectionName.includes('诊断')
+      : sectionName.includes('手术') || sectionName.includes('操作')
+  ));
+  if (categorySections.length === 0 || categorySections.some(([sectionName]) => !sectionName.includes('主要'))) return;
 
+  const exactCodes = categorySections.flatMap(([, codes]) => Array.isArray(codes) ? codes : []);
+  if (exactCodes.length === 0 || !exactCodes.every(code => prefixes.some(prefix => code.startsWith(prefix)))) return;
 
-/**
- * Load and expand `subgroup_patches.json` (synchronous).
- * - Expands `$ref`, `procedureCodesRef`, and `diagnosisCodesRef` against `shared`.
- * - Returns `expanded` object or `null` if file/mapping missing.
- */
-function loadExpandedPatches() {
-  const patchesPath = path.resolve(process.env.DRG_PATCHES_FILE || path.join(rulesDir, 'subgroup_patches.json'));
-  if (!fs.existsSync(patchesPath)) return null;
-  try {
-    const raw = fs.readFileSync(patchesPath, 'utf8');
-    const parsed = JSON.parse(raw);
-    if (!parsed || !parsed.patches) return null;
-    const expanded = {};
-    for (const [k, v] of Object.entries(parsed.patches)) {
-      try {
-        if (!v || typeof v !== 'object') { expanded[k] = v; continue; }
-        let base = {};
-        if (v.$ref) {
-          if (!parsed.shared) {
-            console.warn(`subgroup_patches.json: $ref for patch '${k}' but 'shared' section is missing`);
-          } else if (!parsed.shared[v.$ref]) {
-            console.warn(`subgroup_patches.json: $ref '${v.$ref}' for patch '${k}' not found in shared`);
-          } else {
-            const sharedRef = parsed.shared[v.$ref];
-            if (Array.isArray(sharedRef)) base = { procedureCodes: sharedRef.slice() };
-            else if (sharedRef && typeof sharedRef === 'object') base = Object.assign({}, sharedRef);
-            else base = { value: sharedRef };
-          }
-        }
-        if (v.procedureCodesRef) {
-          const sharedProc = parsed.shared && parsed.shared[v.procedureCodesRef];
-          if (Array.isArray(base.procedureCodes)) {
-            base.procedureCodes = Array.from(new Set([...(base.procedureCodes || []), ...(Array.isArray(sharedProc) ? sharedProc : [])]));
-          } else {
-            base.procedureCodes = Array.isArray(sharedProc) ? sharedProc.slice() : (Array.isArray(base.procedureCodes) ? base.procedureCodes.slice() : []);
-          }
-        }
-        if (v.diagnosisCodesRef) {
-          const sharedDiag = parsed.shared && parsed.shared[v.diagnosisCodesRef];
-          if (Array.isArray(base.diagnosisCodes)) {
-            base.diagnosisCodes = Array.from(new Set([...(base.diagnosisCodes || []), ...(Array.isArray(sharedDiag) ? sharedDiag : [])]));
-          } else {
-            base.diagnosisCodes = Array.isArray(sharedDiag) ? sharedDiag.slice() : (Array.isArray(base.diagnosisCodes) ? base.diagnosisCodes.slice() : []);
-          }
-        }
-        for (const [ok, ov] of Object.entries(v)) {
-          if (ok === '$ref' || ok === 'procedureCodesRef' || ok === 'diagnosisCodesRef') continue;
-          if (Array.isArray(ov)) base[ok] = ov.slice();
-          else if (ov && typeof ov === 'object') base[ok] = Object.assign({}, ov);
-          else base[ok] = ov;
-        }
-        expanded[k] = base;
-      } catch (entryErr) {
-        console.error(`Error expanding patch '${k}':`, entryErr && entryErr.message ? entryErr.message : entryErr);
-      }
-    }
-    return expanded;
-  } catch (err) {
-    console.error('Error loading subgroup_patches.json:', err && err.message ? err.message : err);
-    return null;
-  }
+  rule.conditions = rule.conditions.filter(value => value !== condition);
+  rule[prefixesField] = [];
 }
 
 // Derive subgroup rule logic (same as before)
-function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
+function deriveSubgroupRule(drgCode, drgName, adrgData) {
   const adrgCodeInput = adrgData.code;
   const rule = {
     drgCode,
@@ -264,14 +221,15 @@ function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
     diagnosisPrefixes: [],
     procedurePrefixes: []
   };
-  const patches = patchesLookup || null;
   const normalizedDrgName = String(drgName || '').replace(/\s+/g, ' ').trim();
   const nameConditions = [];
 
   const agePatterns = [
     [/小于等于\s*(\d+)\s*岁/, 'AGE_LE_'],
+    [/[＜<]\s*(\d+)\s*岁/, 'AGE_LT_'],
     [/小于\s*(\d+)\s*岁/, 'AGE_LT_'],
     [/大于等于\s*(\d+)\s*岁/, 'AGE_GE_'],
+    [/[＞>]\s*(\d+)\s*岁/, 'AGE_GT_'],
     [/大于\s*(\d+)\s*岁/, 'AGE_GT_'],
     [/(\d+)\s*岁以上/, 'AGE_GE_'],
   ];
@@ -282,12 +240,11 @@ function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
       break;
     }
   }
-
-  const nameHasNoCC = /不伴(?:严重|一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName);
-  if (nameHasNoCC) nameConditions.push('NO_CC');
+  if (/不伴(?:严重|一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('NO_CC');
   else if (/伴严重(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_MCC');
   else if (/伴(?:一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_CC');
   if (/死亡转归/.test(normalizedDrgName)) nameConditions.push('DEATH');
+  if (/伴重症监护/.test(normalizedDrgName)) nameConditions.push('INTENSIVE_CARE');
 
   const nameComplicationConditions = nameConditions.filter(condition => ['WITH_MCC', 'WITH_CC', 'NO_CC'].includes(condition));
   const nameAgeConditions = nameConditions.filter(condition => condition.startsWith('AGE_'));
@@ -316,24 +273,6 @@ function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
     rule.conditions.push('NEW_TECHNIQUE');
   }
 
-  const entry = patches ? (patches[drgCode] || null) : null;
-  if (entry) {
-    if (!rule.drgName || rule.drgName.trim() === '') rule.drgName = entry.name || adrgData.name || drgName || drgCode;
-    const procList = Array.isArray(entry.procedures) ? entry.procedures : (Array.isArray(entry.procedureCodes) ? entry.procedureCodes : []);
-    const diagList = Array.isArray(entry.diagnoses) ? entry.diagnoses : (Array.isArray(entry.diagnosisCodes) ? entry.diagnosisCodes : []);
-    if (procList.length > 0) {
-      rule.procedureCodes = Array.from(new Set([...(rule.procedureCodes || []), ...procList]));
-      if (!rule.conditions.includes('SPECIFIC_PROCEDURE')) rule.conditions.push('SPECIFIC_PROCEDURE');
-    }
-    if (diagList.length > 0) {
-      rule.diagnosisCodes = Array.from(new Set([...(rule.diagnosisCodes || []), ...diagList]));
-      if (!rule.conditions.includes('SPECIFIC_DIAGNOSIS')) rule.conditions.push('SPECIFIC_DIAGNOSIS');
-    }
-    if (entry.conditions && Array.isArray(entry.conditions) && entry.conditions.length > 0) {
-      rule.conditions.push(...entry.conditions);
-    }
-  }
-
   const suffixMatch = drgCode.match(_suffixRe);
   const suffix = suffixMatch ? suffixMatch[1] : null;
   if (suffix) {
@@ -346,6 +285,9 @@ function deriveSubgroupRule(drgCode, drgName, adrgData, patchesLookup) {
   }
   if (rule.conditions.length === 0) rule.conditions.push('ADRG_ONLY');
   rule.conditions = [...new Set(rule.conditions)];
+  for (const field of ['diagnosisCodes', 'procedureCodes', 'diagnosisPrefixes', 'procedurePrefixes']) {
+    if (rule[field].length === 0) delete rule[field];
+  }
   return rule;
 }
 
@@ -445,7 +387,7 @@ async function buildMdcRules(mdcRulesRaw) {
   return mdcRules;
 }
 
-async function buildAdrgRules(adrgRulesRaw, parseRule) {
+async function buildAdrgRules(adrgRulesRaw, parseRule, ruleKind = 'ADRG') {
   const adrgRules = [];
   const adrgParseErrors = [];
   const adrgValidationErrors = [];
@@ -469,7 +411,7 @@ async function buildAdrgRules(adrgRulesRaw, parseRule) {
   }
 
   if (adrgParseErrors.length > 0 || adrgValidationErrors.length > 0) {
-    console.error('ADRG build-time errors detected:');
+    console.error(`${ruleKind} build-time errors detected:`);
     if (adrgParseErrors.length > 0) {
       console.error('Parsing errors:');
       for (const err of adrgParseErrors) console.error(`${err.filename}: ${err.error}`);
@@ -479,13 +421,13 @@ async function buildAdrgRules(adrgRulesRaw, parseRule) {
       for (const err of adrgValidationErrors) console.error(`${err.filename}: ${err.error}`);
     }
     process.exitCode = 1;
-    throw new Error('ADRG rule parse/validation errors');
+    throw new Error(`${ruleKind} rule parse/validation errors`);
   }
 
   return adrgRules;
 }
 
-async function deriveAndOrderSubgroups(drgMap, adrgRules, patches) {
+function deriveSubgroupRules(drgMap, adrgRules) {
   const adrgContext = {};
   for (const a of adrgRules) adrgContext[a.code] = a;
 
@@ -496,29 +438,102 @@ async function deriveAndOrderSubgroups(drgMap, adrgRules, patches) {
     const adrgCode = drgCode.substring(0, 3);
     const adrgData = adrgContext[adrgCode];
     if (!adrgData) { skippedDRGList.push(drgCode); continue; }
-    const rule = deriveSubgroupRule(drgCode, drgInfo.description, adrgData, patches);
+    const rule = deriveSubgroupRule(drgCode, drgInfo.description, adrgData);
     subgroupRules.push(rule);
   }
 
-  // Reorder variants before base
-  const charMap = { 'E': '1', 'F': '3', 'G': '5', 'H': '9', 'A': '1', 'B': '3', 'C': '5', 'D': '9' };
-  const grouped = new Map();
-  for (const r of subgroupRules) {
-    let code = r.drgCode;
-    let base = code.replace(_suffixRe, '').replace(/([A-Z])$/, (m) => charMap[m]);
-    if (!grouped.has(base)) grouped.set(base, { base: null, variants: [] });
-    if (base !== code) grouped.get(base).variants.push(r); else grouped.get(base).base = r;
-  }
-  const reorderedRules = [];
-  for (const group of grouped.values()) {
-    for (const v of group.variants) reorderedRules.push(v);
-    if (group.base) reorderedRules.push(group.base);
-  }
-
-  return { reorderedRules, skippedDRGList };
+  return { subgroupRules, skippedDRGList };
 }
 
-function logRuleSummary(mdcRules, adrgRules, drgRules, patches) {
+function orderSubgroupRules(rules) {
+  const complicationConditions = new Set(['WITH_MCC', 'WITH_CC', 'NO_CC']);
+  const rulesByAdrg = new Map();
+
+  const getBaseCode = (rule, adrgCode) => {
+    const normalizedCode = rule.drgCode.replace(_suffixRe, '');
+    const lastChar = normalizedCode.at(-1);
+    if (lastChar < 'A' || lastChar > 'H') return normalizedCode;
+
+    const conditions = rule.conditions || [];
+    if (conditions.includes('WITH_MCC')) return `${adrgCode}1`;
+    if (conditions.includes('WITH_CC')) return `${adrgCode}3`;
+    if (conditions.includes('NO_CC')) return `${adrgCode}5`;
+    return `${adrgCode}9`;
+  };
+
+  const getPriority = rule => {
+    const conditions = rule.conditions || [];
+    if (conditions.some(condition => complicationConditions.has(condition))) return 1;
+    if (rule.adrgRule || conditions.some(condition => condition !== 'ADRG_ONLY')) return 0;
+    return 1;
+  };
+
+  for (const [sourceIndex, rule] of rules.entries()) {
+    const adrgCode = rule.drgCode.slice(0, 3);
+    if (!rulesByAdrg.has(adrgCode)) {
+      rulesByAdrg.set(adrgCode, []);
+    }
+    rulesByAdrg.get(adrgCode).push({
+      rule,
+      sourceIndex,
+      baseCode: getBaseCode(rule, adrgCode),
+    });
+  }
+
+  const orderedRules = [];
+  for (const entries of rulesByAdrg.values()) {
+    const groupFirstIndex = new Map();
+    for (const entry of entries) {
+      if (!groupFirstIndex.has(entry.baseCode)) groupFirstIndex.set(entry.baseCode, entry.sourceIndex);
+    }
+
+    entries.sort((left, right) => {
+      const priorityDelta = getPriority(left.rule) - getPriority(right.rule);
+      if (priorityDelta !== 0) return priorityDelta;
+
+      const groupDelta = groupFirstIndex.get(left.baseCode) - groupFirstIndex.get(right.baseCode);
+      if (groupDelta !== 0) return groupDelta;
+
+      const baseDelta = Number(left.rule.drgCode === left.baseCode)
+        - Number(right.rule.drgCode === right.baseCode);
+      if (baseDelta !== 0) return baseDelta;
+
+      return left.sourceIndex - right.sourceIndex;
+    });
+    orderedRules.push(...entries.map(entry => entry.rule));
+  }
+
+  return orderedRules;
+}
+
+async function buildExplicitSubgroupRules(parseRule) {
+  const sourceDir = path.join(rulesDir, 'subgroup_rules');
+  if (!fs.existsSync(sourceDir)) return [];
+
+  const seenCodes = new Set();
+  const subgroupSourceEntries = getRulesFromDir(sourceDir, 'ADRG', Object.keys(drgMap)).map(item => {
+    const drgCode = item.code;
+    if (seenCodes.has(drgCode)) throw new Error(`Duplicate explicit subgroup rule: ${drgCode}`);
+    seenCodes.add(drgCode);
+    const drg = drgMap[drgCode];
+    if (!drg) throw new Error(`Explicit subgroup rule ${drgCode} is absent from DRG.dat`);
+    return {
+      ...item,
+      name: String(drg.description || '').trim(),
+      content: item.content.replace(/\+重症监护(?:信息)?/g, ''),
+    };
+  });
+
+  const parsedRules = await buildAdrgRules(subgroupSourceEntries, parseRule, 'explicit subgroup');
+  return parsedRules.map(item => ({
+    drgCode: item.code,
+    drgName: item.name,
+    baseAdrg: item.code.slice(0, 3),
+    rule: item.rule,
+  }));
+}
+
+function logRuleSummary(mdcRules, adrgRules, drgRules) {
   const conditionCounts = new Map();
   for (const rule of drgRules) {
     for (const condition of rule.conditions || []) {
@@ -526,7 +541,7 @@ function logRuleSummary(mdcRules, adrgRules, drgRules, patches) {
     }
   }
 
-  console.log(`Rule summary: MDC=${mdcRules.length}, ADRG=${adrgRules.length}, DRG=${drgRules.length}, patches=${Object.keys(patches || {}).length}`);
+  console.log(`Rule summary: MDC=${mdcRules.length}, ADRG=${adrgRules.length}, DRG=${drgRules.length}`);
   console.log('Condition counts:');
   for (const [condition, count] of [...conditionCounts.entries()].sort(([a], [b]) => a.localeCompare(b))) {
     console.log(`  ${condition}: ${count}`);
@@ -574,9 +589,12 @@ async function buildPackage(scope, config, commonPackage) {
   // Dynamic import of the lightweight parsing core so build scripts don't import UI/runtime-only code.
   let mdcRules = [];
   let adrgRules = [];
-  if (buildCommon) {
+  let parseRule = null;
+  const subgroupRulesSourceDir = path.join(rulesDir, 'subgroup_rules');
+  const hasSubgroupRulesSource = fs.existsSync(subgroupRulesSourceDir)
+    && fs.readdirSync(subgroupRulesSourceDir).some(filename => filename.endsWith('.dat'));
+  if (buildCommon || (buildVersion && hasSubgroupRulesSource)) {
     const ruleParserPath = pathToFileUrl(path.resolve(__dirname, '../src/lib/ruleParserCore.js'));
-    let parseRule = null;
     try {
       const rp = await import(ruleParserPath);
       parseRule = rp.parseRule;
@@ -585,6 +603,9 @@ async function buildPackage(scope, config, commonPackage) {
       console.error('Failed to import ruleParserCore for build-time parsing — build cannot continue:', e && e.message ? e.message : e);
       throw e;
     }
+  }
+
+  if (buildCommon) {
 
     const missingRuleDirs = validateRulesDir(commonRulesDir);
     if (missingRuleDirs.length) {
@@ -622,23 +643,44 @@ async function buildPackage(scope, config, commonPackage) {
   if (!buildVersion) return;
 
   console.log('Deriving DRG subgroup rules...');
-  const patches = loadExpandedPatches();
-  const { reorderedRules, skippedDRGList } = await deriveAndOrderSubgroups(drgMap, adrgRules, patches);
+  const { subgroupRules: derivedRules, skippedDRGList } = deriveSubgroupRules(drgMap, adrgRules);
+  const explicitSubgroupRules = parseRule ? await buildExplicitSubgroupRules(parseRule) : [];
+  const explicitSubgroupRuleByCode = new Map(explicitSubgroupRules.map(rule => [rule.drgCode, rule.rule]));
+  const attachedRules = derivedRules.map(rule => {
+    const adrgRule = explicitSubgroupRuleByCode.get(rule.drgCode);
+    if (!adrgRule) return rule;
+    const attachedRule = { ...rule, adrgRule };
+    removeRedundantPrimaryPrefix(attachedRule, {
+      condition: 'SPECIFIC_DIAGNOSIS_PREFIX',
+      prefixesField: 'diagnosisPrefixes',
+      category: 'diagnosis',
+    });
+    removeRedundantPrimaryPrefix(attachedRule, {
+      condition: 'SPECIFIC_PROCEDURE_PREFIX',
+      prefixesField: 'procedurePrefixes',
+      category: 'procedure',
+    });
+    for (const field of ['diagnosisPrefixes', 'procedurePrefixes']) {
+      if (Array.isArray(attachedRule[field]) && attachedRule[field].length === 0) delete attachedRule[field];
+    }
+    return attachedRule;
+  });
+  const subgroupRules = orderSubgroupRules(attachedRules);
 
-  console.log(`Generated ${reorderedRules.length} DRG subgroup rules (variants before base, order preserved).`);
+  console.log(`Generated ${subgroupRules.length} DRG rules in DRG.dat group order (variants before base).`);
+  console.log(`Attached ${explicitSubgroupRules.length} explicit subgroup ADRG-style matchers before complication/ADRG fallbacks.`);
 
   if (skippedDRGList.length > 0) {
     throw new Error(`DRGs reference missing ADRGs: ${skippedDRGList.join(', ')}`);
   }
 
-  logRuleSummary(mdcRules, adrgRules, reorderedRules, patches);
+  logRuleSummary(mdcRules, adrgRules, subgroupRules);
 
   // Write version-specific outputs.
   const writeJobs = [
     [path.join(outputDir, 'drg.json'), JSON.stringify(drgMap, null, 2)],
-    [path.join(outputDir, 'drg_rules.json'), JSON.stringify(reorderedRules, null, 2)],
+    [path.join(outputDir, 'drg_rules.json'), JSON.stringify(subgroupRules, null, 2)],
   ];
-  
   try {
     await writeJsonFiles(writeJobs);
   } catch (err) {
@@ -711,6 +753,6 @@ async function runCli() {
 }
 
 runCli().catch(err => {
-  console.error('Build failed:', err && err.message ? err.message : err);
+  console.error('Build failed:', err && err.stack ? err.stack : (err && err.message ? err.message : err));
   process.exitCode = 1;
 });
