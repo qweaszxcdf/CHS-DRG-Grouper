@@ -1,5 +1,9 @@
 {
   "id": "chs-2.0",
+  "packages": {
+    "clinicalIcd": "gl-2022",
+    "insuranceIcd": "yb-2.0"
+  },
   "strategy": {
     "mdcyPrincipalDiagnosisOnly": false
   }

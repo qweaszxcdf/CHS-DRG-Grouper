@@ -5,11 +5,7 @@
     "adrgCode": "AA1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AA29",
@@ -17,11 +13,7 @@
     "adrgCode": "AA2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AB19",
@@ -29,11 +21,7 @@
     "adrgCode": "AB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AC19",
@@ -41,11 +29,7 @@
     "adrgCode": "AC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AD19",
@@ -53,11 +37,7 @@
     "adrgCode": "AD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AE19",
@@ -65,11 +45,7 @@
     "adrgCode": "AE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AF19",
@@ -77,11 +53,7 @@
     "adrgCode": "AF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AG19",
@@ -89,11 +61,7 @@
     "adrgCode": "AG1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AG29",
@@ -101,11 +69,7 @@
     "adrgCode": "AG2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AG39",
@@ -113,11 +77,7 @@
     "adrgCode": "AG3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AH19",
@@ -125,11 +85,7 @@
     "adrgCode": "AH1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "AH29",
@@ -137,11 +93,7 @@
     "adrgCode": "AH2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB11",
@@ -149,11 +101,7 @@
     "adrgCode": "BB1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB15",
@@ -161,11 +109,7 @@
     "adrgCode": "BB1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB21",
@@ -173,11 +117,7 @@
     "adrgCode": "BB2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB23",
@@ -185,11 +125,7 @@
     "adrgCode": "BB2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB25",
@@ -197,11 +133,7 @@
     "adrgCode": "BB2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB31",
@@ -209,11 +141,7 @@
     "adrgCode": "BB3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB35",
@@ -221,11 +149,7 @@
     "adrgCode": "BB3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB41",
@@ -233,11 +157,7 @@
     "adrgCode": "BB4",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB43",
@@ -245,11 +165,7 @@
     "adrgCode": "BB4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB45",
@@ -257,11 +173,7 @@
     "adrgCode": "BB4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB51",
@@ -269,11 +181,7 @@
     "adrgCode": "BB5",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BB55",
@@ -281,11 +189,7 @@
     "adrgCode": "BB5",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BC19",
@@ -293,11 +197,7 @@
     "adrgCode": "BC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BD19",
@@ -305,11 +205,7 @@
     "adrgCode": "BD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BD29",
@@ -317,11 +213,7 @@
     "adrgCode": "BD2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BE19",
@@ -329,11 +221,7 @@
     "adrgCode": "BE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BE21",
@@ -341,11 +229,7 @@
     "adrgCode": "BE2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BE25",
@@ -353,11 +237,7 @@
     "adrgCode": "BE2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BJ11",
@@ -365,11 +245,7 @@
     "adrgCode": "BJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BJ13",
@@ -377,11 +253,7 @@
     "adrgCode": "BJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BJ15",
@@ -389,11 +261,7 @@
     "adrgCode": "BJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BL11",
@@ -401,11 +269,7 @@
     "adrgCode": "BL1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BL15",
@@ -413,11 +277,7 @@
     "adrgCode": "BL1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BM11",
@@ -425,11 +285,7 @@
     "adrgCode": "BM1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BM15",
@@ -437,11 +293,7 @@
     "adrgCode": "BM1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR11",
@@ -449,11 +301,7 @@
     "adrgCode": "BR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR13",
@@ -461,11 +309,7 @@
     "adrgCode": "BR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR15",
@@ -473,11 +317,7 @@
     "adrgCode": "BR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR21",
@@ -485,11 +325,7 @@
     "adrgCode": "BR2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR23",
@@ -497,11 +333,7 @@
     "adrgCode": "BR2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BR25",
@@ -509,11 +341,7 @@
     "adrgCode": "BR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BS11",
@@ -521,11 +349,7 @@
     "adrgCode": "BS1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BS13",
@@ -533,11 +357,7 @@
     "adrgCode": "BS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BS15",
@@ -545,11 +365,7 @@
     "adrgCode": "BS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT13",
@@ -557,11 +373,7 @@
     "adrgCode": "BT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT15",
@@ -569,11 +381,7 @@
     "adrgCode": "BT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT21",
@@ -581,11 +389,7 @@
     "adrgCode": "BT2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT23",
@@ -593,11 +397,7 @@
     "adrgCode": "BT2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT25",
@@ -605,11 +405,7 @@
     "adrgCode": "BT2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT31",
@@ -617,11 +413,7 @@
     "adrgCode": "BT3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT33",
@@ -629,11 +421,7 @@
     "adrgCode": "BT3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BT35",
@@ -641,11 +429,7 @@
     "adrgCode": "BT3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU11",
@@ -653,11 +437,7 @@
     "adrgCode": "BU1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU15",
@@ -665,11 +445,7 @@
     "adrgCode": "BU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU21",
@@ -677,11 +453,7 @@
     "adrgCode": "BU2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU25",
@@ -689,11 +461,7 @@
     "adrgCode": "BU2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU31",
@@ -701,11 +469,7 @@
     "adrgCode": "BU3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BU35",
@@ -713,11 +477,7 @@
     "adrgCode": "BU3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV11",
@@ -725,11 +485,7 @@
     "adrgCode": "BV1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV13",
@@ -737,11 +493,7 @@
     "adrgCode": "BV1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV15",
@@ -749,11 +501,7 @@
     "adrgCode": "BV1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV21",
@@ -761,11 +509,7 @@
     "adrgCode": "BV2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV25",
@@ -773,11 +517,7 @@
     "adrgCode": "BV2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BV39",
@@ -785,11 +525,7 @@
     "adrgCode": "BV3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BW13",
@@ -797,11 +533,7 @@
     "adrgCode": "BW1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BW15",
@@ -809,11 +541,7 @@
     "adrgCode": "BW1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BW21",
@@ -821,11 +549,7 @@
     "adrgCode": "BW2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BW23",
@@ -833,11 +557,7 @@
     "adrgCode": "BW2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BW25",
@@ -845,11 +565,7 @@
     "adrgCode": "BW2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BX11",
@@ -857,11 +573,7 @@
     "adrgCode": "BX1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BX15",
@@ -869,11 +581,7 @@
     "adrgCode": "BX1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BX23",
@@ -881,11 +589,7 @@
     "adrgCode": "BX2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BX25",
@@ -893,11 +597,7 @@
     "adrgCode": "BX2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BY11",
@@ -905,11 +605,7 @@
     "adrgCode": "BY1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BY15",
@@ -917,11 +613,7 @@
     "adrgCode": "BY1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BY21",
@@ -929,11 +621,7 @@
     "adrgCode": "BY2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BY23",
@@ -941,11 +629,7 @@
     "adrgCode": "BY2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BY25",
@@ -953,11 +637,7 @@
     "adrgCode": "BY2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BZ11",
@@ -965,11 +645,7 @@
     "adrgCode": "BZ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BZ13",
@@ -977,11 +653,7 @@
     "adrgCode": "BZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "BZ15",
@@ -989,11 +661,7 @@
     "adrgCode": "BZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB19",
@@ -1001,11 +669,7 @@
     "adrgCode": "CB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB29",
@@ -1013,11 +677,7 @@
     "adrgCode": "CB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB39",
@@ -1025,11 +685,7 @@
     "adrgCode": "CB3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB43",
@@ -1037,11 +693,7 @@
     "adrgCode": "CB4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB45",
@@ -1049,11 +701,7 @@
     "adrgCode": "CB4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB59",
@@ -1061,11 +709,7 @@
     "adrgCode": "CB5",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB69",
@@ -1073,11 +717,7 @@
     "adrgCode": "CB6",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CB79",
@@ -1085,11 +725,7 @@
     "adrgCode": "CB7",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CD19",
@@ -1097,11 +733,7 @@
     "adrgCode": "CD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CD29",
@@ -1109,11 +741,7 @@
     "adrgCode": "CD2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CD39",
@@ -1121,11 +749,7 @@
     "adrgCode": "CD3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CJ19",
@@ -1133,11 +757,7 @@
     "adrgCode": "CJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CR19",
@@ -1145,11 +765,7 @@
     "adrgCode": "CR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CS13",
@@ -1157,11 +773,7 @@
     "adrgCode": "CS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CS15",
@@ -1169,11 +781,7 @@
     "adrgCode": "CS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CT19",
@@ -1181,11 +789,7 @@
     "adrgCode": "CT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CU19",
@@ -1193,11 +797,7 @@
     "adrgCode": "CU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CV19",
@@ -1205,11 +805,7 @@
     "adrgCode": "CV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CW19",
@@ -1217,11 +813,7 @@
     "adrgCode": "CW1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CX13",
@@ -1229,11 +821,7 @@
     "adrgCode": "CX1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CX15",
@@ -1241,11 +829,7 @@
     "adrgCode": "CX1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "CZ19",
@@ -1253,11 +837,7 @@
     "adrgCode": "CZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DB19",
@@ -1265,11 +845,7 @@
     "adrgCode": "DB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DB29",
@@ -1277,11 +853,7 @@
     "adrgCode": "DB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC19",
@@ -1289,11 +861,7 @@
     "adrgCode": "DC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC23",
@@ -1301,11 +869,7 @@
     "adrgCode": "DC2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC25",
@@ -1313,11 +877,7 @@
     "adrgCode": "DC2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC39",
@@ -1325,11 +885,7 @@
     "adrgCode": "DC3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC43",
@@ -1337,11 +893,7 @@
     "adrgCode": "DC4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DC45",
@@ -1349,11 +901,7 @@
     "adrgCode": "DC4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DD19",
@@ -1361,11 +909,7 @@
     "adrgCode": "DD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DD29",
@@ -1373,11 +917,7 @@
     "adrgCode": "DD2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DE19",
@@ -1385,11 +925,7 @@
     "adrgCode": "DE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DE23",
@@ -1397,11 +933,7 @@
     "adrgCode": "DE2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DE25",
@@ -1409,11 +941,7 @@
     "adrgCode": "DE2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DF19",
@@ -1421,11 +949,7 @@
     "adrgCode": "DF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DF29",
@@ -1433,11 +957,7 @@
     "adrgCode": "DF2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DG19",
@@ -1445,11 +965,7 @@
     "adrgCode": "DG1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DG29",
@@ -1457,11 +973,7 @@
     "adrgCode": "DG2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DH19",
@@ -1469,11 +981,7 @@
     "adrgCode": "DH1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DH29",
@@ -1481,11 +989,7 @@
     "adrgCode": "DH2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DH39",
@@ -1493,11 +997,7 @@
     "adrgCode": "DH3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DH49",
@@ -1505,11 +1005,7 @@
     "adrgCode": "DH4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DJ19",
@@ -1517,11 +1013,7 @@
     "adrgCode": "DJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DK19",
@@ -1529,11 +1021,7 @@
     "adrgCode": "DK1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DR19",
@@ -1541,11 +1029,7 @@
     "adrgCode": "DR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DS19",
@@ -1553,11 +1037,7 @@
     "adrgCode": "DS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DT19",
@@ -1565,11 +1045,7 @@
     "adrgCode": "DT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DT29",
@@ -1577,11 +1053,7 @@
     "adrgCode": "DT2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DU19",
@@ -1589,11 +1061,7 @@
     "adrgCode": "DU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DV19",
@@ -1601,11 +1069,7 @@
     "adrgCode": "DV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DW19",
@@ -1613,11 +1077,7 @@
     "adrgCode": "DW1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DZ13",
@@ -1625,11 +1085,7 @@
     "adrgCode": "DZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "DZ15",
@@ -1637,11 +1093,7 @@
     "adrgCode": "DZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EB19",
@@ -1649,11 +1101,7 @@
     "adrgCode": "EB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EB29",
@@ -1661,11 +1109,7 @@
     "adrgCode": "EB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EC19",
@@ -1673,11 +1117,7 @@
     "adrgCode": "EC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EC29",
@@ -1685,11 +1125,7 @@
     "adrgCode": "EC2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ED11",
@@ -1697,11 +1133,7 @@
     "adrgCode": "ED1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ED13",
@@ -1709,11 +1141,7 @@
     "adrgCode": "ED1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ED15",
@@ -1721,11 +1149,7 @@
     "adrgCode": "ED1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EJ11",
@@ -1733,11 +1157,7 @@
     "adrgCode": "EJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EJ13",
@@ -1745,11 +1165,7 @@
     "adrgCode": "EJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EJ15",
@@ -1757,11 +1173,7 @@
     "adrgCode": "EJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EK19",
@@ -1769,11 +1181,7 @@
     "adrgCode": "EK1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EK23",
@@ -1781,11 +1189,7 @@
     "adrgCode": "EK2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EK25",
@@ -1793,11 +1197,7 @@
     "adrgCode": "EK2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ER11",
@@ -1805,11 +1205,7 @@
     "adrgCode": "ER1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ER15",
@@ -1817,11 +1213,7 @@
     "adrgCode": "ER1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ER23",
@@ -1829,11 +1221,7 @@
     "adrgCode": "ER2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ER25",
@@ -1841,11 +1229,7 @@
     "adrgCode": "ER2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES11",
@@ -1853,11 +1237,7 @@
     "adrgCode": "ES1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES13",
@@ -1865,11 +1245,7 @@
     "adrgCode": "ES1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES15",
@@ -1877,11 +1253,7 @@
     "adrgCode": "ES1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES29",
@@ -1889,11 +1261,7 @@
     "adrgCode": "ES2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES31",
@@ -1901,11 +1269,7 @@
     "adrgCode": "ES3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES33",
@@ -1913,11 +1277,7 @@
     "adrgCode": "ES3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ES35",
@@ -1925,11 +1285,7 @@
     "adrgCode": "ES3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ET11",
@@ -1937,11 +1293,7 @@
     "adrgCode": "ET1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ET13",
@@ -1949,11 +1301,7 @@
     "adrgCode": "ET1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ET15",
@@ -1961,11 +1309,7 @@
     "adrgCode": "ET1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ET23",
@@ -1973,11 +1317,7 @@
     "adrgCode": "ET2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ET25",
@@ -1985,11 +1325,7 @@
     "adrgCode": "ET2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EU19",
@@ -1997,11 +1333,7 @@
     "adrgCode": "EU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EV19",
@@ -2009,11 +1341,7 @@
     "adrgCode": "EV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EW11",
@@ -2021,11 +1349,7 @@
     "adrgCode": "EW1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EW13",
@@ -2033,11 +1357,7 @@
     "adrgCode": "EW1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EW15",
@@ -2045,11 +1365,7 @@
     "adrgCode": "EW1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EX13",
@@ -2057,11 +1373,7 @@
     "adrgCode": "EX1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EX15",
@@ -2069,11 +1381,7 @@
     "adrgCode": "EX1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EX29",
@@ -2081,11 +1389,7 @@
     "adrgCode": "EX2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EZ11",
@@ -2093,11 +1397,7 @@
     "adrgCode": "EZ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EZ13",
@@ -2105,11 +1405,7 @@
     "adrgCode": "EZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "EZ15",
@@ -2117,11 +1413,7 @@
     "adrgCode": "EZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FB19",
@@ -2129,11 +1421,7 @@
     "adrgCode": "FB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FB29",
@@ -2141,11 +1429,7 @@
     "adrgCode": "FB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FC19",
@@ -2153,11 +1437,7 @@
     "adrgCode": "FC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FD19",
@@ -2165,11 +1445,7 @@
     "adrgCode": "FD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FD23",
@@ -2177,11 +1453,7 @@
     "adrgCode": "FD2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FD25",
@@ -2189,11 +1461,7 @@
     "adrgCode": "FD2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FE19",
@@ -2201,11 +1469,7 @@
     "adrgCode": "FE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FE29",
@@ -2213,11 +1477,7 @@
     "adrgCode": "FE2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FF19",
@@ -2225,11 +1485,7 @@
     "adrgCode": "FF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FF23",
@@ -2237,11 +1493,7 @@
     "adrgCode": "FF2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FF25",
@@ -2249,11 +1501,7 @@
     "adrgCode": "FF2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FF39",
@@ -2261,11 +1509,7 @@
     "adrgCode": "FF3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FJ19",
@@ -2273,11 +1517,7 @@
     "adrgCode": "FJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FK19",
@@ -2285,11 +1525,7 @@
     "adrgCode": "FK1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FK29",
@@ -2297,11 +1533,7 @@
     "adrgCode": "FK2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FK39",
@@ -2309,11 +1541,7 @@
     "adrgCode": "FK3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FK49",
@@ -2321,11 +1549,7 @@
     "adrgCode": "FK4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FL19",
@@ -2333,11 +1557,7 @@
     "adrgCode": "FL1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FL29",
@@ -2345,11 +1565,7 @@
     "adrgCode": "FL2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FL39",
@@ -2357,11 +1573,7 @@
     "adrgCode": "FL3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FL49",
@@ -2369,11 +1581,7 @@
     "adrgCode": "FL4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FM19",
@@ -2381,11 +1589,7 @@
     "adrgCode": "FM1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FM29",
@@ -2393,11 +1597,7 @@
     "adrgCode": "FM2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FM39",
@@ -2405,11 +1605,7 @@
     "adrgCode": "FM3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FM49",
@@ -2417,11 +1613,7 @@
     "adrgCode": "FM4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FM59",
@@ -2429,11 +1621,7 @@
     "adrgCode": "FM5",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FN19",
@@ -2441,11 +1629,7 @@
     "adrgCode": "FN1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FN23",
@@ -2453,11 +1637,7 @@
     "adrgCode": "FN2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FN25",
@@ -2465,11 +1645,7 @@
     "adrgCode": "FN2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FP13",
@@ -2477,11 +1653,7 @@
     "adrgCode": "FP1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FP15",
@@ -2489,11 +1661,7 @@
     "adrgCode": "FP1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR11",
@@ -2501,11 +1669,7 @@
     "adrgCode": "FR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR15",
@@ -2513,11 +1677,7 @@
     "adrgCode": "FR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR21",
@@ -2525,11 +1685,7 @@
     "adrgCode": "FR2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR25",
@@ -2537,11 +1693,7 @@
     "adrgCode": "FR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR33",
@@ -2549,11 +1701,7 @@
     "adrgCode": "FR3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR35",
@@ -2561,11 +1709,7 @@
     "adrgCode": "FR3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR49",
@@ -2573,11 +1717,7 @@
     "adrgCode": "FR4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FR59",
@@ -2585,11 +1725,7 @@
     "adrgCode": "FR5",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT19",
@@ -2597,11 +1733,7 @@
     "adrgCode": "FT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT29",
@@ -2609,11 +1741,7 @@
     "adrgCode": "FT2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT39",
@@ -2621,11 +1749,7 @@
     "adrgCode": "FT3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT41",
@@ -2633,11 +1757,7 @@
     "adrgCode": "FT4",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT43",
@@ -2645,11 +1765,7 @@
     "adrgCode": "FT4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FT45",
@@ -2657,11 +1773,7 @@
     "adrgCode": "FT4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FU11",
@@ -2669,11 +1781,7 @@
     "adrgCode": "FU1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FU15",
@@ -2681,11 +1789,7 @@
     "adrgCode": "FU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FU29",
@@ -2693,11 +1797,7 @@
     "adrgCode": "FU2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FV19",
@@ -2705,11 +1805,7 @@
     "adrgCode": "FV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FV23",
@@ -2717,11 +1813,7 @@
     "adrgCode": "FV2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FV25",
@@ -2729,11 +1821,7 @@
     "adrgCode": "FV2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FV33",
@@ -2741,11 +1829,7 @@
     "adrgCode": "FV3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FV35",
@@ -2753,11 +1837,7 @@
     "adrgCode": "FV3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FW13",
@@ -2765,11 +1845,7 @@
     "adrgCode": "FW1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FW15",
@@ -2777,11 +1853,7 @@
     "adrgCode": "FW1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FW29",
@@ -2789,11 +1861,7 @@
     "adrgCode": "FW2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "FZ19",
@@ -2801,11 +1869,7 @@
     "adrgCode": "FZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GB11",
@@ -2813,11 +1877,7 @@
     "adrgCode": "GB1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GB15",
@@ -2825,11 +1885,7 @@
     "adrgCode": "GB1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GB29",
@@ -2837,11 +1893,7 @@
     "adrgCode": "GB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GB39",
@@ -2849,11 +1901,7 @@
     "adrgCode": "GB3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC19",
@@ -2861,11 +1909,7 @@
     "adrgCode": "GC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC21",
@@ -2873,11 +1917,7 @@
     "adrgCode": "GC2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC23",
@@ -2885,11 +1925,7 @@
     "adrgCode": "GC2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC25",
@@ -2897,11 +1933,7 @@
     "adrgCode": "GC2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC31",
@@ -2909,11 +1941,7 @@
     "adrgCode": "GC3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC33",
@@ -2921,11 +1949,7 @@
     "adrgCode": "GC3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GC35",
@@ -2933,11 +1957,7 @@
     "adrgCode": "GC3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GD19",
@@ -2945,11 +1965,7 @@
     "adrgCode": "GD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GE19",
@@ -2957,11 +1973,7 @@
     "adrgCode": "GE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GE29",
@@ -2969,11 +1981,7 @@
     "adrgCode": "GE2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GF19",
@@ -2981,11 +1989,7 @@
     "adrgCode": "GF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GF23",
@@ -2993,11 +1997,7 @@
     "adrgCode": "GF2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GF25",
@@ -3005,11 +2005,7 @@
     "adrgCode": "GF2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GF39",
@@ -3017,11 +2013,7 @@
     "adrgCode": "GF3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GG19",
@@ -3029,11 +2021,7 @@
     "adrgCode": "GG1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GG29",
@@ -3041,11 +2029,7 @@
     "adrgCode": "GG2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GH11",
@@ -3053,11 +2037,7 @@
     "adrgCode": "GH1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GH13",
@@ -3065,11 +2045,7 @@
     "adrgCode": "GH1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GH15",
@@ -3077,11 +2053,7 @@
     "adrgCode": "GH1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GJ11",
@@ -3089,11 +2061,7 @@
     "adrgCode": "GJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GJ13",
@@ -3101,11 +2069,7 @@
     "adrgCode": "GJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GJ15",
@@ -3113,11 +2077,7 @@
     "adrgCode": "GJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GK19",
@@ -3125,11 +2085,7 @@
     "adrgCode": "GK1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GK23",
@@ -3137,11 +2093,7 @@
     "adrgCode": "GK2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GK25",
@@ -3149,11 +2101,7 @@
     "adrgCode": "GK2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GK33",
@@ -3161,11 +2109,7 @@
     "adrgCode": "GK3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GK35",
@@ -3173,11 +2117,7 @@
     "adrgCode": "GK3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GR11",
@@ -3185,11 +2125,7 @@
     "adrgCode": "GR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GR15",
@@ -3197,11 +2133,7 @@
     "adrgCode": "GR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GS11",
@@ -3209,11 +2141,7 @@
     "adrgCode": "GS1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GS13",
@@ -3221,11 +2149,7 @@
     "adrgCode": "GS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GS15",
@@ -3233,11 +2157,7 @@
     "adrgCode": "GS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GT13",
@@ -3245,11 +2165,7 @@
     "adrgCode": "GT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GT15",
@@ -3257,11 +2173,7 @@
     "adrgCode": "GT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GU19",
@@ -3269,11 +2181,7 @@
     "adrgCode": "GU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GU23",
@@ -3281,11 +2189,7 @@
     "adrgCode": "GU2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GU25",
@@ -3293,11 +2197,7 @@
     "adrgCode": "GU2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GV13",
@@ -3305,11 +2205,7 @@
     "adrgCode": "GV1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GV15",
@@ -3317,11 +2213,7 @@
     "adrgCode": "GV1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GW13",
@@ -3329,11 +2221,7 @@
     "adrgCode": "GW1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GW15",
@@ -3341,11 +2229,7 @@
     "adrgCode": "GW1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "GZ19",
@@ -3353,11 +2237,7 @@
     "adrgCode": "GZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HB11",
@@ -3365,11 +2245,7 @@
     "adrgCode": "HB1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HB15",
@@ -3377,11 +2253,7 @@
     "adrgCode": "HB1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC11",
@@ -3389,11 +2261,7 @@
     "adrgCode": "HC1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC15",
@@ -3401,11 +2269,7 @@
     "adrgCode": "HC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC23",
@@ -3413,11 +2277,7 @@
     "adrgCode": "HC2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC25",
@@ -3425,11 +2285,7 @@
     "adrgCode": "HC2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC31",
@@ -3437,11 +2293,7 @@
     "adrgCode": "HC3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC33",
@@ -3449,11 +2301,7 @@
     "adrgCode": "HC3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HC35",
@@ -3461,11 +2309,7 @@
     "adrgCode": "HC3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HJ11",
@@ -3473,11 +2317,7 @@
     "adrgCode": "HJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HJ13",
@@ -3485,11 +2325,7 @@
     "adrgCode": "HJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HJ15",
@@ -3497,11 +2333,7 @@
     "adrgCode": "HJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HK19",
@@ -3509,11 +2341,7 @@
     "adrgCode": "HK1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HL19",
@@ -3521,11 +2349,7 @@
     "adrgCode": "HL1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HL29",
@@ -3533,11 +2357,7 @@
     "adrgCode": "HL2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HR19",
@@ -3545,11 +2365,7 @@
     "adrgCode": "HR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HS19",
@@ -3557,11 +2373,7 @@
     "adrgCode": "HS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HS21",
@@ -3569,11 +2381,7 @@
     "adrgCode": "HS2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HS25",
@@ -3581,11 +2389,7 @@
     "adrgCode": "HS2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HS39",
@@ -3593,11 +2397,7 @@
     "adrgCode": "HS3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT11",
@@ -3605,11 +2405,7 @@
     "adrgCode": "HT1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT13",
@@ -3617,11 +2413,7 @@
     "adrgCode": "HT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT15",
@@ -3629,11 +2421,7 @@
     "adrgCode": "HT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT21",
@@ -3641,11 +2429,7 @@
     "adrgCode": "HT2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT23",
@@ -3653,11 +2437,7 @@
     "adrgCode": "HT2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HT25",
@@ -3665,11 +2445,7 @@
     "adrgCode": "HT2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HU11",
@@ -3677,11 +2453,7 @@
     "adrgCode": "HU1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HU15",
@@ -3689,11 +2461,7 @@
     "adrgCode": "HU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ11",
@@ -3701,11 +2469,7 @@
     "adrgCode": "HZ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ13",
@@ -3713,11 +2477,7 @@
     "adrgCode": "HZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ15",
@@ -3725,11 +2485,7 @@
     "adrgCode": "HZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ29",
@@ -3737,11 +2493,7 @@
     "adrgCode": "HZ2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ31",
@@ -3749,11 +2501,7 @@
     "adrgCode": "HZ3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "HZ35",
@@ -3761,11 +2509,7 @@
     "adrgCode": "HZ3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IB19",
@@ -3773,11 +2517,7 @@
     "adrgCode": "IB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IB29",
@@ -3785,11 +2525,7 @@
     "adrgCode": "IB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IB31",
@@ -3797,11 +2533,7 @@
     "adrgCode": "IB3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IB35",
@@ -3809,11 +2541,7 @@
     "adrgCode": "IB3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IC19",
@@ -3821,11 +2549,7 @@
     "adrgCode": "IC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IC29",
@@ -3833,11 +2557,7 @@
     "adrgCode": "IC2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IC39",
@@ -3845,11 +2565,7 @@
     "adrgCode": "IC3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IC49",
@@ -3857,11 +2573,7 @@
     "adrgCode": "IC4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ID19",
@@ -3869,11 +2581,7 @@
     "adrgCode": "ID1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ID23",
@@ -3881,11 +2589,7 @@
     "adrgCode": "ID2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ID25",
@@ -3893,11 +2597,7 @@
     "adrgCode": "ID2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE13",
@@ -3905,11 +2605,7 @@
     "adrgCode": "IE1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE15",
@@ -3917,11 +2613,7 @@
     "adrgCode": "IE1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE21",
@@ -3929,11 +2621,7 @@
     "adrgCode": "IE2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE25",
@@ -3941,11 +2629,7 @@
     "adrgCode": "IE2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE39",
@@ -3953,11 +2637,7 @@
     "adrgCode": "IE3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE43",
@@ -3965,11 +2645,7 @@
     "adrgCode": "IE4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE45",
@@ -3977,11 +2653,7 @@
     "adrgCode": "IE4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE59",
@@ -3989,11 +2661,7 @@
     "adrgCode": "IE5",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IE69",
@@ -4001,11 +2669,7 @@
     "adrgCode": "IE6",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IF19",
@@ -4013,11 +2677,7 @@
     "adrgCode": "IF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IG19",
@@ -4025,11 +2685,7 @@
     "adrgCode": "IG1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IH13",
@@ -4037,11 +2693,7 @@
     "adrgCode": "IH1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IH15",
@@ -4049,11 +2701,7 @@
     "adrgCode": "IH1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IJ13",
@@ -4061,11 +2709,7 @@
     "adrgCode": "IJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IJ15",
@@ -4073,11 +2717,7 @@
     "adrgCode": "IJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IR19",
@@ -4085,11 +2725,7 @@
     "adrgCode": "IR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IR29",
@@ -4097,11 +2733,7 @@
     "adrgCode": "IR2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IS19",
@@ -4109,11 +2741,7 @@
     "adrgCode": "IS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IS29",
@@ -4121,11 +2749,7 @@
     "adrgCode": "IS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT19",
@@ -4133,11 +2757,7 @@
     "adrgCode": "IT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT21",
@@ -4145,11 +2765,7 @@
     "adrgCode": "IT2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT23",
@@ -4157,11 +2773,7 @@
     "adrgCode": "IT2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT25",
@@ -4169,11 +2781,7 @@
     "adrgCode": "IT2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT33",
@@ -4181,11 +2789,7 @@
     "adrgCode": "IT3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IT35",
@@ -4193,11 +2797,7 @@
     "adrgCode": "IT3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IU13",
@@ -4205,11 +2805,7 @@
     "adrgCode": "IU1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IU15",
@@ -4217,11 +2813,7 @@
     "adrgCode": "IU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IU29",
@@ -4229,11 +2821,7 @@
     "adrgCode": "IU2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IU39",
@@ -4241,11 +2829,7 @@
     "adrgCode": "IU3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IV19",
@@ -4253,11 +2837,7 @@
     "adrgCode": "IV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IZ13",
@@ -4265,11 +2845,7 @@
     "adrgCode": "IZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IZ15",
@@ -4277,11 +2853,7 @@
     "adrgCode": "IZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IZ23",
@@ -4289,11 +2861,7 @@
     "adrgCode": "IZ2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "IZ25",
@@ -4301,11 +2869,7 @@
     "adrgCode": "IZ2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JA19",
@@ -4313,11 +2877,7 @@
     "adrgCode": "JA1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JA29",
@@ -4325,11 +2885,7 @@
     "adrgCode": "JA2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JB19",
@@ -4337,11 +2893,7 @@
     "adrgCode": "JB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JB29",
@@ -4349,11 +2901,7 @@
     "adrgCode": "JB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JB39",
@@ -4361,11 +2909,7 @@
     "adrgCode": "JB3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JC19",
@@ -4373,11 +2917,7 @@
     "adrgCode": "JC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JD13",
@@ -4385,11 +2925,7 @@
     "adrgCode": "JD1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JD15",
@@ -4397,11 +2933,7 @@
     "adrgCode": "JD1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JD21",
@@ -4409,11 +2941,7 @@
     "adrgCode": "JD2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JD23",
@@ -4421,11 +2949,7 @@
     "adrgCode": "JD2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JD25",
@@ -4433,11 +2957,7 @@
     "adrgCode": "JD2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JJ19",
@@ -4445,11 +2965,7 @@
     "adrgCode": "JJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JR19",
@@ -4457,11 +2973,7 @@
     "adrgCode": "JR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JR23",
@@ -4469,11 +2981,7 @@
     "adrgCode": "JR2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JR25",
@@ -4481,11 +2989,7 @@
     "adrgCode": "JR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JS13",
@@ -4493,11 +2997,7 @@
     "adrgCode": "JS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JS15",
@@ -4505,11 +3005,7 @@
     "adrgCode": "JS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JS29",
@@ -4517,11 +3013,7 @@
     "adrgCode": "JS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JT19",
@@ -4529,11 +3021,7 @@
     "adrgCode": "JT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JU13",
@@ -4541,11 +3029,7 @@
     "adrgCode": "JU1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JU15",
@@ -4553,11 +3037,7 @@
     "adrgCode": "JU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JV19",
@@ -4565,11 +3045,7 @@
     "adrgCode": "JV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JV29",
@@ -4577,11 +3053,7 @@
     "adrgCode": "JV2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JZ13",
@@ -4589,11 +3061,7 @@
     "adrgCode": "JZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "JZ15",
@@ -4601,11 +3069,7 @@
     "adrgCode": "JZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KB19",
@@ -4613,11 +3077,7 @@
     "adrgCode": "KB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KC11",
@@ -4625,11 +3085,7 @@
     "adrgCode": "KC1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KC15",
@@ -4637,11 +3093,7 @@
     "adrgCode": "KC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KD19",
@@ -4649,11 +3101,7 @@
     "adrgCode": "KD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KD29",
@@ -4661,11 +3109,7 @@
     "adrgCode": "KD2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KE19",
@@ -4673,11 +3117,7 @@
     "adrgCode": "KE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KJ13",
@@ -4685,11 +3125,7 @@
     "adrgCode": "KJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KJ15",
@@ -4697,11 +3133,7 @@
     "adrgCode": "KJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KR19",
@@ -4709,11 +3141,7 @@
     "adrgCode": "KR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KS13",
@@ -4721,11 +3149,7 @@
     "adrgCode": "KS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KS15",
@@ -4733,11 +3157,7 @@
     "adrgCode": "KS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KT13",
@@ -4745,11 +3165,7 @@
     "adrgCode": "KT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KT15",
@@ -4757,11 +3173,7 @@
     "adrgCode": "KT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KU11",
@@ -4769,11 +3181,7 @@
     "adrgCode": "KU1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KU13",
@@ -4781,11 +3189,7 @@
     "adrgCode": "KU1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KU15",
@@ -4793,11 +3197,7 @@
     "adrgCode": "KU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KV19",
@@ -4805,11 +3205,7 @@
     "adrgCode": "KV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KZ13",
@@ -4817,11 +3213,7 @@
     "adrgCode": "KZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "KZ15",
@@ -4829,11 +3221,7 @@
     "adrgCode": "KZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LA19",
@@ -4841,11 +3229,7 @@
     "adrgCode": "LA1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LA23",
@@ -4853,11 +3237,7 @@
     "adrgCode": "LA2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LA25",
@@ -4865,11 +3245,7 @@
     "adrgCode": "LA2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LB19",
@@ -4877,11 +3253,7 @@
     "adrgCode": "LB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LB29",
@@ -4889,11 +3261,7 @@
     "adrgCode": "LB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LC19",
@@ -4901,11 +3269,7 @@
     "adrgCode": "LC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LD19",
@@ -4913,11 +3277,7 @@
     "adrgCode": "LD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LE19",
@@ -4925,11 +3285,7 @@
     "adrgCode": "LE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LF11",
@@ -4937,11 +3293,7 @@
     "adrgCode": "LF1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LF15",
@@ -4949,11 +3301,7 @@
     "adrgCode": "LF1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LJ13",
@@ -4961,11 +3309,7 @@
     "adrgCode": "LJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LJ15",
@@ -4973,11 +3317,7 @@
     "adrgCode": "LJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LL11",
@@ -4985,11 +3325,7 @@
     "adrgCode": "LL1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LL13",
@@ -4997,11 +3333,7 @@
     "adrgCode": "LL1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LL15",
@@ -5009,11 +3341,7 @@
     "adrgCode": "LL1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LR13",
@@ -5021,11 +3349,7 @@
     "adrgCode": "LR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LR15",
@@ -5033,11 +3357,7 @@
     "adrgCode": "LR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LS11",
@@ -5045,11 +3365,7 @@
     "adrgCode": "LS1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LS15",
@@ -5057,11 +3373,7 @@
     "adrgCode": "LS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LT19",
@@ -5069,11 +3381,7 @@
     "adrgCode": "LT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LU11",
@@ -5081,11 +3389,7 @@
     "adrgCode": "LU1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LU13",
@@ -5093,11 +3397,7 @@
     "adrgCode": "LU1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LU15",
@@ -5105,11 +3405,7 @@
     "adrgCode": "LU1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LV19",
@@ -5117,11 +3413,7 @@
     "adrgCode": "LV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LW19",
@@ -5129,11 +3421,7 @@
     "adrgCode": "LW1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LX19",
@@ -5141,11 +3429,7 @@
     "adrgCode": "LX1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LZ13",
@@ -5153,11 +3437,7 @@
     "adrgCode": "LZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "LZ15",
@@ -5165,11 +3445,7 @@
     "adrgCode": "LZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MA19",
@@ -5177,11 +3453,7 @@
     "adrgCode": "MA1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MB19",
@@ -5189,11 +3461,7 @@
     "adrgCode": "MB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MC19",
@@ -5201,11 +3469,7 @@
     "adrgCode": "MC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MD19",
@@ -5213,11 +3477,7 @@
     "adrgCode": "MD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MJ19",
@@ -5225,11 +3485,7 @@
     "adrgCode": "MJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MR13",
@@ -5237,11 +3493,7 @@
     "adrgCode": "MR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MR15",
@@ -5249,11 +3501,7 @@
     "adrgCode": "MR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MS13",
@@ -5261,11 +3509,7 @@
     "adrgCode": "MS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MS15",
@@ -5273,11 +3517,7 @@
     "adrgCode": "MS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "MZ19",
@@ -5285,11 +3525,7 @@
     "adrgCode": "MZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NA19",
@@ -5297,11 +3533,7 @@
     "adrgCode": "NA1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NA29",
@@ -5309,11 +3541,7 @@
     "adrgCode": "NA2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NB19",
@@ -5321,11 +3549,7 @@
     "adrgCode": "NB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NC19",
@@ -5333,11 +3557,7 @@
     "adrgCode": "NC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ND19",
@@ -5345,11 +3565,7 @@
     "adrgCode": "ND1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NE19",
@@ -5357,11 +3573,7 @@
     "adrgCode": "NE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NF19",
@@ -5369,11 +3581,7 @@
     "adrgCode": "NF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NG19",
@@ -5381,11 +3589,7 @@
     "adrgCode": "NG1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NJ13",
@@ -5393,11 +3597,7 @@
     "adrgCode": "NJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NJ15",
@@ -5405,11 +3605,7 @@
     "adrgCode": "NJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NR13",
@@ -5417,11 +3613,7 @@
     "adrgCode": "NR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NR15",
@@ -5429,11 +3621,7 @@
     "adrgCode": "NR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NS19",
@@ -5441,11 +3629,7 @@
     "adrgCode": "NS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "NZ19",
@@ -5453,11 +3637,7 @@
     "adrgCode": "NZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OB19",
@@ -5465,11 +3645,7 @@
     "adrgCode": "OB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OC11",
@@ -5477,11 +3653,7 @@
     "adrgCode": "OC1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OC15",
@@ -5489,11 +3661,7 @@
     "adrgCode": "OC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OC29",
@@ -5501,11 +3669,7 @@
     "adrgCode": "OC2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OD19",
@@ -5513,11 +3677,7 @@
     "adrgCode": "OD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OD29",
@@ -5525,11 +3685,7 @@
     "adrgCode": "OD2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OE19",
@@ -5537,11 +3693,7 @@
     "adrgCode": "OE1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OF19",
@@ -5549,11 +3701,7 @@
     "adrgCode": "OF1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OF29",
@@ -5561,11 +3709,7 @@
     "adrgCode": "OF2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OJ19",
@@ -5573,11 +3717,7 @@
     "adrgCode": "OJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OR19",
@@ -5585,11 +3725,7 @@
     "adrgCode": "OR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OS19",
@@ -5597,11 +3733,7 @@
     "adrgCode": "OS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OS29",
@@ -5609,11 +3741,7 @@
     "adrgCode": "OS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OT19",
@@ -5621,11 +3749,7 @@
     "adrgCode": "OT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "OZ19",
@@ -5633,11 +3757,7 @@
     "adrgCode": "OZ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PB19",
@@ -5645,11 +3765,7 @@
     "adrgCode": "PB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PC19",
@@ -5657,11 +3773,7 @@
     "adrgCode": "PC1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PD13",
@@ -5669,11 +3781,7 @@
     "adrgCode": "PD1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PD15",
@@ -5681,11 +3789,7 @@
     "adrgCode": "PD1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PJ19",
@@ -5693,11 +3797,7 @@
     "adrgCode": "PJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PK11",
@@ -5705,11 +3805,7 @@
     "adrgCode": "PK1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PK15",
@@ -5717,11 +3813,7 @@
     "adrgCode": "PK1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PR11",
@@ -5729,11 +3821,7 @@
     "adrgCode": "PR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PR15",
@@ -5741,11 +3829,7 @@
     "adrgCode": "PR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS11",
@@ -5753,11 +3837,7 @@
     "adrgCode": "PS1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS15",
@@ -5765,11 +3845,7 @@
     "adrgCode": "PS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS29",
@@ -5777,11 +3853,7 @@
     "adrgCode": "PS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS39",
@@ -5789,11 +3861,7 @@
     "adrgCode": "PS3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS43",
@@ -5801,11 +3869,7 @@
     "adrgCode": "PS4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PS45",
@@ -5813,11 +3877,7 @@
     "adrgCode": "PS4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PU19",
@@ -5825,11 +3885,7 @@
     "adrgCode": "PU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "PV19",
@@ -5837,11 +3893,7 @@
     "adrgCode": "PV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QB19",
@@ -5849,11 +3901,7 @@
     "adrgCode": "QB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QJ13",
@@ -5861,11 +3909,7 @@
     "adrgCode": "QJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QJ15",
@@ -5873,11 +3917,7 @@
     "adrgCode": "QJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QR19",
@@ -5885,11 +3925,7 @@
     "adrgCode": "QR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QR21",
@@ -5897,11 +3933,7 @@
     "adrgCode": "QR2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QR23",
@@ -5909,11 +3941,7 @@
     "adrgCode": "QR2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QR25",
@@ -5921,11 +3949,7 @@
     "adrgCode": "QR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS13",
@@ -5933,11 +3957,7 @@
     "adrgCode": "QS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS15",
@@ -5945,11 +3965,7 @@
     "adrgCode": "QS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS29",
@@ -5957,11 +3973,7 @@
     "adrgCode": "QS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS31",
@@ -5969,11 +3981,7 @@
     "adrgCode": "QS3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS33",
@@ -5981,11 +3989,7 @@
     "adrgCode": "QS3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS35",
@@ -5993,11 +3997,7 @@
     "adrgCode": "QS3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS41",
@@ -6005,11 +4005,7 @@
     "adrgCode": "QS4",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS43",
@@ -6017,11 +4013,7 @@
     "adrgCode": "QS4",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS45",
@@ -6029,11 +4021,7 @@
     "adrgCode": "QS4",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS51",
@@ -6041,11 +4029,7 @@
     "adrgCode": "QS5",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS53",
@@ -6053,11 +4037,7 @@
     "adrgCode": "QS5",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QS55",
@@ -6065,11 +4045,7 @@
     "adrgCode": "QS5",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QT11",
@@ -6077,11 +4053,7 @@
     "adrgCode": "QT1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QT13",
@@ -6089,11 +4061,7 @@
     "adrgCode": "QT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "QT15",
@@ -6101,11 +4069,7 @@
     "adrgCode": "QT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA11",
@@ -6113,11 +4077,7 @@
     "adrgCode": "RA1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA13",
@@ -6125,11 +4085,7 @@
     "adrgCode": "RA1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA15",
@@ -6137,11 +4093,7 @@
     "adrgCode": "RA1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA29",
@@ -6149,11 +4101,7 @@
     "adrgCode": "RA2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA39",
@@ -6161,11 +4109,7 @@
     "adrgCode": "RA3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RA49",
@@ -6173,11 +4117,7 @@
     "adrgCode": "RA4",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RK11",
@@ -6185,11 +4125,7 @@
     "adrgCode": "RK1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RK13",
@@ -6197,11 +4133,7 @@
     "adrgCode": "RK1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RK15",
@@ -6209,11 +4141,7 @@
     "adrgCode": "RK1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RK21",
@@ -6221,11 +4149,7 @@
     "adrgCode": "RK2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RK25",
@@ -6233,11 +4157,7 @@
     "adrgCode": "RK2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RL11",
@@ -6245,11 +4165,7 @@
     "adrgCode": "RL1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RL15",
@@ -6257,11 +4173,7 @@
     "adrgCode": "RL1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RL21",
@@ -6269,11 +4181,7 @@
     "adrgCode": "RL2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RL23",
@@ -6281,11 +4189,7 @@
     "adrgCode": "RL2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RL25",
@@ -6293,11 +4197,7 @@
     "adrgCode": "RL2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RM11",
@@ -6305,11 +4205,7 @@
     "adrgCode": "RM1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RM15",
@@ -6317,11 +4213,7 @@
     "adrgCode": "RM1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RN13",
@@ -6329,11 +4221,7 @@
     "adrgCode": "RN1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RN15",
@@ -6341,11 +4229,7 @@
     "adrgCode": "RN1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RN21",
@@ -6353,11 +4237,7 @@
     "adrgCode": "RN2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RN25",
@@ -6365,11 +4245,7 @@
     "adrgCode": "RN2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RP11",
@@ -6377,11 +4253,7 @@
     "adrgCode": "RP1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RP15",
@@ -6389,11 +4261,7 @@
     "adrgCode": "RP1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RR13",
@@ -6401,11 +4269,7 @@
     "adrgCode": "RR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RR15",
@@ -6413,11 +4277,7 @@
     "adrgCode": "RR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RS13",
@@ -6425,11 +4285,7 @@
     "adrgCode": "RS1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RS15",
@@ -6437,11 +4293,7 @@
     "adrgCode": "RS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RS21",
@@ -6449,11 +4301,7 @@
     "adrgCode": "RS2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RS23",
@@ -6461,11 +4309,7 @@
     "adrgCode": "RS2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RS25",
@@ -6473,11 +4317,7 @@
     "adrgCode": "RS2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RT11",
@@ -6485,11 +4325,7 @@
     "adrgCode": "RT1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RT13",
@@ -6497,11 +4333,7 @@
     "adrgCode": "RT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RT15",
@@ -6509,11 +4341,7 @@
     "adrgCode": "RT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RT29",
@@ -6521,11 +4349,7 @@
     "adrgCode": "RT2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RU19",
@@ -6533,11 +4357,7 @@
     "adrgCode": "RU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RW19",
@@ -6545,11 +4365,7 @@
     "adrgCode": "RW1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RW21",
@@ -6557,11 +4373,7 @@
     "adrgCode": "RW2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "RW25",
@@ -6569,11 +4381,7 @@
     "adrgCode": "RW2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SB11",
@@ -6581,11 +4389,7 @@
     "adrgCode": "SB1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SB13",
@@ -6593,11 +4397,7 @@
     "adrgCode": "SB1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SB15",
@@ -6605,11 +4405,7 @@
     "adrgCode": "SB1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SR11",
@@ -6617,11 +4413,7 @@
     "adrgCode": "SR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SR13",
@@ -6629,11 +4421,7 @@
     "adrgCode": "SR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SR15",
@@ -6641,11 +4429,7 @@
     "adrgCode": "SR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SS19",
@@ -6653,11 +4437,7 @@
     "adrgCode": "SS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ST13",
@@ -6665,11 +4445,7 @@
     "adrgCode": "ST1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ST15",
@@ -6677,11 +4453,7 @@
     "adrgCode": "ST1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SU19",
@@ -6689,11 +4461,7 @@
     "adrgCode": "SU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SV11",
@@ -6701,11 +4469,7 @@
     "adrgCode": "SV1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SV13",
@@ -6713,11 +4477,7 @@
     "adrgCode": "SV1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SV15",
@@ -6725,11 +4485,7 @@
     "adrgCode": "SV1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SZ13",
@@ -6737,11 +4493,7 @@
     "adrgCode": "SZ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "SZ15",
@@ -6749,11 +4501,7 @@
     "adrgCode": "SZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TB19",
@@ -6761,11 +4509,7 @@
     "adrgCode": "TB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TR19",
@@ -6773,11 +4517,7 @@
     "adrgCode": "TR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TR29",
@@ -6785,11 +4525,7 @@
     "adrgCode": "TR2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TS19",
@@ -6797,11 +4533,7 @@
     "adrgCode": "TS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TS29",
@@ -6809,11 +4541,7 @@
     "adrgCode": "TS2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TT13",
@@ -6821,11 +4549,7 @@
     "adrgCode": "TT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TT15",
@@ -6833,11 +4557,7 @@
     "adrgCode": "TT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TT29",
@@ -6845,11 +4565,7 @@
     "adrgCode": "TT2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TU19",
@@ -6857,11 +4573,7 @@
     "adrgCode": "TU1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TV19",
@@ -6869,11 +4581,7 @@
     "adrgCode": "TV1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TW11",
@@ -6881,11 +4589,7 @@
     "adrgCode": "TW1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TW15",
@@ -6893,11 +4597,7 @@
     "adrgCode": "TW1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TX19",
@@ -6905,11 +4605,7 @@
     "adrgCode": "TX1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "TY19",
@@ -6917,11 +4613,7 @@
     "adrgCode": "TY1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "UR19",
@@ -6929,11 +4621,7 @@
     "adrgCode": "UR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "US19",
@@ -6941,11 +4629,7 @@
     "adrgCode": "US1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VB13",
@@ -6953,11 +4637,7 @@
     "adrgCode": "VB1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VB15",
@@ -6965,11 +4645,7 @@
     "adrgCode": "VB1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VC13",
@@ -6977,11 +4653,7 @@
     "adrgCode": "VC1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VC15",
@@ -6989,11 +4661,7 @@
     "adrgCode": "VC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VJ11",
@@ -7001,11 +4669,7 @@
     "adrgCode": "VJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VJ13",
@@ -7013,11 +4677,7 @@
     "adrgCode": "VJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VJ15",
@@ -7025,11 +4685,7 @@
     "adrgCode": "VJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VR19",
@@ -7037,11 +4693,7 @@
     "adrgCode": "VR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VS19",
@@ -7049,11 +4701,7 @@
     "adrgCode": "VS1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VS21",
@@ -7061,11 +4709,7 @@
     "adrgCode": "VS2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VS25",
@@ -7073,11 +4717,7 @@
     "adrgCode": "VS2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VT13",
@@ -7085,11 +4725,7 @@
     "adrgCode": "VT1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VT15",
@@ -7097,11 +4733,7 @@
     "adrgCode": "VT1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VZ11",
@@ -7109,11 +4741,7 @@
     "adrgCode": "VZ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "VZ15",
@@ -7121,11 +4749,7 @@
     "adrgCode": "VZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WB19",
@@ -7133,11 +4757,7 @@
     "adrgCode": "WB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WB29",
@@ -7145,11 +4765,7 @@
     "adrgCode": "WB2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WB39",
@@ -7157,11 +4773,7 @@
     "adrgCode": "WB3",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WJ19",
@@ -7169,11 +4781,7 @@
     "adrgCode": "WJ1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WR19",
@@ -7181,11 +4789,7 @@
     "adrgCode": "WR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "WR29",
@@ -7193,11 +4797,7 @@
     "adrgCode": "WR2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XJ13",
@@ -7205,11 +4805,7 @@
     "adrgCode": "XJ1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XJ15",
@@ -7217,11 +4813,7 @@
     "adrgCode": "XJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR19",
@@ -7229,11 +4821,7 @@
     "adrgCode": "XR1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR21",
@@ -7241,11 +4829,7 @@
     "adrgCode": "XR2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR23",
@@ -7253,11 +4837,7 @@
     "adrgCode": "XR2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR25",
@@ -7265,11 +4845,7 @@
     "adrgCode": "XR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR31",
@@ -7277,11 +4853,7 @@
     "adrgCode": "XR3",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR33",
@@ -7289,11 +4861,7 @@
     "adrgCode": "XR3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XR35",
@@ -7301,11 +4869,7 @@
     "adrgCode": "XR3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XS11",
@@ -7313,11 +4877,7 @@
     "adrgCode": "XS1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XS15",
@@ -7325,11 +4885,7 @@
     "adrgCode": "XS1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XS21",
@@ -7337,11 +4893,7 @@
     "adrgCode": "XS2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XS23",
@@ -7349,11 +4901,7 @@
     "adrgCode": "XS2",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XS25",
@@ -7361,11 +4909,7 @@
     "adrgCode": "XS2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XT19",
@@ -7373,11 +4917,7 @@
     "adrgCode": "XT1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XT29",
@@ -7385,11 +4925,7 @@
     "adrgCode": "XT2",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XT33",
@@ -7397,11 +4933,7 @@
     "adrgCode": "XT3",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "XT35",
@@ -7409,11 +4941,7 @@
     "adrgCode": "XT3",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YC11",
@@ -7421,11 +4949,7 @@
     "adrgCode": "YC1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YC13",
@@ -7433,11 +4957,7 @@
     "adrgCode": "YC1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YC15",
@@ -7445,11 +4965,7 @@
     "adrgCode": "YC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YR11",
@@ -7457,11 +4973,7 @@
     "adrgCode": "YR1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YR13",
@@ -7469,11 +4981,7 @@
     "adrgCode": "YR1",
     "conditions": [
       "WITH_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YR15",
@@ -7481,11 +4989,7 @@
     "adrgCode": "YR1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YR21",
@@ -7493,11 +4997,7 @@
     "adrgCode": "YR2",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "YR25",
@@ -7505,11 +5005,7 @@
     "adrgCode": "YR2",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZB19",
@@ -7517,11 +5013,7 @@
     "adrgCode": "ZB1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZC11",
@@ -7529,11 +5021,7 @@
     "adrgCode": "ZC1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZC15",
@@ -7541,11 +5029,7 @@
     "adrgCode": "ZC1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZD19",
@@ -7553,11 +5037,7 @@
     "adrgCode": "ZD1",
     "conditions": [
       "ADRG_ONLY"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZJ11",
@@ -7565,11 +5045,7 @@
     "adrgCode": "ZJ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZJ15",
@@ -7577,11 +5053,7 @@
     "adrgCode": "ZJ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZZ11",
@@ -7589,11 +5061,7 @@
     "adrgCode": "ZZ1",
     "conditions": [
       "WITH_MCC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   },
   {
     "drgCode": "ZZ15",
@@ -7601,10 +5069,6 @@
     "adrgCode": "ZZ1",
     "conditions": [
       "NO_CC"
-    ],
-    "diagnosisCodes": [],
-    "procedureCodes": [],
-    "diagnosisPrefixes": [],
-    "procedurePrefixes": []
+    ]
   }
 ]

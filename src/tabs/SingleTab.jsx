@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { Trash2, ArrowUp } from 'lucide-react';
-import { loadRuleSet, loadRuleSetAsync } from '../services/ruleSetLoader.js';
+import { loadRuleSet, loadRuleSetAsync } from '../services/ruleSetLoader.ts';
 import { searchCodes } from '../services/CodeSearch';
 import { convertGLtoYBCode } from '../services/CodeConversion';
 import { buildPatientInfo, groupSingle, groupAllOrders } from '../services/singleEntry';
-import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.js';
+import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.ts';
 import { ensureSingleTrailingEmpty, reorderWithInfos, normalizeCodesAndInfos, namesSignificantlyDiffer } from './shared.jsx';
 const createEmptyInfo = (overrides = {}) => ({ desc: '', type: '', searchResults: [], showDropdown: false, highlightedIndex: -1, ...overrides });
 const normalizeInfoLength = (infos, targetLength) => {

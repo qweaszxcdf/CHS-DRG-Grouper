@@ -1,6 +1,7 @@
 // Node.js build script to generate browser-friendly JSON files for rules and code lists
 const fs = require('fs');
 const path = require('path');
+const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
 
 // Generic DAT loader: supports 'index' (code->value), and 'simple'/'gray' (code->true)
 function loadDat(filePath, type) {
@@ -37,7 +38,9 @@ function loadDat(filePath, type) {
   return index;
 }
 
-const dataDir = path.resolve(__dirname, '../src/data');
+const projectRoot = path.resolve(__dirname, '..');
+const configResolver = createDrgConfigResolver(projectRoot);
+const dataDir = path.join(projectRoot, 'src/data');
 const versionsDir = path.join(dataDir, 'versions');
 const commonPackagesDir = path.join(dataDir, 'drg-common');
 
@@ -506,7 +509,7 @@ function orderSubgroupRules(rules) {
   return orderedRules;
 }
 
-async function buildExplicitSubgroupRules(parseRule) {
+async function buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRuleContent) {
   const sourceDir = path.join(rulesDir, 'subgroup_rules');
   if (!fs.existsSync(sourceDir)) return [];
 
@@ -520,7 +523,7 @@ async function buildExplicitSubgroupRules(parseRule) {
     return {
       ...item,
       name: String(drg.description || '').trim(),
-      content: item.content.replace(/\+重症监护(?:信息)?/g, ''),
+      content: prepareExplicitSubgroupRuleContent(item.content),
     };
   });
 
@@ -590,6 +593,7 @@ async function buildPackage(scope, config, commonPackage) {
   let mdcRules = [];
   let adrgRules = [];
   let parseRule = null;
+  let prepareExplicitSubgroupRuleContent = null;
   const subgroupRulesSourceDir = path.join(rulesDir, 'subgroup_rules');
   const hasSubgroupRulesSource = fs.existsSync(subgroupRulesSourceDir)
     && fs.readdirSync(subgroupRulesSourceDir).some(filename => filename.endsWith('.dat'));
@@ -599,6 +603,10 @@ async function buildPackage(scope, config, commonPackage) {
       const rp = await import(ruleParserPath);
       parseRule = rp.parseRule;
       if (typeof parseRule !== 'function') throw new Error('ruleParserCore must export parseRule');
+      prepareExplicitSubgroupRuleContent = rp.prepareExplicitSubgroupRuleContent;
+      if (typeof prepareExplicitSubgroupRuleContent !== 'function') {
+        throw new Error('ruleParserCore must export prepareExplicitSubgroupRuleContent');
+      }
     } catch (e) {
       console.error('Failed to import ruleParserCore for build-time parsing — build cannot continue:', e && e.message ? e.message : e);
       throw e;
@@ -644,7 +652,9 @@ async function buildPackage(scope, config, commonPackage) {
 
   console.log('Deriving DRG subgroup rules...');
   const { subgroupRules: derivedRules, skippedDRGList } = deriveSubgroupRules(drgMap, adrgRules);
-  const explicitSubgroupRules = parseRule ? await buildExplicitSubgroupRules(parseRule) : [];
+  const explicitSubgroupRules = parseRule
+    ? await buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRuleContent)
+    : [];
   const explicitSubgroupRuleByCode = new Map(explicitSubgroupRules.map(rule => [rule.drgCode, rule.rule]));
   const attachedRules = derivedRules.map(rule => {
     const adrgRule = explicitSubgroupRuleByCode.get(rule.drgCode);
@@ -702,18 +712,9 @@ function pathToFileUrl(p) {
 }
 
 function readConfigs() {
-  return fs.readdirSync(versionsDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => {
-      const configPath = path.join(versionsDir, entry.name, 'config.json');
-      if (!fs.existsSync(configPath)) throw new Error(`Missing version config: ${configPath}`);
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      if (config.id !== entry.name || !config.packages?.drgCommon) {
-        throw new Error(`Invalid config for ${entry.name}: id and packages.drgCommon are required`);
-      }
-      return config;
-    })
-    .sort((left, right) => left.id.localeCompare(right.id, 'en'));
+  return configResolver.listResolvedVersionConfigs().map(
+    config => config.versionConfig,
+  );
 }
 
 async function runCli() {
@@ -725,7 +726,7 @@ async function runCli() {
 
   if (scope === 'common') {
     if (!requestedId) throw new Error('DRG common package ID is required');
-    const config = configs.find(item => item.packages.drgCommon === requestedId);
+    const config = configs.find(item => item.drgCommon === requestedId);
     if (!config) throw new Error(`DRG common package is not referenced by any version: ${requestedId}`);
     await buildPackage('common', config, requestedId);
     return;
@@ -737,18 +738,18 @@ async function runCli() {
       : configs;
     if (selected.length === 0) throw new Error(`Unknown DRG version: ${requestedId}`);
     for (const config of selected) {
-      await buildPackage('version', config, config.packages.drgCommon);
+      await buildPackage('version', config, config.drgCommon);
     }
     return;
   }
 
-  const commonPackages = [...new Set(configs.map(item => item.packages.drgCommon))].sort();
+  const commonPackages = [...new Set(configs.map(item => item.drgCommon))].sort();
   for (const packageId of commonPackages) {
-    const config = configs.find(item => item.packages.drgCommon === packageId);
+    const config = configs.find(item => item.drgCommon === packageId);
     await buildPackage('common', config, packageId);
   }
   for (const config of configs) {
-    await buildPackage('version', config, config.packages.drgCommon);
+    await buildPackage('version', config, config.drgCommon);
   }
 }
 

@@ -121,6 +121,12 @@ export function loadParsedFile(parsedRows, { delimiterOption = 'PIPE', customDel
       if (multiSiteValue !== '') info.multiSite = multiSiteValue;
     } catch { /* ignore */ }
 
+    try {
+      const intensiveCareRaw = mapping.intensiveCareKey ? cleanCell(row?.[mapping.intensiveCareKey]) : '';
+      const intensiveCareValue = String(intensiveCareRaw ?? '').trim();
+      if (intensiveCareValue !== '') info.intensiveCare = intensiveCareValue;
+    } catch { /* ignore */ }
+
     for (const [field, mappingKey] of [
       ['icuHours', 'icuHoursKey'],
       ['lengthOfStay', 'lengthOfStayKey'],

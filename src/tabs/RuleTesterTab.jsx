@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { parseRule } from '../lib/ruleParserCore.js';
-import { matchesRule } from '../services/GrouperEngine';
-import { loadRuleSet } from '../services/ruleSetLoader.js';
+import { matchesRule } from '../services/GrouperEngine.ts';
+import { loadRuleSet } from '../services/ruleSetLoader.ts';
 const {
   getADRGByCode,
   loadADRGRules,

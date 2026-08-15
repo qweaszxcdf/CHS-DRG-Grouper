@@ -1,20 +1,25 @@
 const fs = require('fs');
 const path = require('path');
+const {
+  COMMON_STRATEGY_DEFAULTS: strategyDefaults,
+  VERSION_STRATEGY_DEFAULTS: versionStrategyDefaults,
+  createDrgConfigResolver,
+} = require('./lib/drg_config.cjs');
 
 const root = path.resolve(__dirname, '..');
+const configResolver = createDrgConfigResolver(root);
 
 const paths = Object.freeze({
   versionsDir: path.join(root, 'src/data/versions'),
   commonDir: path.join(root, 'src/data/drg-common'),
   sharedJsonDir: path.join(root, 'src/data'),
-  defaultVersionConfig: path.join(root, 'src/data/default_version.json'),
   generatedServicesDir: path.join(root, 'src/services/generated'),
 });
 
 const outputFiles = Object.freeze({
-  versionData: path.join(paths.generatedServicesDir, 'versionData.js'),
-  glData: path.join(paths.generatedServicesDir, 'glData.js'),
-  versionRegistry: path.join(paths.generatedServicesDir, 'versionRegistry.js'),
+  versionData: path.join(paths.generatedServicesDir, 'versionData.ts'),
+  glData: path.join(paths.generatedServicesDir, 'glData.ts'),
+  versionRegistry: path.join(paths.generatedServicesDir, 'versionRegistry.ts'),
 
   versionsDir: path.join(paths.generatedServicesDir, 'versions'),
   commonDir: path.join(paths.generatedServicesDir, 'common'),
@@ -50,14 +55,6 @@ const crosswalkFiles = Object.freeze({
   icd9GlToYbRaw: 'icd9cm3_gl_yb_map.json',
 });
 
-const strategyDefaults = Object.freeze({
-  invalidPrincipalProcedureAction: 'null-slot',
-  allowedInvalidPrincipalProcedures: [],
-  allowedGrayPrincipalProcedures: ['99.1000'],
-  mdcyPrincipalDiagnosisOnly: true,
-  allowSecondarySectionPrimaryFallback: false,
-});
-
 function valuesEqual(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
@@ -73,40 +70,13 @@ function getStrategyOverrides(resolvedStrategy) {
   );
 }
 
-const allowedInvalidPrincipalProcedureActions = new Set([
-  'null-slot',
-  'shift',
-  'keep',
-]);
-
-const booleanStrategyFields = Object.freeze([
-  'mdcyPrincipalDiagnosisOnly',
-  'allowSecondarySectionPrimaryFallback',
-]);
-
-const arrayStrategyFields = Object.freeze([
-  'allowedInvalidPrincipalProcedures',
-  'allowedGrayPrincipalProcedures',
-]);
-
-function readJson(filePath, description = filePath) {
-  let raw;
-
-  try {
-    raw = fs.readFileSync(filePath, 'utf8');
-  } catch (error) {
-    throw new Error(`Unable to read ${description}: ${filePath}`, {
-      cause: error,
-    });
-  }
-
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`Invalid JSON in ${description}: ${filePath}`, {
-      cause: error,
-    });
-  }
+function getVersionStrategyOverrides(resolvedStrategy) {
+  return Object.fromEntries(
+    Object.entries(resolvedStrategy).filter(([field, value]) => (
+      !Object.prototype.hasOwnProperty.call(versionStrategyDefaults, field)
+      || !valuesEqual(value, versionStrategyDefaults[field])
+    )),
+  );
 }
 
 function ensureFileExists(filePath, description) {
@@ -121,18 +91,6 @@ function ensureFileExists(filePath, description) {
   }
 }
 
-function ensureDirectoryExists(directoryPath, description) {
-  if (!fs.existsSync(directoryPath)) {
-    throw new Error(`Missing ${description}: ${directoryPath}`);
-  }
-
-  const stat = fs.statSync(directoryPath);
-
-  if (!stat.isDirectory()) {
-    throw new Error(`Expected directory for ${description}: ${directoryPath}`);
-  }
-}
-
 function writeGeneratedFile(filePath, content) {
   const normalizedContent = content.endsWith('\n')
     ? content
@@ -140,6 +98,16 @@ function writeGeneratedFile(filePath, content) {
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, normalizedContent, 'utf8');
+
+  // The generated service layer is intentionally TypeScript-only. Remove the
+  // exact legacy JavaScript sibling after its replacement has been written so
+  // stale runtime modules cannot be picked up by an old import path.
+  if (filePath.endsWith('.ts')) {
+    const legacyPath = filePath.slice(0, -3) + '.js';
+    if (fs.existsSync(legacyPath)) {
+      fs.unlinkSync(legacyPath);
+    }
+  }
 }
 
 function quote(value) {
@@ -150,225 +118,47 @@ function renderJsonImport(variableName, importPath) {
   return `import ${variableName} from ${quote(importPath)} with { type: 'json' };`;
 }
 
-function listVersionIds() {
-  ensureDirectoryExists(paths.versionsDir, 'versions directory');
-
-  return fs
-    .readdirSync(paths.versionsDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => entry.name)
-    .sort((left, right) => left.localeCompare(right, 'en'));
-}
-
-function requireNonEmptyString(config, field, versionId) {
-  const value = config[field];
-
-  if (typeof value !== 'string' || value.trim() === '') {
-    throw new Error(
-      `${versionId}/config.json requires a non-empty string: ${field}`,
-    );
-  }
-
-  return value.trim();
-}
-
-function validateStrategy(commonPackageId, suppliedStrategy) {
-  if (
-    suppliedStrategy !== undefined &&
-    (
-      suppliedStrategy === null ||
-      typeof suppliedStrategy !== 'object' ||
-      Array.isArray(suppliedStrategy)
-    )
-  ) {
-    throw new Error(
-      `drg-common/${commonPackageId}/config.json strategy must be an object`,
-    );
-  }
-
-  const strategy = {
-    ...strategyDefaults,
-    ...(suppliedStrategy || {}),
-  };
-  // Deprecated legacy option: new-technique status is never inferred from procedures.
-  delete strategy.autoDetectNewTechnique;
-
-  if (
-    !allowedInvalidPrincipalProcedureActions.has(
-      strategy.invalidPrincipalProcedureAction,
-    )
-  ) {
-    throw new Error(
-      `drg-common/${commonPackageId}/config.json ` +
-      'strategy.invalidPrincipalProcedureAction ' +
-      'must be null-slot, shift, or keep',
-    );
-  }
-
-  for (const field of arrayStrategyFields) {
-    const value = strategy[field];
-
-    if (
-      !Array.isArray(value) ||
-      value.some(item => typeof item !== 'string' || item.trim() === '')
-    ) {
-      throw new Error(
-        `drg-common/${commonPackageId}/config.json strategy.${field} ` +
-        'must be an array of non-empty strings',
-      );
-    }
-
-    strategy[field] = [...new Set(value.map(item => item.trim()))];
-  }
-
-  for (const field of booleanStrategyFields) {
-    if (typeof strategy[field] !== 'boolean') {
-      throw new Error(
-        `drg-common/${commonPackageId}/config.json ` +
-        `strategy.${field} must be boolean`,
-      );
-    }
-  }
-
-  return Object.freeze(strategy);
-}
-
 function readCommonConfig(commonPackageId) {
-  const configPath = path.join(
-    paths.commonDir,
-    commonPackageId,
-    'config.json',
-  );
-
-  ensureFileExists(configPath, `${commonPackageId} common DRG config`);
-  const rawConfig = readJson(
-    configPath,
-    `drg-common/${commonPackageId}/config.json`,
-  );
-
-  if (
-    rawConfig === null ||
-    typeof rawConfig !== 'object' ||
-    Array.isArray(rawConfig)
-  ) {
-    throw new Error(
-      `drg-common/${commonPackageId}/config.json must contain a JSON object`,
-    );
-  }
-
-  const id = requireNonEmptyString(
-    rawConfig,
-    'id',
-    `drg-common/${commonPackageId}`,
-  );
-  if (id !== commonPackageId) {
-    throw new Error(
-      `drg-common/${commonPackageId}/config.json id must equal directory name`,
-    );
-  }
+  const resolvedConfig = configResolver.resolveCommonConfig(commonPackageId);
 
   return Object.freeze({
-    ...rawConfig,
-    id,
-    strategy: Object.freeze(getStrategyOverrides(validateStrategy(
-      commonPackageId,
-      rawConfig.strategy,
-    ))),
+    ...resolvedConfig.commonConfig,
+    strategy: Object.freeze(getStrategyOverrides(
+      resolvedConfig.commonStrategy,
+    )),
   });
 }
 
 function readVersionConfig(versionId) {
-  const configPath = path.join(
-    paths.versionsDir,
-    versionId,
-    'config.json',
+  const resolvedConfig = configResolver.resolveVersionConfig(versionId);
+  const rawConfig = resolvedConfig.versionConfig;
+
+  // Resolve build-time ICD inputs through the referenced common package, while
+  // keeping the generated version registry free of duplicated package fields.
+  readCommonConfig(resolvedConfig.drgCommon);
+  const resolvedPackages = Object.freeze({
+    clinicalIcd: resolvedConfig.clinicalIcd,
+    insuranceIcd: resolvedConfig.insuranceIcd,
+  });
+  const versionStrategy = getVersionStrategyOverrides(
+    resolvedConfig.versionStrategy,
   );
-
-  ensureFileExists(configPath, `${versionId} version config`);
-
-  const rawConfig = readJson(
-    configPath,
-    `${versionId}/config.json`,
+  const versionConfig = Object.fromEntries(
+    Object.entries(rawConfig).filter(([field]) => field !== 'strategy'),
   );
-
-  if (
-    rawConfig === null ||
-    typeof rawConfig !== 'object' ||
-    Array.isArray(rawConfig)
-  ) {
-    throw new Error(
-      `${versionId}/config.json must contain a JSON object`,
-    );
-  }
-
-  const id = requireNonEmptyString(rawConfig, 'id', versionId);
-  const label = requireNonEmptyString(rawConfig, 'label', versionId);
-  const packages = rawConfig.packages;
-  if (!packages || typeof packages !== 'object' || Array.isArray(packages)) {
-    throw new Error(`${versionId}/config.json requires packages`);
-  }
-  for (const field of ['drgCommon', 'clinicalIcd', 'insuranceIcd']) {
-    requireNonEmptyString(packages, field, `${versionId}.packages`);
-  }
-
-  if (id !== versionId) {
-    throw new Error(
-      `${versionId}/config.json id must equal directory name`,
-    );
-  }
-
-  if (Object.prototype.hasOwnProperty.call(rawConfig, 'strategy')) {
-    throw new Error(
-      `${versionId}/config.json strategy belongs to its ` +
-      'packages.drgCommon config',
-    );
-  }
-
-  const commonConfig = readCommonConfig(packages.drgCommon);
 
   return Object.freeze({
-    ...rawConfig,
-    id,
-    label,
-    packages: Object.freeze({ ...packages }),
-    strategy: commonConfig.strategy,
+    ...versionConfig,
+    id: resolvedConfig.id,
+    label: resolvedConfig.label,
+    drgCommon: resolvedConfig.drgCommon,
+    resolvedPackages,
+    versionStrategy: Object.freeze(versionStrategy),
   });
 }
 
 function readDefaultVersion(versionIds) {
-  ensureFileExists(
-    paths.defaultVersionConfig,
-    'default version config',
-  );
-
-  const config = readJson(
-    paths.defaultVersionConfig,
-    'default_version.json',
-  );
-
-  if (
-    !config ||
-    typeof config !== 'object' ||
-    Array.isArray(config)
-  ) {
-    throw new Error(
-      'default_version.json must contain a JSON object',
-    );
-  }
-
-  const defaultVersion = config.defaultVersion;
-
-  if (
-    typeof defaultVersion !== 'string' ||
-    !versionIds.includes(defaultVersion)
-  ) {
-    throw new Error(
-      'default_version.json.defaultVersion must reference ' +
-      'an existing version',
-    );
-  }
-
-  return defaultVersion;
+  return configResolver.readDefaultVersion(versionIds);
 }
 
 function validateCommonFiles(packageId) {
@@ -402,11 +192,11 @@ function validateVariantFiles(versionId) {
 }
 
 function getCommonModuleFilename(packageId) {
-  return `${packageId}.js`;
+  return `${packageId}.ts`;
 }
 
 function getVersionModuleFilename(versionId) {
-  return `${versionId}.js`;
+  return `${versionId}.ts`;
 }
 
 function generateCommonModule(packageId) {
@@ -419,21 +209,17 @@ function generateCommonModule(packageId) {
     ),
   );
 
-  const fields = Object.keys(commonFiles);
-
   const content = [
     '// Generated by scripts/generate_version_data.cjs. Do not edit.',
     ...imports,
     '',
-    `export const commonData = Object.freeze({ ${fields.join(', ')} });`,
+    `export const commonData = Object.freeze({ ${Object.keys(commonFiles).join(', ')} });`,
   ].join('\n');
 
   const moduleFilename = getCommonModuleFilename(packageId);
 
-  writeGeneratedFile(
-    path.join(outputFiles.commonDir, moduleFilename),
-    content,
-  );
+  const modulePath = path.join(outputFiles.commonDir, moduleFilename);
+  writeGeneratedFile(modulePath, content);
 
   return moduleFilename;
 }
@@ -448,21 +234,17 @@ function generateVersionModule(versionId, config) {
     ),
   );
 
-  const fields = Object.keys(variantFiles);
-
   const content = [
     '// Generated by scripts/generate_version_data.cjs. Do not edit.',
     ...imports,
     '',
-    `export const versionData = Object.freeze({ ${fields.join(', ')} });`,
+    `export const versionData = Object.freeze({ ${Object.keys(variantFiles).join(', ')} });`,
   ].join('\n');
 
   const moduleFilename = getVersionModuleFilename(versionId);
 
-  writeGeneratedFile(
-    path.join(outputFiles.versionsDir, moduleFilename),
-    content,
-  );
+  const modulePath = path.join(outputFiles.versionsDir, moduleFilename);
+  writeGeneratedFile(modulePath, content);
 
   return moduleFilename;
 }
@@ -480,8 +262,9 @@ function generatePackageModule(kind, packageId, files, sourceDir, outputDir) {
     '',
     `export const ${kind}Data = Object.freeze({ ${Object.keys(files).join(', ')} });`,
   ].join('\n');
-  const filename = `${packageId}.js`;
-  writeGeneratedFile(path.join(outputDir, filename), content);
+  const filename = `${packageId}.ts`;
+  const modulePath = path.join(outputDir, filename);
+  writeGeneratedFile(modulePath, content);
   return filename;
 }
 
@@ -492,25 +275,26 @@ function buildVersionDescriptors(configs) {
   const crosswalkModules = new Map();
 
   return configs.map(config => {
-    let commonModule = commonModules.get(config.packages.drgCommon);
+    const packages = config.resolvedPackages;
+    let commonModule = commonModules.get(config.drgCommon);
 
     if (!commonModule) {
-      commonModule = generateCommonModule(config.packages.drgCommon);
-      commonModules.set(config.packages.drgCommon, commonModule);
+      commonModule = generateCommonModule(config.drgCommon);
+      commonModules.set(config.drgCommon, commonModule);
     }
 
     const versionModule = generateVersionModule(config.id, config);
-    let clinicalModule = clinicalModules.get(config.packages.clinicalIcd);
+    let clinicalModule = clinicalModules.get(packages.clinicalIcd);
     if (!clinicalModule) {
-      clinicalModule = generatePackageModule('clinical', config.packages.clinicalIcd, clinicalFiles, 'icd-datasets/clinical', path.join(outputFiles.packagesDir, 'clinical'));
-      clinicalModules.set(config.packages.clinicalIcd, clinicalModule);
+      clinicalModule = generatePackageModule('clinical', packages.clinicalIcd, clinicalFiles, 'icd-datasets/clinical', path.join(outputFiles.packagesDir, 'clinical'));
+      clinicalModules.set(packages.clinicalIcd, clinicalModule);
     }
-    let insuranceModule = insuranceModules.get(config.packages.insuranceIcd);
+    let insuranceModule = insuranceModules.get(packages.insuranceIcd);
     if (!insuranceModule) {
-      insuranceModule = generatePackageModule('insurance', config.packages.insuranceIcd, insuranceFiles, 'icd-datasets/insurance', path.join(outputFiles.packagesDir, 'insurance'));
-      insuranceModules.set(config.packages.insuranceIcd, insuranceModule);
+      insuranceModule = generatePackageModule('insurance', packages.insuranceIcd, insuranceFiles, 'icd-datasets/insurance', path.join(outputFiles.packagesDir, 'insurance'));
+      insuranceModules.set(packages.insuranceIcd, insuranceModule);
     }
-    const crosswalkId = `${config.packages.clinicalIcd}__${config.packages.insuranceIcd}`;
+    const crosswalkId = `${packages.clinicalIcd}__${packages.insuranceIcd}`;
     let crosswalkModule = crosswalkModules.get(crosswalkId);
     if (!crosswalkModule) {
       crosswalkModule = generatePackageModule('crosswalk', crosswalkId, crosswalkFiles, 'crosswalks', path.join(outputFiles.packagesDir, 'crosswalks'));
@@ -519,6 +303,7 @@ function buildVersionDescriptors(configs) {
 
     return Object.freeze({
       config,
+      packages,
       commonModule,
       versionModule,
       clinicalModule,
@@ -551,9 +336,9 @@ function renderVersionLoader(descriptor) {
 function generateGLDataFile(descriptors) {
   const clinicalLoaders = new Map();
   const crosswalkLoaders = new Map();
-  for (const { config, clinicalModule, crosswalkModule } of descriptors) {
-    clinicalLoaders.set(config.packages.clinicalIcd, clinicalModule);
-    crosswalkLoaders.set(`${config.packages.clinicalIcd}__${config.packages.insuranceIcd}`, crosswalkModule);
+  for (const { packages, clinicalModule, crosswalkModule } of descriptors) {
+    clinicalLoaders.set(packages.clinicalIcd, clinicalModule);
+    crosswalkLoaders.set(`${packages.clinicalIcd}__${packages.insuranceIcd}`, crosswalkModule);
   }
   const renderLoaders = (entries, kind, pathPart) => [...entries.entries()].map(([id, module]) => [
     `  ${quote(id)}: () => import('./packages/${pathPart}/${module}').then(({ ${kind}Data }) => ${kind}Data),`,
@@ -562,18 +347,20 @@ function generateGLDataFile(descriptors) {
   const crosswalkEntries = renderLoaders(crosswalkLoaders, 'crosswalk', 'crosswalks');
   const content = [
     '// Generated by scripts/generate_version_data.cjs. Do not edit.',
-    'const clinicalLoaders = Object.freeze({',
+    'type GlDataLoader = () => Promise<Record<string, unknown>>;',
+    '',
+    'const clinicalLoaders: Readonly<Record<string, GlDataLoader>> = Object.freeze({',
     ...clinicalEntries,
     '});',
-    'const crosswalkLoaders = Object.freeze({',
+    'const crosswalkLoaders: Readonly<Record<string, GlDataLoader>> = Object.freeze({',
     ...crosswalkEntries,
     '});',
     '',
-    'export async function loadGlData(packages) {',
+    'export async function loadGlData(packages?: { clinicalIcd?: string; insuranceIcd?: string } | null): Promise<Record<string, unknown>> {',
     '  const clinicalId = packages?.clinicalIcd;',
     '  const insuranceId = packages?.insuranceIcd;',
     '  const crosswalkId = `${clinicalId}__${insuranceId}`;',
-    '  const clinicalLoader = clinicalLoaders[clinicalId];',
+    "  const clinicalLoader = clinicalLoaders[clinicalId ?? ''];",
     '  const crosswalkLoader = crosswalkLoaders[crosswalkId];',
     '  if (!clinicalLoader || !crosswalkLoader) {',
     '    throw new Error(`Unknown ICD package combination: ${crosswalkId}`);',
@@ -600,31 +387,36 @@ function generateVersionDataFile(descriptors, defaultVersion) {
 
   const content = [
     '// Generated by scripts/generate_version_data.cjs. Do not edit.',
-    'const versionLoaders = Object.freeze({',
+    "import type { RuleData } from '../../types/rules.js';",
+    "import { normalizeRuleData } from '../ruleData.ts';",
+    '',
+    'type VersionLoader = () => Promise<Record<string, unknown>>;',
+    '',
+    'const versionLoaders: Readonly<Record<string, VersionLoader>> = Object.freeze({',
     ...loaderEntries,
     '});',
     '',
-    'const versionDataCache = new Map();',
+    'const versionDataCache = new Map<string, RuleData>();',
     '',
-    'async function loadAndCacheVersionData(version) {',
+    'async function loadAndCacheVersionData(version: string): Promise<RuleData> {',
     '  const loader = versionLoaders[version];',
     '',
     '  if (!loader) {',
     '    throw new Error(`Unknown DRG rule version: ${version}`);',
     '  }',
     '',
-    '  const data = await loader();',
+    '  const data = normalizeRuleData(await loader());',
     '  versionDataCache.set(version, data);',
     '  return data;',
     '}',
     '',
-    `const defaultVersionData = await loadAndCacheVersionData(${quote(defaultVersion)});`,
+    `const defaultVersionData: RuleData = await loadAndCacheVersionData(${quote(defaultVersion)});`,
     '',
-    'export const versionDataById = Object.freeze({',
+    'export const versionDataById: Readonly<Record<string, RuleData>> = Object.freeze({',
     `  ${quote(defaultVersion)}: defaultVersionData,`,
     '});',
     '',
-    'export async function loadVersionData(version) {',
+    'export async function loadVersionData(version: string): Promise<RuleData> {',
     '  const cached = versionDataCache.get(version);',
     '  if (cached) return cached;',
     '',
@@ -639,16 +431,18 @@ function renderRegistryEntry(config, defaultVersion) {
   const fields = [
     `id: ${quote(config.id)}`,
     `label: ${quote(config.label)}`,
-    `packages: ${JSON.stringify(config.packages)}`,
+    `drgCommon: ${quote(config.drgCommon)}`,
   ];
 
   if (config.id === defaultVersion) {
     fields.push(`data: versionDataById[${quote(config.id)}]`);
   }
 
-  fields.push(
-    `strategy: Object.freeze(${JSON.stringify(config.strategy)})`,
-  );
+  if (Object.keys(config.versionStrategy).length > 0) {
+    fields.push(
+      `versionStrategy: Object.freeze(${JSON.stringify(config.versionStrategy)})`,
+    );
+  }
 
   return [
     `  ${quote(config.id)}: Object.freeze({`,
@@ -661,49 +455,97 @@ function generateVersionRegistryFile(configs, defaultVersion) {
   const registryEntries = configs.map(
     config => renderRegistryEntry(config, defaultVersion),
   );
+  const commonRegistryEntries = [
+    ...new Set(configs.map(config => config.drgCommon)),
+  ].sort((left, right) => left.localeCompare(right, 'en')).map(packageId => {
+    const commonConfig = readCommonConfig(packageId);
+    return [
+      `  ${quote(packageId)}: Object.freeze({`,
+      `    packages: Object.freeze(${JSON.stringify(commonConfig.packages)}),`,
+      `    strategy: Object.freeze(${JSON.stringify(commonConfig.strategy)}),`,
+      '  }),',
+    ].join('\n');
+  });
 
   const content = [
     '// Generated by scripts/generate_version_data.cjs. Do not edit.',
-    "import { versionDataById } from './versionData.js';",
+    "import { versionDataById } from './versionData.ts';",
+    "import type { CommonStrategy, VersionDefinition, VersionId, VersionPackages, VersionStrategy, VersionSummary } from '../../types/grouper.js';",
+    "import type { RuleData } from '../../types/rules.js';",
     '',
-    `export const DEFAULT_RULE_VERSION = ${quote(defaultVersion)};`,
+    'type RawCommonDefinition = {',
+    '  packages: VersionPackages;',
+    '  strategy: Partial<CommonStrategy>;',
+    '};',
     '',
-    `export const DEFAULT_VERSION_STRATEGY = Object.freeze(${JSON.stringify(strategyDefaults)});`,
+    'type RawVersionDefinition = {',
+    '  id: VersionId;',
+    '  label: string;',
+    '  drgCommon: string;',
+    '  data?: RuleData;',
+    '  versionStrategy?: Partial<VersionStrategy>;',
+    '};',
     '',
-    'export function resolveVersionStrategy(strategy = {}) {',
+    `export const DEFAULT_RULE_VERSION: VersionId = ${quote(defaultVersion)};`,
+    '',
+    `export const DEFAULT_COMMON_STRATEGY: CommonStrategy = Object.freeze(${JSON.stringify(strategyDefaults)});`,
+    `export const DEFAULT_VERSION_STRATEGY: VersionStrategy = Object.freeze(${JSON.stringify(versionStrategyDefaults)});`,
+    '',
+    'export function resolveCommonStrategy(strategy: Partial<CommonStrategy> = {}): CommonStrategy {',
+    '  return Object.freeze({',
+    '    ...DEFAULT_COMMON_STRATEGY,',
+    '    ...strategy,',
+    '  });',
+    '}',
+    '',
+    'export function resolveVersionStrategy(strategy: Partial<VersionStrategy> = {}): VersionStrategy {',
     '  return Object.freeze({',
     '    ...DEFAULT_VERSION_STRATEGY,',
     '    ...strategy,',
     '  });',
     '}',
     '',
-    'export const VERSION_REGISTRY = Object.freeze({',
+    'export const DRG_COMMON_REGISTRY: Readonly<Record<string, RawCommonDefinition>> = Object.freeze({',
+    ...commonRegistryEntries,
+    '});',
+    '',
+    'export const VERSION_REGISTRY: Readonly<Record<VersionId, RawVersionDefinition>> = Object.freeze({',
     ...registryEntries,
     '});',
     '',
     'export function getVersionDefinition(',
-    '  version = DEFAULT_RULE_VERSION,',
-    ') {',
+    '  version: VersionId = DEFAULT_RULE_VERSION,',
+    '): VersionDefinition {',
     '  const definition = VERSION_REGISTRY[version];',
     '',
     '  if (!definition) {',
     '    throw new Error(`Unknown DRG rule version: ${version}`);',
     '  }',
     '',
+    '  const commonDefinition = DRG_COMMON_REGISTRY[definition.drgCommon];',
+    '  if (!commonDefinition) {',
+    '    throw new Error(',
+    '      `Unknown common DRG package: ${definition.drgCommon}`,',
+    '    );',
+    '  }',
+    '',
     '  return Object.freeze({',
     '    ...definition,',
-    '    strategy: resolveVersionStrategy(definition.strategy),',
+    '    packages: Object.freeze({',
+    '      ...commonDefinition.packages,',
+    '    }),',
+    '    commonStrategy: resolveCommonStrategy(',
+    '      commonDefinition.strategy,',
+    '    ),',
+    '    versionStrategy: resolveVersionStrategy(definition.versionStrategy),',
     '  });',
     '}',
     '',
-    'export function listVersionDefinitions() {',
-    '  return Object.values(VERSION_REGISTRY).map((',
-    '    { id, label, packages },',
-    '  ) => ({',
-    '    id,',
-    '    label,',
-    '    packages,',
-    '  }));',
+    'export function listVersionDefinitions(): VersionSummary[] {',
+    '  return Object.keys(VERSION_REGISTRY).map(version => {',
+    '    const { id, label, drgCommon, packages } = getVersionDefinition(version);',
+    '    return { id, label, drgCommon, packages };',
+    '  });',
     '}',
   ].join('\n');
 
@@ -711,7 +553,7 @@ function generateVersionRegistryFile(configs, defaultVersion) {
 }
 
 function main() {
-  const versionIds = listVersionIds();
+  const versionIds = configResolver.listVersionIds();
 
   if (versionIds.length === 0) {
     throw new Error(
@@ -734,7 +576,7 @@ function main() {
   generateVersionRegistryFile(configs, defaultVersion);
 
   const commonPackages = new Set(
-    configs.map(config => config.packages.drgCommon),
+    configs.map(config => config.drgCommon),
   );
 
   console.log('');

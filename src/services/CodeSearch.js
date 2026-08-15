@@ -1,5 +1,5 @@
-import { DEFAULT_RULE_VERSION, getVersionDefinition } from './generated/versionRegistry.js';
-import { loadRuleSet } from './ruleSetLoader.js';
+import { DEFAULT_RULE_VERSION, getVersionDefinition } from './generated/versionRegistry.ts';
+import { loadRuleSet } from './ruleSetLoader.ts';
 import { getGLData, preloadGLData } from './glDataLoader.js';
 
 // DRG-common and ICD dictionaries are package-specific. Final DRG maps remain
@@ -11,7 +11,7 @@ const icdIndexStates = new Map();
 const verboseSearchLogs = !!(import.meta.env && import.meta.env.DEV);
 
 function getDrgCommonIndexState(version) {
-    const { drgCommon } = getVersionDefinition(version).packages;
+    const { drgCommon } = getVersionDefinition(version);
     if (!drgCommonIndexStates.has(drgCommon)) {
         drgCommonIndexStates.set(drgCommon, { codeIndex: [], buckets: {}, isBuilt: false });
     }

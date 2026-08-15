@@ -1,11 +1,37 @@
-export function createRuleSet(data) {
+import type {
+  AdrgDefinition,
+  DrgSubgroupRule,
+  MdcDefinition,
+  NameMap,
+  NameMapWithInitials,
+  RuleData,
+  RuleSet,
+} from '../types/rules.js';
+
+function splitNameMap(raw: NameMapWithInitials | undefined): {
+  names: NameMap;
+  initials: Record<string, string>;
+} {
+  const names: NameMap = {};
+  const initials = raw?._initials ?? {};
+
+  for (const [code, value] of Object.entries(raw ?? {})) {
+    if (code !== '_initials' && typeof value === 'string') {
+      names[code] = value;
+    }
+  }
+
+  return { names, initials };
+}
+
+export function createRuleSet(data: RuleData): RuleSet {
 const { adrgRules, mdcRules, ccCodes, mccCodes, cceCodes, zdInvalid, ssInvalid, icd10GrayJson, icd9GrayJson, drgSubgroupRules, drgMap, glDiagNames = {}, glProcNames = {}, ybDiagNames, ybProcNames, icdGlToYbRaw = {}, icd9GlToYbRaw = {} } = data;
 
-// Split _initials from name maps once at module load — O(1) destructuring, not per-call.
-const { _initials: _glDiagInitials, ...glDiagNamesOnly } = glDiagNames;
-const { _initials: _glProcInitials, ...glProcNamesOnly } = glProcNames;
-const { _initials: _ybDiagInitials, ...ybDiagNamesOnly } = ybDiagNames;
-const { _initials: _ybProcInitials, ...ybProcNamesOnly } = ybProcNames;
+// Split _initials from name maps once at module load, not per lookup.
+const { names: glDiagNamesOnly, initials: _glDiagInitials } = splitNameMap(glDiagNames);
+const { names: glProcNamesOnly, initials: _glProcInitials } = splitNameMap(glProcNames);
+const { names: ybDiagNamesOnly, initials: _ybDiagInitials } = splitNameMap(ybDiagNames);
+const { names: ybProcNamesOnly, initials: _ybProcInitials } = splitNameMap(ybProcNames);
 
 // --- CC/MCC/CCE loaders ---
 function loadCCCodes() {
@@ -19,19 +45,19 @@ function loadCCECodes() {
 }
 
 // --- Invalid Code Checkers ---
-function isInvalidDiagnosis(code) {
-    return !!zdInvalid[code];
+function isInvalidDiagnosis(code: string | null | undefined) {
+    return code ? !!zdInvalid[code] : false;
 }
-function isInvalidProcedure(code) {
-    return !!ssInvalid[code];
-}
-
-function isGrayDiag(code) {
-    return !!icd10GrayJson[code];
+function isInvalidProcedure(code: string | null | undefined) {
+    return code ? !!ssInvalid[code] : false;
 }
 
-function isGrayProc(code) {
-    return !!icd9GrayJson[code];
+function isGrayDiag(code: string | null | undefined) {
+    return code ? !!icd10GrayJson[code] : false;
+}
+
+function isGrayProc(code: string | null | undefined) {
+    return code ? !!icd9GrayJson[code] : false;
 }
 
 // --- DRG descriptions and weights ---
@@ -41,7 +67,7 @@ function loadDRGSubgroupRules() {
 }
 
 // Build an index of subgroup rules by ADRG code for fast lookup during grouping
-const adrgToSubgroupRules = new Map();
+const adrgToSubgroupRules = new Map<string, DrgSubgroupRule[]>();
 if (Array.isArray(drgSubgroupRules)) {
     for (const r of drgSubgroupRules) {
         const list = adrgToSubgroupRules.get(r.adrgCode) || [];
@@ -50,7 +76,7 @@ if (Array.isArray(drgSubgroupRules)) {
     }
 }
 
-function loadDRGSubgroupRulesForADRG(adrgCode) {
+function loadDRGSubgroupRulesForADRG(adrgCode: string) {
     return adrgToSubgroupRules.get(adrgCode) || [];
 }
 
@@ -59,9 +85,9 @@ function loadDRGSubgroupRulesForADRG(adrgCode) {
 
 // --- Grouper Data Definitions ---
 
-const mdcMap = {};
-const adrgMap = {};
-const adrgList = [];
+const mdcMap: Record<string, MdcDefinition> = {};
+const adrgMap: Record<string, AdrgDefinition> = {};
+const adrgList: AdrgDefinition[] = [];
 
 // Process MDC entries (use only build-time parsed fields)
 if (Array.isArray(mdcRules)) {
@@ -72,7 +98,7 @@ if (Array.isArray(mdcRules)) {
 
             mdcMap[item.code] = {
                 code: item.code,
-                description: item.name,
+                description: item.name ?? '',
                 identifyingDiagnoses,
                 mdczCategories
             };
@@ -99,7 +125,7 @@ if (Array.isArray(adrgRules)) {
 }
 
 // Build a mapping from ADRG first-letter -> ADRG objects for fast lookup
-const adrgByFirstChar = new Map();
+const adrgByFirstChar = new Map<string, AdrgDefinition[]>();
 for (const a of adrgList) {
     const k = String(a.code || '').charAt(0);
     const arr = adrgByFirstChar.get(k) || [];
@@ -108,12 +134,12 @@ for (const a of adrgList) {
 }
 
 // Cached resolver: compute ADRG objects for a given MDC code using the first-char rule
-const _adrgByMdcCache = new Map();
-function getADRGsForMDC(mdcCode) {
+const _adrgByMdcCache = new Map<string, AdrgDefinition[]>();
+function getADRGsForMDC(mdcCode: string | null | undefined): AdrgDefinition[] {
     if (!mdcCode) return [];
     // Only resolve ADRGs for known MDC codes
     if (!mdcByCode.has(mdcCode)) return [];
-    if (_adrgByMdcCache.has(mdcCode)) return _adrgByMdcCache.get(mdcCode);
+    if (_adrgByMdcCache.has(mdcCode)) return _adrgByMdcCache.get(mdcCode) as AdrgDefinition[];
 
     const mdcLetter = String(mdcCode).replace(/^MDC/, '').charAt(0);
     const list = adrgByFirstChar.get(mdcLetter) || [];
@@ -123,21 +149,22 @@ function getADRGsForMDC(mdcCode) {
 
 // --- Post-processing: build quick lookup maps and Sets for fast runtime checks
 // Convert identifyingDiagnoses arrays to Sets and build mdcByCode
-const mdcByCode = new Map();
+const mdcByCode = new Map<string, MdcDefinition>();
 for (const [code, m] of Object.entries(mdcMap)) {
     const ids = Array.isArray(m.identifyingDiagnoses) ? m.identifyingDiagnoses : [];
     m.identifyingDiagnosesSet = new Set(ids);
-    mdcByCode.set(code, mdcMap[code]);
+    const mdc = mdcMap[code];
+    if (mdc) mdcByCode.set(code, mdc);
 }
 
 // Build diag -> MDCZ categories mapping for fast MDCZ detection
-const diagToMDCZCategories = new Map();
-const mdczItem = Array.isArray(mdcRules) ? mdcRules.find(r => r.type === 'MDC' && r.code === 'MDCZ') : undefined;
+const diagToMDCZCategories = new Map<string, Set<string>>();
+const mdczItem = Array.isArray(mdcRules) ? mdcRules.find((r) => r.type === 'MDC' && r.code === 'MDCZ') : undefined;
 if (mdczItem && mdczItem.mdczCategories) {
     const categories = mdczItem.mdczCategories;
     for (const [cat, codes] of Object.entries(categories)) {
         for (const code of codes) {
-            const s = diagToMDCZCategories.get(code) || new Set();
+            const s = diagToMDCZCategories.get(code) || new Set<string>();
             s.add(cat);
             diagToMDCZCategories.set(code, s);
         }
@@ -146,7 +173,7 @@ if (mdczItem && mdczItem.mdczCategories) {
 
 const MDCs = Object.values(mdcMap)
     .sort((a, b) => a.code.localeCompare(b.code));
-function getADRGByCode(code) {
+function getADRGByCode(code: string) {
     return adrgMap[code];
 }
 

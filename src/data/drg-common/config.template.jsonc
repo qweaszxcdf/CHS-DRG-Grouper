@@ -1,0 +1,18 @@
+{
+  // Must equal the common DRG package directory name.
+  "id": "drg-common-package",
+  // ICD packages used by every version that references this common package.
+  "packages": {
+    "clinicalIcd": "clinical-icd-package",
+    "insuranceIcd": "insurance-icd-package"
+  },
+  // Grouping behavior shared by every edition using this common DRG package.
+  "strategy": {
+    // How invalid principal procedures affect the procedure list.
+    "invalidPrincipalProcedureAction": "null-slot",
+    "allowedInvalidPrincipalProcedures": [],
+    "allowedGrayPrincipalProcedures": ["99.1000"],
+    "mdcyPrincipalDiagnosisOnly": true,
+    "allowSecondarySectionPrimaryFallback": false
+  }
+}

@@ -7,8 +7,8 @@
  * 3) React components for rendering the tree and node details
  */
 import { useMemo, useState, useEffect, useRef, useCallback, memo, Fragment } from 'react';
-import { loadRuleSetAsync } from '../services/ruleSetLoader.js';
-import { getVersionDefinition } from '../services/generated/versionRegistry.js';
+import { loadRuleSetAsync } from '../services/ruleSetLoader.ts';
+import { getVersionDefinition } from '../services/generated/versionRegistry.ts';
 
 // --- Shared helpers
 
@@ -1033,7 +1033,7 @@ export default function MdcTreeTab({ version }) {
     if (!ruleSet) return EMPTY_LIST;
     const cached = MDC_TREE_CACHE.get(version);
     if (cached) return cached;
-    const commonVersion = getVersionDefinition(version).packages?.drgCommon || version;
+    const commonVersion = getVersionDefinition(version).drgCommon || version;
     const nodes = buildMdcTreeNodes(mdcRules, adrgNameByCode, drgByAdrg, ruleSet.getADRGsForMDC, commonVersion);
     MDC_TREE_CACHE.set(version, nodes);
     return nodes;

@@ -1,21 +1,32 @@
-import { loadRuleSet } from './ruleSetLoader.js';
+import { loadRuleSet } from './ruleSetLoader.ts';
+import { getVersionDefinition } from './generated/versionRegistry.ts';
+import type {
+  BatchGroupingResult,
+  BatchGroupingRow,
+  CodeListInput,
+  CreateGrouperEngineOptions,
+  GrouperEngine,
+  GroupingResult,
+  MatchTraceEntry,
+  NormalizedPatientInfo,
+  PatientInfoInput,
+} from '../types/grouper.js';
 
 // lite build flag - allows dead-code elimination when VITE_LITE=true
 let IS_LITE = import.meta.env?.VITE_LITE === 'true';
 
 // helper for tests to override behavior
-export function _setLite(val) { IS_LITE = !!val; }
+export function _setLite(val: unknown): void { IS_LITE = !!val; }
 
 // Moved helpers (see `src/services/grouper/*`)
-import { createMdcAdrgSelection } from './grouper/mdcAdrgSelection.js';
-import { createSubgroupEvaluator } from './grouper/subgroupEval.js';
-import { getVersionDefinition } from './generated/versionRegistry.js';
+import { createMdcAdrgSelection } from './grouper/mdcAdrgSelection.ts';
+import { createSubgroupEvaluator } from './grouper/subgroupEval.ts';
 
-export function createGrouperEngine({ ruleSet, strategy }) {
-const { MDCs, isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
+export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy = { daySurgeryAsNoCC: false } }: CreateGrouperEngineOptions): GrouperEngine {
+const { isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
 const drgMap = loadDRGMap();
-const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, strategy);
-const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule);
+const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, commonStrategy);
+const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule, versionStrategy);
 
 // Public re-exports (kept for compatibility; prefer importing from `src/services/grouper/*` directly)
 
@@ -36,10 +47,10 @@ const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule);
  */
 // Validation helpers (inlined from `grouper/validations.js`).
 // Kept inline to reduce indirection for early input sanitization.
-function checkInvalidPrincipalDiagnosis(principalDiagnosis) {
+function checkInvalidPrincipalDiagnosis(principalDiagnosis: string | null): GroupingResult | null {
     if (principalDiagnosis && isInvalidDiagnosis(principalDiagnosis)) {
         // lite build omits weight / special-payment entirely
-    const base = {
+    const base: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
@@ -57,9 +68,9 @@ function checkInvalidPrincipalDiagnosis(principalDiagnosis) {
     return null;
 }
 
-function checkGrayPrincipalDiagnosis(principalDiagnosis) {
+function checkGrayPrincipalDiagnosis(principalDiagnosis: string | null): GroupingResult | null {
     if (principalDiagnosis && typeof isGrayDiag === 'function' && isGrayDiag(principalDiagnosis)) {
-        const out = {
+        const out: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
@@ -75,14 +86,14 @@ function checkGrayPrincipalDiagnosis(principalDiagnosis) {
     return null;
 }
 
-const ALLOWED_GRAY_PRINCIPAL_PROCEDURES = new Set(strategy.allowedGrayPrincipalProcedures);
+const ALLOWED_GRAY_PRINCIPAL_PROCEDURES = new Set(commonStrategy.allowedGrayPrincipalProcedures);
 
-function checkGrayPrincipalProcedure(principalProcedure) {
+function checkGrayPrincipalProcedure(principalProcedure: string | null): GroupingResult | null {
     if (principalProcedure && ALLOWED_GRAY_PRINCIPAL_PROCEDURES.has(principalProcedure)) {
         return null;
     }
     if (principalProcedure && typeof isGrayProc === 'function' && isGrayProc(principalProcedure)) {
-        const out = {
+        const out: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
@@ -98,24 +109,24 @@ function checkGrayPrincipalProcedure(principalProcedure) {
     return null;
 }
 
-const ALLOWED_INVALID_PROCEDURES = new Set(strategy.allowedInvalidPrincipalProcedures);
-function sanitizeProcedures(effectiveProcedures, matchTrace) {
+const ALLOWED_INVALID_PROCEDURES = new Set(commonStrategy.allowedInvalidPrincipalProcedures);
+function sanitizeProcedures(effectiveProcedures: Array<string | null>, matchTrace: MatchTraceEntry[]): { effectiveProcedures: Array<string | null>; principalProcedure: string | null } {
     let principalProcedure = effectiveProcedures.length > 0 ? effectiveProcedures[0] : null;
     if (principalProcedure && isInvalidProcedure(principalProcedure) && !ALLOWED_INVALID_PROCEDURES.has(principalProcedure)) {
-        if (strategy.invalidPrincipalProcedureAction === 'shift') {
+        if (commonStrategy.invalidPrincipalProcedureAction === 'shift') {
             effectiveProcedures.shift();
-        } else if (strategy.invalidPrincipalProcedureAction === 'null-slot') {
+        } else if (commonStrategy.invalidPrincipalProcedureAction === 'null-slot') {
             effectiveProcedures[0] = null;
-        } else if (strategy.invalidPrincipalProcedureAction === 'keep') {
+        } else if (commonStrategy.invalidPrincipalProcedureAction === 'keep') {
             return { effectiveProcedures, principalProcedure };
         }
         matchTrace.push({ stage: 'Validation', warning: true, description: `Removed invalid principal procedure: ${principalProcedure}` });
         principalProcedure = null;
     }
-    return { effectiveProcedures, principalProcedure };
+    return { effectiveProcedures, principalProcedure: principalProcedure ?? null };
 }
 
-function normalizePatientInfo(patientInfo = {}) {
+function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): NormalizedPatientInfo {
     if (
         patientInfo === null
         || typeof patientInfo !== 'object'
@@ -124,14 +135,15 @@ function normalizePatientInfo(patientInfo = {}) {
     ) {
         throw new TypeError('patientInfo must be a JSON object');
     }
-    const normalized = { ...patientInfo };
-    for (const [field, minimum] of [
+    const normalized: Record<string, unknown> = { ...patientInfo };
+    const numericFields: Array<[string, number]> = [
         ['age', 0],
         ['ageInDays', 0],
         ['birthWeight', 1],
         ['icuHours', 0],
         ['lengthOfStay', 0],
-    ]) {
+    ];
+    for (const [field, minimum] of numericFields) {
         const raw = normalized[field];
         if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
             delete normalized[field];
@@ -187,21 +199,22 @@ function normalizePatientInfo(patientInfo = {}) {
     } else {
         delete normalized.dischargeStatus;
     }
-    return normalized;
+    return normalized as NormalizedPatientInfo;
 }
 
-function invalidPatientInfoResult(error) {
-    const out = {
+function invalidPatientInfoResult(error: unknown): GroupingResult {
+    const message = error instanceof Error ? error.message : String(error);
+    const out: GroupingResult = {
         drg: null,
         code: 'ERR',
         mdc: null,
         adrg: null,
-        description: `病人信息无效：${error.message}`,
+        description: `病人信息无效：${message}`,
         error: 'INVALID_PATIENT_INFO',
         matchTrace: [{
             stage: 'Validation',
             error: true,
-            description: error.message,
+            description: message,
         }],
     };
     if (!IS_LITE) {
@@ -244,19 +257,22 @@ function invalidPatientInfoResult(error) {
  * @param {string[]} procedures - List of procedure codes.
  * @returns {object} Result object { drg, mdc, adrg, description }
  */
-function groupPatient(diagnoses, procedures, patientInfo = {}) {
-    if (typeof diagnoses === 'string') diagnoses = [diagnoses];
-    else if (!Array.isArray(diagnoses)) diagnoses = [];
-    if (typeof procedures === 'string') procedures = [procedures];
-    else if (!Array.isArray(procedures)) procedures = [];
+function groupPatient(
+    diagnoses: CodeListInput,
+    procedures: CodeListInput,
+    patientInfo: PatientInfoInput | null = {},
+): GroupingResult {
+    const diagnosisList: string[] = typeof diagnoses === 'string' ? [diagnoses] : Array.isArray(diagnoses) ? [...diagnoses] : [];
+    const procedureList: string[] = typeof procedures === 'string' ? [procedures] : Array.isArray(procedures) ? [...procedures] : [];
     try {
         patientInfo = normalizePatientInfo(patientInfo);
     } catch (error) {
         return invalidPatientInfoResult(error);
     }
+    const normalizedPatientInfo = patientInfo as NormalizedPatientInfo;
 
-    if (diagnoses.length === 0) {
-        const out = {
+    if (diagnosisList.length === 0) {
+        const out: GroupingResult = {
             drg: "0000",
             mdc: null,
             adrg: null,
@@ -271,11 +287,11 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     }
     // Keep diagnosis input exactly as provided; do not split or reorder tokens.
     // Accept single-string inputs (treat as one token) but do NOT split on delimiters.
-    const principalDiagnosis = diagnoses && diagnoses.length > 0 ? diagnoses[0] : null;
+    const principalDiagnosis = diagnosisList.length > 0 ? diagnosisList[0] ?? null : null;
 
     // Initialize match trace early so any early-return or pre-checks can
     // safely reference it without hitting temporal-dead-zone errors.
-    const matchTrace = [];
+    const matchTrace: MatchTraceEntry[] = [];
 
     // Validation 1: Gray-code check (treat as ungroupable)
     const grayDiagEarly = checkGrayPrincipalDiagnosis(principalDiagnosis);
@@ -286,8 +302,8 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     if (invalidDiagEarly) return invalidDiagEarly;
 
     // Validation 1c: Gray-code check for principal procedure
-    let effectiveProcedures = [...(procedures || [])];
-    let principalProcedure = effectiveProcedures.length > 0 ? effectiveProcedures[0] : null;
+    let effectiveProcedures: Array<string | null> = [...procedureList];
+    let principalProcedure: string | null = effectiveProcedures.length > 0 ? effectiveProcedures[0] ?? null : null;
     const grayProcEarly = checkGrayPrincipalProcedure(principalProcedure);
     if (grayProcEarly) return grayProcEarly;
 
@@ -302,7 +318,7 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     // Evaluate ADRG rules for MDCA, MDCP, MDCY, MDCZ in priority order,
     // but only attempt MDCP/MDCY/MDCZ if their identifying criteria are met.
     // Extracted pre-MDC ADRG checks into helper
-    const premdc = checkPreMDCADRGs(diagnoses, effectiveProcedures, patientInfo, matchTrace);
+    const premdc = checkPreMDCADRGs(diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
     matchedMDC = premdc.matchedMDC;
     matchedADRG = premdc.matchedADRG;
     ruleMatchDetail = premdc.ruleMatchDetail;
@@ -311,11 +327,11 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
 
     // Fallback: other MDCs by principal diagnosis (use helper)
     if (!matchedMDC) {
-        matchedMDC = findMDCByPrincipal(principalDiagnosis, patientInfo, matchTrace);
+        matchedMDC = findMDCByPrincipal(principalDiagnosis, normalizedPatientInfo, matchTrace);
     }
     // 3. Try to match ADRGs in the MDC (extracted helper)
     if (!matchedADRG && matchedMDC) {
-        const adrgRes = findADRGInMDC(matchedMDC, diagnoses, effectiveProcedures, patientInfo, matchTrace);
+        const adrgRes = findADRGInMDC(matchedMDC, diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
         matchedADRG = adrgRes.matchedADRG;
         ruleMatchDetail = adrgRes.ruleMatchDetail;
     }
@@ -332,9 +348,9 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     // --- Step 4: Find DRG within ADRG ---
     // DRGs are evaluated once, in their DRG.dat order. A raw/subgroup_rules source
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
-    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnoses, effectiveProcedures, patientInfo, principalDiagnosis, principalProcedure, matchTrace);
+    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnosisList, effectiveProcedures, normalizedPatientInfo, principalDiagnosis, principalProcedure, matchTrace);
 
-    const out = {
+    const out: GroupingResult = {
         drg: matchedDRG ? matchedDRG.code : "0000",
         mdc: matchedMDC ? matchedMDC.code : null,
         adrg: matchedADRG ? matchedADRG.code : null,
@@ -348,9 +364,10 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
     };
     if (!IS_LITE) {
         // base weight and optional tier‑2 hospital weight
-        if (matchedDRG && drgMap[matchedDRG.code]) {
-          out.weight = drgMap[matchedDRG.code].weight ?? null;
-          out.weightTier2 = drgMap[matchedDRG.code].weightTier2 ?? null;
+        const drgEntry = matchedDRG ? drgMap[matchedDRG.code] : undefined;
+        if (drgEntry) {
+          out.weight = drgEntry.weight ?? null;
+          out.weightTier2 = drgEntry.weightTier2 ?? null;
           // special payment is now represented simply by '/' in either weight field
         } else {
           out.weight = null;
@@ -378,18 +395,18 @@ function groupPatient(diagnoses, procedures, patientInfo = {}) {
  * Groups a batch of patient records.
  * @returns {Array} Array of result objects for each record.
  */
-function groupBatch() {
+function groupBatch(...args: unknown[]): BatchGroupingResult[] {
     // Expect an array of row objects: { id?, diagnoses?, procedures?, patientInfo? }
-    const rows = arguments && arguments.length > 0 ? arguments[0] : [];
+    const rows = args.length > 0 ? args[0] : [];
     if (!Array.isArray(rows)) return [];
 
-    const out = [];
+    const out: BatchGroupingResult[] = [];
     for (let i = 0; i < rows.length; i++) {
-        const row = rows[i] || {};
+        const row = (rows[i] || {}) as BatchGroupingRow;
         try {
             // Normalize diagnoses/procedures input: accept arrays or delimited strings.
-            let diagnoses = Array.isArray(row.diagnoses) ? row.diagnoses.filter(Boolean) : (row.diagnoses ? [row.diagnoses] : []);
-            let procedures = Array.isArray(row.procedures) ? row.procedures.filter(Boolean) : (row.procedures ? [row.procedures] : []);
+            const diagnoses: string[] = Array.isArray(row.diagnoses) ? row.diagnoses.filter(Boolean) : (row.diagnoses ? [row.diagnoses] : []);
+            const procedures: string[] = Array.isArray(row.procedures) ? row.procedures.filter(Boolean) : (row.procedures ? [row.procedures] : []);
 
             // Keep input diagnosis/procedure tokens as provided (do NOT auto-split delimited strings).
             // This preserves CSV cell contents like 'M35.002+J99.1*' as a single diagnosis token.
@@ -405,7 +422,8 @@ function groupBatch() {
                 ...res
             };
             out.push(result);
-        } catch (e) {
+        } catch (e: unknown) {
+            const message = e instanceof Error ? e.message : String(e);
             out.push({
                 id: row && row.id ? row.id : null,
                 drg: null,
@@ -415,7 +433,7 @@ function groupBatch() {
                 weight: null,
                 // isSpecialPayment omitted
                 description: 'ERROR during grouping',
-                error: e && e.message ? e.message : String(e)
+                error: message
             });
         }
     }
@@ -425,7 +443,12 @@ function groupBatch() {
 return { groupPatient, groupBatch, matchesRule, evaluateADRGSubgroups };
 }
 
-const defaultEngine = createGrouperEngine({ ruleSet: loadRuleSet(), strategy: getVersionDefinition().strategy });
+const defaultVersionDefinition = getVersionDefinition();
+const defaultEngine = createGrouperEngine({
+    ruleSet: loadRuleSet(),
+    commonStrategy: defaultVersionDefinition.commonStrategy,
+    versionStrategy: defaultVersionDefinition.versionStrategy,
+});
 export const groupPatient = defaultEngine.groupPatient;
 export const groupBatch = defaultEngine.groupBatch;
 export const matchesRule = defaultEngine.matchesRule;

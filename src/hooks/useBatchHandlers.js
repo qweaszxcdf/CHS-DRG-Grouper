@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import Papa from 'papaparse';
-import { groupBatchByVersion } from '../services/versionedGrouper';
+import { groupBatchByVersion } from '../services/versionedGrouper.ts';
 import { convertGLtoYBCode } from '../services/CodeConversion';
 import { preloadGLData } from '../services/glDataLoader';
 import { loadParsedFile as svcLoadParsedFile, processBatch as svcProcessBatch } from '../services/batchProcess';
-import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.js';
+import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.ts';
 
 const isVerboseLogging = !!(import.meta.env && import.meta.env.DEV);
 const logVerbose = (...args) => {
@@ -49,6 +49,7 @@ export function useBatchHandlers({
   setPreviewDischargeKey,
   setPreviewNewTechniqueKey,
   setPreviewMultiSiteKey,
+  setPreviewIntensiveCareKey,
   setPreviewIcuHoursKey,
   setPreviewLengthOfStayKey,
   setPreviewDaySurgeryKey,
@@ -174,6 +175,7 @@ export function useBatchHandlers({
                 dischargeKey: guessedDischarge,
                 newTechKey: guessedNewTechnique,
                 multiSiteKey: guessedMultiSite,
+                intensiveCareKey: guessedIntensiveCare,
                 icuHoursKey: guessedIcuHours,
                 lengthOfStayKey: guessedLengthOfStay,
                 daySurgeryKey: guessedDaySurgery,
@@ -189,6 +191,7 @@ export function useBatchHandlers({
               setPreviewDischargeKey(prev => (prev && prev.length) ? prev : guessedDischarge);
               setPreviewNewTechniqueKey(prev => (prev && prev.length) ? prev : guessedNewTechnique);
               setPreviewMultiSiteKey(prev => (prev && prev.length) ? prev : guessedMultiSite);
+              setPreviewIntensiveCareKey(prev => (prev && prev.length) ? prev : guessedIntensiveCare);
               setPreviewIcuHoursKey(prev => (prev && prev.length) ? prev : guessedIcuHours);
               setPreviewLengthOfStayKey(prev => (prev && prev.length) ? prev : guessedLengthOfStay);
               setPreviewDaySurgeryKey(prev => (prev && prev.length) ? prev : guessedDaySurgery);
@@ -225,7 +228,7 @@ export function useBatchHandlers({
                 // ignore delimiter auto-detect failures
               }
 
-              logVerbose(`${new Date().toISOString()} - Auto-mapped columns: id=${guessedId || '(none)'} diags=${guessedDiags || '(none)'} procs=${guessedProcs || '(none)'} newtech=${guessedNewTechnique || '(none)'} (${file.name})`);
+              logVerbose(`${new Date().toISOString()} - Auto-mapped columns: id=${guessedId || '(none)'} diags=${guessedDiags || '(none)'} procs=${guessedProcs || '(none)'} newtech=${guessedNewTechnique || '(none)'} intensivecare=${guessedIntensiveCare || '(none)'} (${file.name})`);
             } catch {
               // ignore auto-map failures
             }
@@ -280,6 +283,7 @@ export function useBatchHandlers({
     setPreviewDischargeKey,
     setPreviewNewTechniqueKey,
     setPreviewMultiSiteKey,
+    setPreviewIntensiveCareKey,
     setPreviewIcuHoursKey,
     setPreviewLengthOfStayKey,
     setPreviewDaySurgeryKey,

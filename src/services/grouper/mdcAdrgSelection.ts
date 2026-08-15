@@ -1,32 +1,83 @@
-export function createMdcAdrgSelection(ruleSet, strategy) {
+import type {
+  CommonStrategy,
+  GroupingResult,
+  MatchTraceEntry,
+  NormalizedPatientInfo,
+} from '../../types/grouper.js';
+import type {
+  AdrgDefinition,
+  AdrgRule,
+  MatchCodeDetail,
+  MdcDefinition,
+  RpnToken,
+  RuleMatchDetails,
+  RuleMatchResult,
+  RulePatient,
+  RuleSet,
+} from '../../types/rules.js';
+
+type SectionCategory = 'diagnosis' | 'procedure' | null;
+type SectionPosition = 'principal' | 'other' | 'any';
+type SectionClassification = {
+  category: SectionCategory;
+  position: SectionPosition;
+  isSimultaneous: boolean;
+};
+type SectionMeta = SectionClassification & {
+  sectionName: string;
+  codes: string[];
+  codeSet: Set<string>;
+};
+type RuleSectionMeta = {
+  sectionNames: string[];
+  sectionDetails: SectionMeta[];
+  hasDiagSection: boolean;
+  hasProcSection: boolean;
+};
+type CodeLookup = {
+  principal: string | null;
+  allSet: Set<string | null>;
+  secondarySet: Set<string | null> | null;
+};
+type PatientLookup = {
+  diagnosisLookup: CodeLookup | null;
+  procedureLookup: CodeLookup | null;
+};
+type PreMdcResult = {
+  matchedMDC: MdcDefinition | null;
+  matchedADRG: AdrgDefinition | null;
+  ruleMatchDetail: RuleMatchResult | null;
+};
+
+export function createMdcAdrgSelection(ruleSet: RuleSet, strategy: CommonStrategy) {
   const { MDCs, mdcByCode, diagToMDCZCategories, getADRGsForMDC, getADRGByCode } = ruleSet;
 
-const _sectionClassCache = new Map();
-const _referencedProcedureSetCache = new WeakMap();
-const _ruleSectionMetaCache = new WeakMap();
-const _patientLookupCache = new WeakMap();
+const _sectionClassCache = new Map<string, SectionClassification>();
+const _referencedProcedureSetCache = new WeakMap<AdrgRule, Set<string>>();
+const _ruleSectionMetaCache = new WeakMap<AdrgRule, RuleSectionMeta>();
+const _patientLookupCache = new WeakMap<RulePatient, PatientLookup>();
 
-function buildSectionClassification(sectionName) {
+function buildSectionClassification(sectionName: string): SectionClassification {
   const normalized = String(sectionName || '');
   const isDiag = normalized.includes('诊断');
   const isProc = normalized.includes('手术') || normalized.includes('操作');
   const isPrincipal = normalized.includes('主要');
   const isOther = normalized.includes('其他');
   const isSimultaneous = normalized.includes('同时包含');
-  let category = null;
+  let category: SectionCategory = null;
   if (isDiag) category = 'diagnosis';
   else if (isProc) category = 'procedure';
-  let position = 'any';
+  let position: SectionPosition = 'any';
   if (isPrincipal) position = 'principal';
   else if (isOther) position = 'other';
   return Object.freeze({ category, position, isSimultaneous });
 }
 
-function getReferencedProcedureSet(rule) {
-  if (_referencedProcedureSetCache.has(rule)) return _referencedProcedureSetCache.get(rule);
+function getReferencedProcedureSet(rule: AdrgRule): Set<string> {
+  if (_referencedProcedureSetCache.has(rule)) return _referencedProcedureSetCache.get(rule) as Set<string>;
 
-  const procCodes = new Set();
-  for (const refCode of rule.referencedADRGs) {
+  const procCodes = new Set<string>();
+  for (const refCode of rule.referencedADRGs ?? []) {
     const refADRG = getADRGByCode(refCode);
     if (!refADRG || !refADRG.rule) continue;
 
@@ -43,14 +94,14 @@ function getReferencedProcedureSet(rule) {
   return procCodes;
 }
 
-function getReferencedProcedureSetForADRG(refCode) {
+function getReferencedProcedureSetForADRG(refCode: string): Set<string> {
   const refADRG = getADRGByCode(refCode);
   if (!refADRG || !refADRG.rule) return new Set();
 
   const refRuleMeta = getRuleSectionMeta(refADRG.rule);
   if (!refRuleMeta || !Array.isArray(refRuleMeta.sectionDetails)) return new Set();
 
-  const procCodes = new Set();
+  const procCodes = new Set<string>();
   for (const secMeta of refRuleMeta.sectionDetails) {
     if (secMeta.category !== 'procedure' || !secMeta.codeSet) continue;
     for (const code of secMeta.codeSet) procCodes.add(code);
@@ -58,7 +109,7 @@ function getReferencedProcedureSetForADRG(refCode) {
   return procCodes;
 }
 
-function getPrimaryFallbackSectionName(sectionName) {
+function getPrimaryFallbackSectionName(sectionName: string): string | null {
   const normalized = String(sectionName || '').trim();
   const diagnosisMatch = normalized.match(/^其他诊断(?:\s+(\d+))?$/);
   if (diagnosisMatch) return `主要诊断${diagnosisMatch[1] ? ` ${diagnosisMatch[1]}` : ''}`;
@@ -69,7 +120,7 @@ function getPrimaryFallbackSectionName(sectionName) {
   return null;
 }
 
-function getSectionCodes(rule, sectionName) {
+function getSectionCodes(rule: AdrgRule, sectionName: string): string[] {
   const sections = (rule && rule.sections) || {};
   const codes = Array.isArray(sections[sectionName]) ? sections[sectionName] : [];
   if (codes.length > 0) return codes;
@@ -82,8 +133,8 @@ function getSectionCodes(rule, sectionName) {
   return Array.isArray(fallbackCodes) && fallbackCodes.length > 0 ? fallbackCodes : codes;
 }
 
-function getRuleSectionMeta(rule) {
-  if (_ruleSectionMetaCache.has(rule)) return _ruleSectionMetaCache.get(rule);
+function getRuleSectionMeta(rule: AdrgRule): RuleSectionMeta {
+  if (_ruleSectionMetaCache.has(rule)) return _ruleSectionMetaCache.get(rule) as RuleSectionMeta;
 
   const sectionNames = Object.keys((rule && rule.sections) || {});
   let hasDiagSection = false;
@@ -105,7 +156,13 @@ function getRuleSectionMeta(rule) {
   return meta;
 }
 
-function checkSectionMatchByMeta(sectionMeta, patientDiagnoses, patientProcedures, diagnosisLookup = null, procedureLookup = null) {
+function checkSectionMatchByMeta(
+  sectionMeta: SectionMeta,
+  patientDiagnoses: string[],
+  patientProcedures: Array<string | null>,
+  diagnosisLookup: CodeLookup | null = null,
+  procedureLookup: CodeLookup | null = null,
+): MatchCodeDetail {
   if (!sectionMeta || !sectionMeta.codes || sectionMeta.codes.length === 0) return { matched: false, matchedCodes: [] };
 
   if (sectionMeta.category === 'diagnosis') {
@@ -117,50 +174,61 @@ function checkSectionMatchByMeta(sectionMeta, patientDiagnoses, patientProcedure
   return { matched: false, matchedCodes: [] };
 }
 
-function createCodeLookup(patientCodes) {
+function createCodeLookup(patientCodes: Array<string | null>): CodeLookup {
   const src = Array.isArray(patientCodes) ? patientCodes : [];
   return {
-    principal: src.length > 0 ? src[0] : null,
+    principal: src.length > 0 ? (src[0] ?? null) : null,
     allSet: new Set(src),
     secondarySet: src.length > 1 ? new Set(src.slice(1)) : null,
   };
 }
 
 // RPN evaluator local copy (move from ruleParserCore for modulo grouper logic)
-function evaluateRPN(rpn, sectionBool) {
-  const stack = [];
+function evaluateRPN(rpn: RpnToken[] | undefined, sectionBool: Record<string, boolean>): boolean {
+  if (!Array.isArray(rpn)) return false;
+  const stack: boolean[] = [];
   for (const token of rpn) {
     if (typeof token === 'object' && token.type === 'SECTION') {
       stack.push(!!sectionBool[token.name]);
     } else if (token === '!') {
+      if (stack.length < 1) return false;
       stack.push(!stack.pop());
     } else if (token === '&&') {
+      if (stack.length < 2) return false;
       const b = stack.pop();
       const a = stack.pop();
       stack.push(!!a && !!b);
     } else if (token === '||') {
+      if (stack.length < 2) return false;
       const b = stack.pop();
       const a = stack.pop();
       stack.push(!!a || !!b);
+    } else {
+      return false;
     }
   }
-  return stack.length > 0 ? !!stack[stack.length - 1] : false;
+  return stack.length === 1 ? !!stack[0] : false;
 }
 
 // Rule-evaluation helpers (migrated here from `ruleEval.js`)
-function classifySection(sectionName) {
+function classifySection(sectionName: string): SectionClassification {
   const key = String(sectionName || '');
-  if (_sectionClassCache.has(key)) return _sectionClassCache.get(key);
+  if (_sectionClassCache.has(key)) return _sectionClassCache.get(key) as SectionClassification;
   const classification = buildSectionClassification(key);
   _sectionClassCache.set(key, classification);
   return classification;
 }
 
-function matchCodesForPosition(codes, patientCodes, position, patientCodeLookup = null) {
+function matchCodesForPosition(
+  codes: string[],
+  patientCodes: Array<string | null>,
+  position: SectionPosition,
+  patientCodeLookup: CodeLookup | null = null,
+): MatchCodeDetail {
   if (!codes || codes.length === 0) return { matched: false, matchedCodes: [] };
 
   if (position === 'principal') {
-    const principal = patientCodeLookup ? patientCodeLookup.principal : (patientCodes.length > 0 ? patientCodes[0] : null);
+    const principal = patientCodeLookup ? patientCodeLookup.principal : (patientCodes.length > 0 ? (patientCodes[0] ?? null) : null);
     const hit = principal != null && codes.includes(principal);
     return { matched: hit, matchedCodes: hit ? [principal] : [] };
   }
@@ -192,7 +260,7 @@ function matchCodesForPosition(codes, patientCodes, position, patientCodeLookup 
   return { matched: hits.length > 0, matchedCodes: hits };
 }
 
-function matchesRule(rule, patient) {
+function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
   const patientDiagnoses = Array.isArray(patient.diagnoses) ? patient.diagnoses : [];
   const patientProcedures = Array.isArray(patient.procedures) ? patient.procedures : [];
   let patientLookup = _patientLookupCache.get(patient);
@@ -211,7 +279,8 @@ function matchesRule(rule, patient) {
     return patientLookup.procedureLookup;
   };
 
-  const matchInfo = { matched: false, details: { sections: {} } };
+  const details: RuleMatchDetails = { sections: {} };
+  const matchInfo: RuleMatchResult = { matched: false, details };
   if (rule?.multiSite === true) {
     const multiSite = patient?.patientInfo?.multiSite === true;
     const matched = multiSite;
@@ -251,7 +320,7 @@ function matchesRule(rule, patient) {
 
   if (rule.referencedADRGs && Array.isArray(rule.referencedADRGs) && rule.referencedADRGs.length > 0) {
     const procCodes = getReferencedProcedureSet(rule);
-    const matched = patientProcedures.some(p => procCodes.has(p));
+    const matched = patientProcedures.some(p => p !== null && procCodes.has(p));
     matchInfo.details.referencedADRGs = { codes: rule.referencedADRGs, matched };
     matchInfo.matched = matched;
     return matchInfo;
@@ -279,7 +348,7 @@ function matchesRule(rule, patient) {
       }
       return { group, matchedCodes, matched: matchedCodes.length > 0 };
     });
-    matchInfo.matched = matchInfo.details.requiredProcedureGroups.every(g => g.matched);
+    matchInfo.matched = matchInfo.details.requiredProcedureGroups?.every(g => g.matched) ?? false;
     return matchInfo;
   }
 
@@ -299,7 +368,7 @@ function matchesRule(rule, patient) {
       return matchInfo;
     }
 
-    const sectionBool = {};
+    const sectionBool: Record<string, boolean> = {};
     for (const secMeta of sectionDetails) {
       const secName = secMeta.sectionName;
       sectionBool[secName] = !!(matchInfo.details.sections[secName] && matchInfo.details.sections[secName].matched);
@@ -331,7 +400,12 @@ function matchesRule(rule, patient) {
   return matchInfo;
 }
 
-function checkPreMDCADRGs(diagnoses, effectiveProcedures, patientInfo, matchTrace) {
+function checkPreMDCADRGs(
+  diagnoses: string[],
+  effectiveProcedures: Array<string | null>,
+  patientInfo: NormalizedPatientInfo,
+  matchTrace: MatchTraceEntry[],
+): PreMdcResult {
   const preMDCList = ['MDCA', 'MDCP', 'MDCY', 'MDCZ'];
   const patientForMatch = { diagnoses, procedures: effectiveProcedures, patientInfo };
   for (const preCode of preMDCList) {
@@ -346,10 +420,11 @@ function checkPreMDCADRGs(diagnoses, effectiveProcedures, patientInfo, matchTrac
     if (preCode === 'MDCP') {
       applicable = patientInfo && patientInfo.ageInDays != null && patientInfo.ageInDays < 365 && !patientInfo.age;
     } else if (preCode === 'MDCY') {
-      applicable = !!(mdc.identifyingDiagnosesSet && Array.isArray(diagnoses) && (
+      const identifyingDiagnosesSet = mdc.identifyingDiagnosesSet;
+      applicable = !!(identifyingDiagnosesSet && Array.isArray(diagnoses) && (
         strategy.mdcyPrincipalDiagnosisOnly
-          ? mdc.identifyingDiagnosesSet.has(diagnoses[0])
-          : diagnoses.some(dx => mdc.identifyingDiagnosesSet.has(dx))
+          ? diagnoses[0] !== undefined && identifyingDiagnosesSet.has(diagnoses[0])
+          : diagnoses.some(dx => identifyingDiagnosesSet.has(dx))
       ));
     } else if (preCode === 'MDCZ') {
       try {
@@ -374,8 +449,10 @@ function checkPreMDCADRGs(diagnoses, effectiveProcedures, patientInfo, matchTrac
       if (preCode === 'MDCP' && adrg.description) {
         const desc = String(adrg.description);
 
-        if (!desc.includes('29天≤出生年龄＜1周岁') && patientInfo.ageInDays >= 29) continue;
-        if (desc.includes('29天≤出生年龄＜1周岁') && patientInfo.ageInDays < 29) continue;
+        const ageInDays = patientInfo.ageInDays;
+        if (ageInDays === undefined) continue;
+        if (!desc.includes('29天≤出生年龄＜1周岁') && ageInDays >= 29) continue;
+        if (desc.includes('29天≤出生年龄＜1周岁') && ageInDays < 29) continue;
 
         if (desc.includes('出生体重')) {
           const bw = Number(patientInfo.birthWeight);
@@ -419,7 +496,11 @@ function checkPreMDCADRGs(diagnoses, effectiveProcedures, patientInfo, matchTrac
   return { matchedMDC: null, matchedADRG: null, ruleMatchDetail: null };
 }
 
-function findMDCByPrincipal(principalDiagnosis, patientInfo = {}, matchTrace) {
+function findMDCByPrincipal(
+  principalDiagnosis: string | null,
+  patientInfo: NormalizedPatientInfo = {},
+  matchTrace: MatchTraceEntry[],
+): MdcDefinition | null {
   if (!principalDiagnosis) return null;
   const preMDCSet = new Set(['MDCA', 'MDCP', 'MDCY', 'MDCZ']);
   const rawGender = patientInfo && patientInfo.gender;
@@ -436,11 +517,18 @@ function findMDCByPrincipal(principalDiagnosis, patientInfo = {}, matchTrace) {
 
   if (!matchedMDCs || matchedMDCs.length === 0) return null;
   const selectedMDC = matchedMDCs[0];
+  if (!selectedMDC) return null;
   matchTrace.push({ stage: 'MDC', matched: true, code: selectedMDC.code, description: selectedMDC.description });
   return selectedMDC;
 }
 
-function findADRGInMDC(mdc, diagnoses, effectiveProcedures, patientInfo, matchTrace) {
+function findADRGInMDC(
+  mdc: MdcDefinition | null,
+  diagnoses: string[],
+  effectiveProcedures: Array<string | null>,
+  patientInfo: NormalizedPatientInfo,
+  matchTrace: MatchTraceEntry[],
+): { matchedADRG: AdrgDefinition | null; ruleMatchDetail: RuleMatchResult | null } {
   if (!mdc) return { matchedADRG: null, ruleMatchDetail: null };
   const adrgObjects = getADRGsForMDC(mdc.code);
   if (!adrgObjects || adrgObjects.length === 0) return { matchedADRG: null, ruleMatchDetail: null };
@@ -460,7 +548,12 @@ function findADRGInMDC(mdc, diagnoses, effectiveProcedures, patientInfo, matchTr
   return { matchedADRG: null, ruleMatchDetail: null };
 }
 
-function checkQYRedirect(matchedADRG, matchedMDC, principalProcedure, matchTrace) {
+function checkQYRedirect(
+  matchedADRG: AdrgDefinition | null,
+  matchedMDC: MdcDefinition | null,
+  principalProcedure: string | null,
+  matchTrace: MatchTraceEntry[],
+): GroupingResult | null {
   if (!matchedADRG || !principalProcedure || !matchedMDC) return null;
   const adrgCode = matchedADRG.code || '';
   if (adrgCode.length < 2) return null;

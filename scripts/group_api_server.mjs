@@ -1,12 +1,12 @@
 import http from 'node:http';
 import { URL } from 'node:url';
-import { groupPatientByVersion, listRuleVersions } from '../src/services/versionedGrouper.js';
-import { DEFAULT_RULE_VERSION } from '../src/services/generated/versionRegistry.js';
+import { groupPatientByVersion, listRuleVersions } from '../src/services/versionedGrouper.ts';
+import { DEFAULT_RULE_VERSION } from '../src/services/generated/versionRegistry.ts';
 import { convertDiagnosesArray, convertProceduresArray } from '../src/services/CodeConversion.js';
 import { preloadGLData } from '../src/services/glDataLoader.js';
 
 const PORT = Number(process.env.PORT || 3000);
-const HOST = process.env.HOST || '127.0.0.1';
+const HOST = process.env.HOST || '0.0.0.0';
 const DEFAULT_MAX_BODY_BYTES = 1024 * 1024;
 const MAX_BODY_BYTES = Number(process.env.MAX_BODY_BYTES || DEFAULT_MAX_BODY_BYTES);
 const RULE_VERSION_IDS = new Set(listRuleVersions().map(({ id }) => id));
@@ -89,8 +89,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/') {
       return sendJson(res, 200, {
         service: 'drg-grouper HTTP API',
-        version: '0.1.0',
-        notice: '独立实现；将结果用于编码、付费、审核或结算前，请依据适用版本的正式文件复核规则和数据。',
+        version: '0.0.0',
         endpoints: [
           { method: 'GET', path: '/versions', description: 'List available rule versions' },
           { method: 'POST', path: '/group', description: 'Group one patient record; use ?version=...' }
@@ -145,5 +144,5 @@ server.listen(PORT, HOST, () => {
   for (const { id, label } of listRuleVersions()) {
     console.log(`  ${id} (${label})`);
   }
-  console.log(`Sample request: curl -X POST 'http://${HOST}:${PORT}/group?version=chs-drg-3.0' -H "Content-Type: application/json" -d '{"diagnoses":["K80.101","I50.900"],"procedures":["51.2300"],"patientInfo":{"gender":1,"age":45,"multiSite":false}}'`);
+  console.log(`Sample request: curl -X POST 'http://localhost:${PORT}/group?version=${DEFAULT_RULE_VERSION}' -H "Content-Type: application/json" -d '{"diagnoses":["K80.101","I50.900"],"procedures":["51.2300"],"patientInfo":{"gender":1,"age":45,"ageInDays":null,"birthWeight":null,"dischargeStatus":"1","newTechnique":null}}'`);
 });

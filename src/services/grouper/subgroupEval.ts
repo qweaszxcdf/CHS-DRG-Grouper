@@ -1,4 +1,38 @@
-export function createSubgroupEvaluator(ruleSet, matchesAdrgRule) {
+import type {
+  MatchTraceEntry,
+  NormalizedPatientInfo,
+  SubgroupEvaluation,
+  VersionStrategy,
+} from '../../types/grouper.js';
+import type {
+  AdrgDefinition,
+  AdrgRule,
+  DrgSubgroupRule,
+  MatchedSubgroup,
+  RuleMatchResult,
+  RulePatient,
+  RuleSet,
+} from '../../types/rules.js';
+
+type CCStatus = 'none' | 'cc' | 'mcc';
+
+interface SubgroupPatientData {
+  primaryDiagnosis: string | null;
+  primaryProcedure: string | null;
+  age?: number;
+  dischargeStatus?: string | number;
+  newTechnique: boolean;
+  intensiveCare: boolean;
+  icuHours?: number;
+  lengthOfStay?: number;
+  daySurgery: boolean;
+}
+
+export function createSubgroupEvaluator(
+  ruleSet: RuleSet,
+  matchesAdrgRule: ((rule: AdrgRule, patient: RulePatient) => RuleMatchResult) | undefined,
+  versionStrategy: VersionStrategy = { daySurgeryAsNoCC: false },
+) {
   const { loadDRGSubgroupRulesForADRG, loadCCCodes, loadMCCCodes, loadCCECodes } = ruleSet;
 
 /*
@@ -11,9 +45,9 @@ export function createSubgroupEvaluator(ruleSet, matchesAdrgRule) {
 const _ccList = loadCCCodes();
 const _mccList = loadMCCCodes();
 const _cceList = loadCCECodes();
-const _ruleNeedsCCCache = new WeakMap();
+const _ruleNeedsCCCache = new WeakMap<DrgSubgroupRule, boolean>();
 
-function ruleNeedsCC(rule) {
+function ruleNeedsCC(rule: DrgSubgroupRule) {
   if (_ruleNeedsCCCache.has(rule)) return _ruleNeedsCCCache.get(rule);
   const conditions = Array.isArray(rule?.conditions) ? rule.conditions : [];
   const needs = conditions.includes('WITH_MCC') || conditions.includes('WITH_CC') || conditions.includes('NO_CC');
@@ -21,16 +55,16 @@ function ruleNeedsCC(rule) {
   return needs;
 }
 
-function calculateCCStatus(diagnoses, principalDiagnosis) {
+function calculateCCStatus(diagnoses: string[], principalDiagnosis: string | null): CCStatus {
   if (!Array.isArray(diagnoses) || diagnoses.length <= 1) return 'none';
-  const exclusionId = _cceList[principalDiagnosis] || null;
+  const exclusionId = principalDiagnosis ? _cceList[principalDiagnosis] || null : null;
   for (let index = 1; index < diagnoses.length; index += 1) {
     const diagnosis = diagnoses[index];
-    if (_mccList[diagnosis] && _mccList[diagnosis] !== exclusionId) return 'mcc';
+    if (diagnosis && _mccList[diagnosis] && _mccList[diagnosis] !== exclusionId) return 'mcc';
   }
   for (let index = 1; index < diagnoses.length; index += 1) {
     const diagnosis = diagnoses[index];
-    if (_ccList[diagnosis] && _ccList[diagnosis] !== exclusionId) return 'cc';
+    if (diagnosis && _ccList[diagnosis] && _ccList[diagnosis] !== exclusionId) return 'cc';
   }
   return 'none';
 }
@@ -43,7 +77,7 @@ function calculateCCStatus(diagnoses, principalDiagnosis) {
  *
  * Returns { matched: boolean, reason: string }
  */
-function evaluateDRGRule(rule, patientData, ccStatus) {
+function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData, ccStatus: CCStatus) {
   const {
     conditions = [],
     diagnosisCodes = [],
@@ -59,31 +93,35 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
 
     // --- 1. 诊断校验 (Diagnosis Checks)
     if (condition === 'SPECIFIC_DIAGNOSIS') {
-      if (!patientData.primaryDiagnosis) return { matched: false, reason: 'No primary diagnosis' };
-      const ok = diagnosisCodes.some(d => (typeof d === 'string' ? d : d.code) === patientData.primaryDiagnosis);
-      if (!ok) return { matched: false, reason: `Primary diagnosis ${patientData.primaryDiagnosis} not in list` };
+      const primaryDiagnosis = patientData.primaryDiagnosis;
+      if (!primaryDiagnosis) return { matched: false, reason: 'No primary diagnosis' };
+      const ok = diagnosisCodes.some(d => (typeof d === 'string' ? d : d.code) === primaryDiagnosis);
+      if (!ok) return { matched: false, reason: `Primary diagnosis ${primaryDiagnosis} not in list` };
       continue; // 💡 换成 continue：代表当前规则通过，继续校验下一个 condition
     }
 
     if (condition === 'SPECIFIC_DIAGNOSIS_PREFIX') {
-      if (!patientData.primaryDiagnosis) return { matched: false, reason: 'No primary diagnosis' };
-      const ok = diagnosisPrefixes.some(pref => patientData.primaryDiagnosis.startsWith(pref));
-      if (!ok) return { matched: false, reason: `Primary diagnosis ${patientData.primaryDiagnosis} does not match prefixes` };
+      const primaryDiagnosis = patientData.primaryDiagnosis;
+      if (!primaryDiagnosis) return { matched: false, reason: 'No primary diagnosis' };
+      const ok = diagnosisPrefixes.some(pref => primaryDiagnosis.startsWith(pref));
+      if (!ok) return { matched: false, reason: `Primary diagnosis ${primaryDiagnosis} does not match prefixes` };
       continue;
     }
 
     // --- 2. 手术校验 (Procedure Checks)
     if (condition === 'SPECIFIC_PROCEDURE') {
-      if (!patientData.primaryProcedure) return { matched: false, reason: 'No primary procedure' };
-      const ok = procedureCodes.some(p => (typeof p === 'string' ? p : p.code) === patientData.primaryProcedure);
-      if (!ok) return { matched: false, reason: `Primary procedure ${patientData.primaryProcedure} not in list` };
+      const primaryProcedure = patientData.primaryProcedure;
+      if (!primaryProcedure) return { matched: false, reason: 'No primary procedure' };
+      const ok = procedureCodes.some(p => (typeof p === 'string' ? p : p.code) === primaryProcedure);
+      if (!ok) return { matched: false, reason: `Primary procedure ${primaryProcedure} not in list` };
       continue;
     }
 
     if (condition === 'SPECIFIC_PROCEDURE_PREFIX') {
-      if (!patientData.primaryProcedure) return { matched: false, reason: 'No primary procedure' };
-      const ok = procedurePrefixes.some(pref => patientData.primaryProcedure.startsWith(pref));
-      if (!ok) return { matched: false, reason: `Primary procedure ${patientData.primaryProcedure} does not match prefixes` };
+      const primaryProcedure = patientData.primaryProcedure;
+      if (!primaryProcedure) return { matched: false, reason: 'No primary procedure' };
+      const ok = procedurePrefixes.some(pref => primaryProcedure.startsWith(pref));
+      if (!ok) return { matched: false, reason: `Primary procedure ${primaryProcedure} does not match prefixes` };
       continue;
     }
 
@@ -91,25 +129,28 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
     const numericMatch = condition.match(/^(AGE|ICU_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
     if (numericMatch) {
       const [, dimension, operator, rawLimit] = numericMatch;
-      const dimensions = {
+      const dimensions: Record<string, { field: 'age' | 'icuHours' | 'lengthOfStay'; label: string }> = {
         AGE: { field: 'age', label: 'Age' },
         ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
         LOS: { field: 'lengthOfStay', label: 'Length of stay' },
       };
-      const { field, label } = dimensions[dimension];
+      const dimensionInfo = dimensions[dimension ?? ''];
+      if (!dimensionInfo) return { matched: false, reason: `Unknown numeric condition '${condition}'` };
+      const { field, label } = dimensionInfo;
       const value = patientData[field];
       if (value === undefined || value === null) return { matched: false, reason: `${label} not provided` };
 
-      const limit = parseInt(rawLimit, 10);
+      const limit = parseInt(rawLimit ?? '', 10);
+      const comparisonOperator = operator as 'LT' | 'LE' | 'GT' | 'GE';
       const isMatched =
-        operator === 'LT' ? value < limit :
-          operator === 'LE' ? value <= limit :
-            operator === 'GT' ? value > limit :
-              operator === 'GE' ? value >= limit : false;
+        comparisonOperator === 'LT' ? value < limit :
+          comparisonOperator === 'LE' ? value <= limit :
+            comparisonOperator === 'GT' ? value > limit :
+              comparisonOperator === 'GE' ? value >= limit : false;
 
       if (!isMatched) {
-        const opSymbols = { LT: '<', LE: '<=', GT: '>', GE: '>=' };
-        return { matched: false, reason: `${label} ${value} is not ${opSymbols[operator]} ${limit}` };
+        const opSymbols: Record<'LT' | 'LE' | 'GT' | 'GE', string> = { LT: '<', LE: '<=', GT: '>', GE: '>=' };
+        return { matched: false, reason: `${label} ${value} is not ${opSymbols[comparisonOperator]} ${limit}` };
       }
       continue;
     }
@@ -167,18 +208,40 @@ function evaluateDRGRule(rule, patientData, ccStatus) {
    * Evaluate detailed subgroup (DRG) rules for a matched ADRG.
    * - Returns { matchedDRG, matchedSubgroup } where matchedSubgroup contains the matching rule and matchResult.
    */
-function evaluateADRGSubgroups(matchedADRG, diagnoses, procedures, patientInfo, principalDiagnosis, principalProcedure, matchTrace) {
+function evaluateADRGSubgroups(
+  matchedADRG: AdrgDefinition | null,
+  diagnoses: string[],
+  procedures: Array<string | null>,
+  patientInfo: NormalizedPatientInfo,
+  principalDiagnosis: string | null,
+  principalProcedure: string | null,
+  matchTrace: MatchTraceEntry[],
+): SubgroupEvaluation {
     const candidateRules = matchedADRG ? loadDRGSubgroupRulesForADRG(matchedADRG.code) : [];
     if (!candidateRules || candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
 
     matchTrace.push({ stage: 'Subgroup', description: `Evaluating ${candidateRules.length} detailed rules (${candidateRules.map(r => r.drgCode).join(', ')})` });
 
-    let ccStatus = 'none';
+    let ccStatus: CCStatus = 'none';
     const hasAnyCCRule = candidateRules.some(ruleNeedsCC);
 
-    if (hasAnyCCRule && Array.isArray(diagnoses) && diagnoses.length > 1) {
-      ccStatus = calculateCCStatus(diagnoses, principalDiagnosis);
-      matchTrace.push({ stage: 'CC/MCC', status: ccStatus, description: `Calculated CC Status: ${ccStatus}` });
+    if (hasAnyCCRule) {
+      if (Array.isArray(diagnoses) && diagnoses.length > 1) {
+        ccStatus = calculateCCStatus(diagnoses, principalDiagnosis);
+      }
+      if (versionStrategy.daySurgeryAsNoCC === true && patientInfo?.daySurgery === true) {
+        const calculatedStatus = ccStatus;
+        ccStatus = 'none';
+        matchTrace.push({
+          stage: 'CC/MCC',
+          status: ccStatus,
+          calculatedStatus,
+          overridden: true,
+          description: `Edition strategy treats day surgery as NO_CC (calculated: ${calculatedStatus})`,
+        });
+      } else if (Array.isArray(diagnoses) && diagnoses.length > 1) {
+        matchTrace.push({ stage: 'CC/MCC', status: ccStatus, description: `Calculated CC Status: ${ccStatus}` });
+      }
     }
 
     const patientData = {
@@ -192,9 +255,9 @@ function evaluateADRGSubgroups(matchedADRG, diagnoses, procedures, patientInfo, 
       lengthOfStay: patientInfo?.lengthOfStay,
       daySurgery: !!patientInfo?.daySurgery
     };
-    const patient = { diagnoses, procedures, patientInfo };
+    const patient: RulePatient = { diagnoses, procedures, patientInfo };
 
-    let matchedSubgroup = null;
+    let matchedSubgroup: MatchedSubgroup | null = null;
 
     for (const rule of candidateRules) {
       let adrgMatchResult = null;

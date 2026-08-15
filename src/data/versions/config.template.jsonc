@@ -1,0 +1,21 @@
+{
+  // Must equal the version directory name.
+  "id": "edition-drg-0.0",
+  // Human-readable name shown in the version selector.
+  "label": "DRG display name",
+  // Also selects the clinical and insurance ICD packages declared by common.
+  "drgCommon": "drg-common-package",
+  // Optional edition-level subgroup behavior. This is independent of the
+  // MDC/ADRG strategy inherited from drgCommon.
+  "strategy": {
+    // When true, a day-surgery case uses the NO_CC severity branch even if
+    // secondary diagnoses would otherwise calculate as CC or MCC.
+    "daySurgeryAsNoCC": false
+  },
+  // Optional subgroup digit semantics that differ by DRG edition.
+  // Example: Shanghai 2.0 uses 0 for age <18 and 7 for death.
+  "subgroupConditions": {
+    "0": "AGE_LT_18",
+    "7": "DEATH"
+  }
+}

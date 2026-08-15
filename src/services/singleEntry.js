@@ -1,6 +1,6 @@
 import { convertDiagnosesArray, convertProceduresArray } from './CodeConversion';
 import { preloadGLData } from './glDataLoader.js';
-import { groupPatientByVersion } from './versionedGrouper';
+import { groupPatientByVersion } from './versionedGrouper.ts';
 
 // Build a patientInfo object from UI-supplied fields (pure helper)
 export function buildPatientInfo({ gender, age, ageInDays, birthWeight, dischargeStatus, newTechnique, multiSite, intensiveCare, icuHours, lengthOfStay, daySurgery }) {

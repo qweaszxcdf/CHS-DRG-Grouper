@@ -1,8 +1,11 @@
 {
   "id": "chs-3.0",
+  "packages": {
+    "clinicalIcd": "gl-2022",
+    "insuranceIcd": "yb-2.0"
+  },
   "strategy": {
     "allowedInvalidPrincipalProcedures": ["33.2402"],
-    "autoDetectNewTechnique": true,
     "mdcyPrincipalDiagnosisOnly": true,
     "allowSecondarySectionPrimaryFallback": true
   }

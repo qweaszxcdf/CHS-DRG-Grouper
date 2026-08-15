@@ -58,6 +58,10 @@ function postParseCleanup(rules) {
   }
 }
 
+function prepareExplicitSubgroupRuleContent(content) {
+  return String(content || '').replace(/\+重症监护(?:信息)?/g, '');
+}
+
 /**
  * Parse a human-readable ADRG/MDC rule text block into a structured object.
  * - Extracts sections (diagnoses/procedures), builds a `logic` string,
@@ -220,9 +224,43 @@ function shuntingYard(tokens) {
       }
     }
   }
-  while (opStack.length > 0) outQueue.push(opStack.pop());
+  if (!error) {
+    while (opStack.length > 0) {
+      const operator = opStack.pop();
+      if (operator === '(' || operator === ')') {
+        error = 'Mismatched parentheses';
+        break;
+      }
+      outQueue.push(operator);
+    }
+  }
 
   return { rpn: outQueue, error };
+}
+
+function validateRPN(rpn) {
+  let stackDepth = 0;
+
+  for (const token of rpn) {
+    if (typeof token === 'object' && token?.type === 'SECTION') {
+      stackDepth += 1;
+      continue;
+    }
+    if (token === '!') {
+      if (stackDepth < 1) return 'Logic operator ! is missing an operand';
+      continue;
+    }
+    if (token === '&&' || token === '||') {
+      if (stackDepth < 2) return `Logic operator ${token} is missing an operand`;
+      stackDepth -= 1;
+      continue;
+    }
+    return `Unsupported RPN token: ${String(token)}`;
+  }
+
+  return stackDepth === 1
+    ? null
+    : `Logic expression must resolve to one value, got stack depth ${stackDepth}`;
 }
 
 function compileLogicToRPN(rule) {
@@ -260,6 +298,15 @@ function compileLogicToRPN(rule) {
     return;
   }
 
+  if (tokens.length > 0) {
+    const validationError = validateRPN(rpn);
+    if (validationError) {
+      rule._logicCompileError = validationError;
+      rule._logicRPN = null;
+      return;
+    }
+  }
+
   // success — store RPN and clear previous compile errors (if any)
   rule._logicRPN = rpn;
   rule._logicCompileError = null;
@@ -268,4 +315,4 @@ function compileLogicToRPN(rule) {
 // `matchesRule` implementation moved to `src/services/GrouperEngine.js` per request.
 // `ruleParserCore` remains focused on parsing and low-level compilation/evaluation (compileLogicToRPN).
 
-export { parseRule };
+export { parseRule, prepareExplicitSubgroupRuleContent };

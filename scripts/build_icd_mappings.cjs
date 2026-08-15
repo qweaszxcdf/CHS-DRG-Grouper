@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { pinyin } = require('pinyin-pro');
+const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
+
+const projectRoot = path.resolve(__dirname, '..');
+const configResolver = createDrgConfigResolver(projectRoot);
 
 const ROMAN_TO_ARABIC = {
   '\u2160':'1','\u2161':'2','\u2162':'3','\u2163':'4','\u2164':'5',
@@ -263,6 +267,34 @@ function readGeneratedNames(packageDir, filenames) {
   return names;
 }
 
+function readGeneratedGrayCodes(packageDir, filename) {
+  const filePath = path.join(packageDir, 'generated', filename);
+  if (!fs.existsSync(filePath)) throw new Error(`Missing generated ICD dependency: ${filePath}`);
+  return new Set(Object.keys(JSON.parse(fs.readFileSync(filePath, 'utf8'))));
+}
+
+function escapeCsv(value) {
+  const raw = value == null ? '' : String(value);
+  return `"${raw.replace(/"/g, '""')}"`;
+}
+
+function writeCrosswalkCsv(mapping, grayCodes, outputPath) {
+  const rows = Object.values(mapping)
+    .sort((a, b) => a.glCode.localeCompare(b.glCode, 'en', { numeric: true }));
+  const lines = ['GL,GL_NAME,YB,YB_NAME,YB_GRAY'];
+  for (const entry of rows) {
+    lines.push([
+      entry.glCode,
+      escapeCsv(entry.glName),
+      entry.ybCode,
+      escapeCsv(entry.ybName),
+      grayCodes.has(entry.ybCode) ? '1' : '0',
+    ].join(','));
+  }
+  fs.writeFileSync(outputPath, `\uFEFF${lines.join('\n')}\n`, 'utf8');
+  console.log(`Crosswalk CSV generated: ${path.basename(outputPath)} (${rows.length} rows)`);
+}
+
 function buildCrosswalkPackage(clinicalId, insuranceId) {
   const clinicalDir = path.resolve(__dirname, `../src/data/icd-datasets/clinical/${clinicalId}`);
   const insuranceDir = path.resolve(__dirname, `../src/data/icd-datasets/insurance/${insuranceId}`);
@@ -270,6 +302,8 @@ function buildCrosswalkPackage(clinicalId, insuranceId) {
   const crosswalkDir = path.resolve(__dirname, `../src/data/crosswalks/${combination}`);
   const clinicalNames = readGeneratedNames(clinicalDir, ['icd_gl_names_diag.json', 'icd_gl_names_proc.json']);
   const insuranceNames = readGeneratedNames(insuranceDir, ['icd_yb_names_diag.json', 'icd_yb_names_proc.json']);
+  const icd10GrayCodes = readGeneratedGrayCodes(insuranceDir, 'icd10_gray_codes.json');
+  const icd9GrayCodes = readGeneratedGrayCodes(insuranceDir, 'icd9_gray_codes.json');
   const files = [
     buildExpandedCrosswalk(clinicalDir, insuranceDir, crosswalkDir, 'ICD10'),
     buildExpandedCrosswalk(clinicalDir, insuranceDir, crosswalkDir, 'ICD9'),
@@ -286,14 +320,16 @@ function buildCrosswalkPackage(clinicalId, insuranceId) {
     }
     fs.writeFileSync(path.join(crosswalkDir, 'generated', filename), JSON.stringify({ mapping: compact }, null, 2), 'utf8');
   }
+  writeCrosswalkCsv(icd10Map, icd10GrayCodes, path.join(crosswalkDir, 'generated', 'ICD10GL2YB_gray.csv'));
+  writeCrosswalkCsv(icd9Map, icd9GrayCodes, path.join(crosswalkDir, 'generated', 'ICD9GL2YB_gray.csv'));
   console.log(`Crosswalk generated: ${combination}`);
 }
 
 function readConfiguredPackages() {
-  const versionsDir = path.resolve(__dirname, '../src/data/versions');
-  return fs.readdirSync(versionsDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => JSON.parse(fs.readFileSync(path.join(versionsDir, entry.name, 'config.json'), 'utf8')).packages);
+  return configResolver.listResolvedVersionConfigs().map(config => ({
+    clinicalIcd: config.clinicalIcd,
+    insuranceIcd: config.insuranceIcd,
+  }));
 }
 
 function buildConfiguredPackages() {
