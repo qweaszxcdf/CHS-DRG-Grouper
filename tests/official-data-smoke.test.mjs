@@ -4,8 +4,8 @@ import test from 'node:test';
 import {
   groupPatientByVersion,
   listRuleVersions,
-} from '../src/services/versionedGrouper.js';
-import { DEFAULT_RULE_VERSION } from '../src/services/generated/versionRegistry.js';
+} from '../src/services/versionedGrouper.ts';
+import { DEFAULT_RULE_VERSION } from '../src/services/generated/versionRegistry.ts';
 
 const sample = {
   diagnoses: ['K80.101', 'I50.900'],
