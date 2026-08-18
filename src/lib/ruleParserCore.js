@@ -49,6 +49,124 @@ function normalizeSectionHeader(raw) {
   return header;
 }
 
+function formatRegionalRuleSection(section, index = '') {
+  return `${section}${index ? ` ${index}` : ''}`;
+}
+
+function findRegionalRuleTableReferences(line) {
+  const definitions = [
+    {
+      pattern: /主要\s*诊断\s*在\s*主\s*诊断\s*表\s*(\d+)?\s*中/g,
+      section: match => formatRegionalRuleSection('主要诊断', match[1]),
+    },
+    {
+      pattern: /(?:次要|次|其他)?\s*诊断\s*在\s*次\s*(?:要\s*)?诊断\s*表\s*(\d+)?\s*中/g,
+      section: match => formatRegionalRuleSection('其他诊断', match[1]),
+    },
+    {
+      pattern: /主要\s*手术(?:\s*或\s*操作)?\s*在\s*主\s*手术\s*表\s*(\d+)?\s*中/g,
+      section: match => formatRegionalRuleSection('主要手术或操作', match[1]),
+    },
+    {
+      pattern: /(?:次要|次|其他)?\s*手术(?:\s*或\s*操作)?\s*在\s*次\s*(?:要\s*)?手术\s*表\s*(\d+)?\s*中/g,
+      section: match => formatRegionalRuleSection('其他手术或操作', match[1]),
+    },
+    {
+      pattern: /(?:全部|全)\s*手术(?:\s*或\s*操作)?\s*在\s*全\s*(?:部\s*)?手术\s*表\s*(\d+)?\s*中/g,
+      section: match => formatRegionalRuleSection('手术或操作', match[1]),
+    },
+  ];
+  return definitions
+    .flatMap(definition => [...line.matchAll(definition.pattern)].map(match => ({
+      index: match.index,
+      end: match.index + match[0].length,
+      section: definition.section(match),
+    })))
+    .sort((left, right) => left.index - right.index);
+}
+
+function normalizeRegionalRuleLine(rawLine) {
+  const line = String(rawLine || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\s+([：:])\s*/g, '$1');
+  if (!line) return line;
+
+  const references = findRegionalRuleTableReferences(line);
+  if (references.length > 1) {
+    const expression = references.slice(1).reduce((result, reference, index) => {
+      const previous = references[index];
+      const between = line.slice(previous.end, reference.index);
+      const operator = /或/.test(between) ? ' 或 ' : ' + ';
+      return `${result}${operator}${reference.section}`;
+    }, references[0].section);
+    return `入组条件：${expression}`;
+  }
+  if (references.length === 1) return `${references[0].section}:`;
+
+  const standaloneMappings = [
+    [/^主(?:要)?\s*诊断\s*表\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('主要诊断', match[1])}:`],
+    [/^次\s*(?:要\s*)?诊断\s*表\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('其他诊断', match[1])}:`],
+    [/^主(?:要)?\s*手术\s*表\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('主要手术或操作', match[1])}:`],
+    [/^次\s*(?:要\s*)?手术\s*表\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('其他手术或操作', match[1])}:`],
+    [/^(?:全|全部)\s*手术\s*表\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('手术或操作', match[1])}:`],
+    [/^主\s*(?:要\s*)?诊断\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('主要诊断', match[1])}:`],
+    [/^次\s*(?:要\s*)?诊断\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('其他诊断', match[1])}:`],
+    [/^主\s*(?:要\s*)?手术(?:\s*或\s*操作)?\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('主要手术或操作', match[1])}:`],
+    [/^次\s*(?:要\s*)?手术(?:\s*或\s*操作)?\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('其他手术或操作', match[1])}:`],
+    [/^(?:全|全部)\s*手术\s*(\d+)?[：:]$/, match => `${formatRegionalRuleSection('手术或操作', match[1])}:`],
+  ];
+  for (const [pattern, replacement] of standaloneMappings) {
+    const match = line.match(pattern);
+    if (match) return replacement(match);
+  }
+  return line;
+}
+
+function normalizeRegionalRuleLines(text) {
+  return String(text || '')
+    .split(/\r?\n/)
+    .map(normalizeRegionalRuleLine)
+    .filter(Boolean);
+}
+
+function inferRegionalSectionMinimumMatches(text) {
+  const minimumMatches = {};
+  const pattern = /(\d+)\s*个\s*(?:及以上|以上)\s*不重复的?(?:次要|次)?\s*诊断\s*在\s*次\s*(?:要\s*)?诊断\s*表\s*(\d+)?\s*中/g;
+  for (const match of String(text || '').matchAll(pattern)) {
+    const minimum = Number(match[1]);
+    if (!Number.isInteger(minimum) || minimum < 1) continue;
+    const section = formatRegionalRuleSection('其他诊断', match[2]);
+    minimumMatches[section] = minimum;
+  }
+  return minimumMatches;
+}
+
+function isRegionalRuleCodeLine(line) {
+  return /^(?:[A-Z]\d{2}(?:[.\s]|$)|\d{2}\.)/i.test(String(line || '').trim());
+}
+
+function addImplicitRegionalRuleSections(lines) {
+  const conditionIndex = lines.findIndex(line => /^入组条件[：:]/.test(line));
+  if (conditionIndex < 0 || !isRegionalRuleCodeLine(lines[conditionIndex + 1])) return lines;
+
+  const sections = [...lines[conditionIndex].matchAll(/(?:主要手术或操作|其他手术或操作|主要诊断|其他诊断|手术或操作)(?:\s+\d+)?/g)]
+    .map(match => match[0])
+    .filter((section, index, all) => all.indexOf(section) === index);
+  if (sections.length === 0) return lines;
+
+  const codeStart = conditionIndex + 1;
+  let codeEnd = codeStart;
+  while (codeEnd < lines.length && isRegionalRuleCodeLine(lines[codeEnd])) codeEnd += 1;
+  const codeLines = lines.slice(codeStart, codeEnd);
+
+  return [
+    ...lines.slice(0, conditionIndex + 1),
+    ...sections.flatMap(section => [`${section}:`, ...codeLines]),
+    ...lines.slice(codeEnd),
+  ];
+}
+
 function postParseCleanup(rules) {
   rules.logic = rules.logic.trim();
   if (Array.isArray(rules.requiredProcedureGroups) && rules.requiredProcedureGroups.length > 0) {
@@ -59,7 +177,8 @@ function postParseCleanup(rules) {
 }
 
 function prepareExplicitSubgroupRuleContent(content) {
-  return String(content || '').replace(/\+重症监护(?:信息)?/g, '');
+  const cleaned = String(content || '').replace(/\+重症监护(?:信息)?/g, '');
+  return addImplicitRegionalRuleSections(normalizeRegionalRuleLines(cleaned)).join('\n');
 }
 
 /**
@@ -315,4 +434,12 @@ function compileLogicToRPN(rule) {
 // `matchesRule` implementation moved to `src/services/GrouperEngine.js` per request.
 // `ruleParserCore` remains focused on parsing and low-level compilation/evaluation (compileLogicToRPN).
 
-export { parseRule, prepareExplicitSubgroupRuleContent };
+export {
+  addImplicitRegionalRuleSections,
+  inferRegionalSectionMinimumMatches,
+  isRegionalRuleCodeLine,
+  normalizeRegionalRuleLine,
+  normalizeRegionalRuleLines,
+  parseRule,
+  prepareExplicitSubgroupRuleContent,
+};

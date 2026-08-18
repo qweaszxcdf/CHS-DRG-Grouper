@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { FileUp, Download } from "lucide-react";
+import { getVersionDefinition } from '../services/generated/versionRegistry.ts';
 
 const NEW_TECHNIQUE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
 const MULTI_SITE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
@@ -160,6 +161,7 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     previewMultiSiteKey,
     previewIntensiveCareKey,
     previewIcuHoursKey,
+    previewCrrtHoursKey,
     previewLengthOfStayKey,
     previewDaySurgeryKey,
     previewGenderKey,
@@ -172,6 +174,12 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     batchResults,
     batchTimeMs,
   } = batchUi;
+
+  const patientInfoFieldKeys = useMemo(() => {
+    const groups = getVersionDefinition(ruleVersion).patientInfo;
+    return new Set([...groups.basic, ...groups.advanced]);
+  }, [ruleVersion]);
+  const isPatientInfoFieldVisible = (field) => patientInfoFieldKeys.has(field);
 
   const {
     handleFileUpload,
@@ -198,6 +206,7 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     handlePreviewMultiSiteChange,
     handlePreviewIntensiveCareChange,
     handlePreviewIcuHoursChange,
+    handlePreviewCrrtHoursChange,
     handlePreviewLengthOfStayChange,
     handlePreviewDaySurgeryChange,
     handlePreviewGenderChange,
@@ -288,7 +297,7 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
 
     if (parsedPreview.headerKeys) {
       const sample = sampleRow || {};
-      const { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, intensiveCareKey, icuHoursKey, lengthOfStayKey, daySurgeryKey, genderKey } = getMappingKeys(sample);
+      const { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, intensiveCareKey, icuHoursKey, crrtHoursKey, lengthOfStayKey, daySurgeryKey, genderKey } = getMappingKeys(sample);
       idVal = cleanCell(sample[idKey] != null ? sample[idKey] : '');
       rawDiags = previewRawDiags && previewRawDiags.length ? previewRawDiags : getSampleCols(sample, diagsKey, previewDiagDelimiterResolved, cleanCell);
       rawProcs = previewRawProcs && previewRawProcs.length ? previewRawProcs : getSampleCols(sample, procsKey, previewProcDelimiterResolved, cleanCell);
@@ -310,6 +319,7 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
         }
       } catch { /* ignore */ }
       try { if (icuHoursKey) { const v = cleanCell(sample[icuHoursKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.icuHours = Math.trunc(n); } } } catch { /* ignore */ }
+      try { if (crrtHoursKey) { const v = cleanCell(sample[crrtHoursKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.crrtHours = Math.trunc(n); } } } catch { /* ignore */ }
       try { if (lengthOfStayKey) { const v = cleanCell(sample[lengthOfStayKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.lengthOfStay = Math.trunc(n); } } } catch { /* ignore */ }
       try { if (daySurgeryKey) { const v = cleanCell(sample[daySurgeryKey]); if (DAY_SURGERY_TRUTHY.has(String(v).trim().toLowerCase())) samplePatientInfo.daySurgery = true; } } catch { /* ignore */ }
     }
@@ -636,93 +646,125 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
 
                     {previewPatientInfoExpanded && (
                       <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Age</span>
-                          <select title={previewAgeKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewAgeKey} onChange={e => handlePreviewAgeChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('gender') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Gender</span>
+                            <select title={previewGenderKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewGenderKey} onChange={e => handlePreviewGenderChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Gender</span>
-                          <select title={previewGenderKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewGenderKey} onChange={e => handlePreviewGenderChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('age') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Age</span>
+                            <select title={previewAgeKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewAgeKey} onChange={e => handlePreviewAgeChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Age (days)</span>
-                          <select title={previewAgeDaysKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewAgeDaysKey} onChange={e => handlePreviewAgeDaysChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('ageInDays') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Age (days)</span>
+                            <select title={previewAgeDaysKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewAgeDaysKey} onChange={e => handlePreviewAgeDaysChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Birth wt</span>
-                          <select title={previewBirthWeightKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewBirthWeightKey} onChange={e => handlePreviewBirthWeightChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('birthWeight') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Birth wt</span>
+                            <select title={previewBirthWeightKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewBirthWeightKey} onChange={e => handlePreviewBirthWeightChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Discharge</span>
-                          <select title={previewDischargeKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewDischargeKey} onChange={e => handlePreviewDischargeChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('dischargeStatus') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Discharge</span>
+                            <select title={previewDischargeKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewDischargeKey} onChange={e => handlePreviewDischargeChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">New Technique</span>
-                          <select title={previewNewTechniqueKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewNewTechniqueKey} onChange={e => handlePreviewNewTechChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('newTechnique') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">New Technique</span>
+                            <select title={previewNewTechniqueKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewNewTechniqueKey} onChange={e => handlePreviewNewTechChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Multi-site</span>
-                          <select title={previewMultiSiteKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewMultiSiteKey} onChange={e => handlePreviewMultiSiteChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('multiSite') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Multi-site</span>
+                            <select title={previewMultiSiteKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewMultiSiteKey} onChange={e => handlePreviewMultiSiteChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Intensive care</span>
-                          <select title={previewIntensiveCareKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewIntensiveCareKey} onChange={e => handlePreviewIntensiveCareChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('intensiveCare') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Intensive care</span>
+                            <select title={previewIntensiveCareKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewIntensiveCareKey} onChange={e => handlePreviewIntensiveCareChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">ICU hours</span>
-                          <select title={previewIcuHoursKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewIcuHoursKey} onChange={e => handlePreviewIcuHoursChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('icuHours') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">ICU hours</span>
+                            <select title={previewIcuHoursKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewIcuHoursKey} onChange={e => handlePreviewIcuHoursChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Length of stay</span>
-                          <select title={previewLengthOfStayKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewLengthOfStayKey} onChange={e => handlePreviewLengthOfStayChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('crrtHours') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">CRRT hours</span>
+                            <select title={previewCrrtHoursKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewCrrtHoursKey} onChange={e => handlePreviewCrrtHoursChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
 
-                        <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                          <span className="whitespace-nowrap">Day surgery</span>
-                          <select title={previewDaySurgeryKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewDaySurgeryKey} onChange={e => handlePreviewDaySurgeryChange(e.target.value)}>
-                            <option title="(none)" value="">(none)</option>
-                            {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                          </select>
-                        </label>
+                        {isPatientInfoFieldVisible('lengthOfStay') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Length of stay</span>
+                            <select title={previewLengthOfStayKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewLengthOfStayKey} onChange={e => handlePreviewLengthOfStayChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
+
+                        {isPatientInfoFieldVisible('daySurgery') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Day surgery</span>
+                            <select title={previewDaySurgeryKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewDaySurgeryKey} onChange={e => handlePreviewDaySurgeryChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
                       </div>
                     )}
                   </div>

@@ -3,7 +3,7 @@ import { preloadGLData } from './glDataLoader.js';
 import { groupPatientByVersion } from './versionedGrouper.ts';
 
 // Build a patientInfo object from UI-supplied fields (pure helper)
-export function buildPatientInfo({ gender, age, ageInDays, birthWeight, dischargeStatus, newTechnique, multiSite, intensiveCare, icuHours, lengthOfStay, daySurgery }) {
+export function buildPatientInfo({ gender, age, ageInDays, birthWeight, dischargeStatus, newTechnique, multiSite, intensiveCare, icuHours, crrtHours, lengthOfStay, daySurgery }) {
   const patientInfo = {};
   if (gender) patientInfo.gender = gender;
 
@@ -27,6 +27,9 @@ export function buildPatientInfo({ gender, age, ageInDays, birthWeight, discharg
 
   const icu = parseAndTrunc(icuHours);
   if (icu !== undefined) patientInfo.icuHours = icu;
+
+  const crrt = parseAndTrunc(crrtHours);
+  if (crrt !== undefined) patientInfo.crrtHours = crrt;
 
   const los = parseAndTrunc(lengthOfStay);
   if (los !== undefined) patientInfo.lengthOfStay = los;

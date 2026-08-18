@@ -129,6 +129,7 @@ export function loadParsedFile(parsedRows, { delimiterOption = 'PIPE', customDel
 
     for (const [field, mappingKey] of [
       ['icuHours', 'icuHoursKey'],
+      ['crrtHours', 'crrtHoursKey'],
       ['lengthOfStay', 'lengthOfStayKey'],
     ]) {
       try {

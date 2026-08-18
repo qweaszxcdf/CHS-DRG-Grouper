@@ -151,6 +151,55 @@ function resolveVersionStrategy(versionId, suppliedStrategy) {
   return Object.freeze(strategy);
 }
 
+function resolveSubgroupOrderOverrides(versionId, suppliedOverrides) {
+  if (suppliedOverrides === undefined) return undefined;
+  if (!isPlainObject(suppliedOverrides)) {
+    throw new Error(`${versionId}/config.json subgroupOrderOverrides must be an object`);
+  }
+
+  const overrides = {};
+  for (const [adrgCode, suppliedCodes] of Object.entries(suppliedOverrides)) {
+    if (!/^[A-Z]{2}\d$/.test(adrgCode)) {
+      throw new Error(
+        `${versionId}/config.json subgroupOrderOverrides key must be an ADRG code: ${adrgCode}`,
+      );
+    }
+    if (!Array.isArray(suppliedCodes) || suppliedCodes.length === 0) {
+      throw new Error(
+        `${versionId}/config.json subgroupOrderOverrides.${adrgCode} `
+        + 'must be a non-empty array of DRG codes',
+      );
+    }
+
+    const codes = suppliedCodes.map((code, index) => {
+      if (typeof code !== 'string' || code.trim() === '') {
+        throw new Error(
+          `${versionId}/config.json subgroupOrderOverrides.${adrgCode}[${index}] `
+          + 'must be a non-empty string',
+        );
+      }
+      const normalizedCode = code.trim();
+      if (normalizedCode.slice(0, 3) !== adrgCode) {
+        throw new Error(
+          `${versionId}/config.json subgroupOrderOverrides.${adrgCode}[${index}] `
+          + `must belong to ${adrgCode}: ${normalizedCode}`,
+        );
+      }
+      return normalizedCode;
+    });
+
+    if (new Set(codes).size !== codes.length) {
+      throw new Error(
+        `${versionId}/config.json subgroupOrderOverrides.${adrgCode} `
+        + 'must not contain duplicate DRG codes',
+      );
+    }
+    overrides[adrgCode] = Object.freeze(codes);
+  }
+
+  return Object.freeze(overrides);
+}
+
 function createDrgConfigResolver(projectRoot) {
   const resolvedRoot = path.resolve(projectRoot);
   const dataDir = path.join(resolvedRoot, 'src/data');
@@ -237,12 +286,17 @@ function createDrgConfigResolver(projectRoot) {
 
     const strategy = freezeOptionalObject(rawConfig, 'strategy', description);
     resolveVersionStrategy(id, strategy);
+    const subgroupOrderOverrides = resolveSubgroupOrderOverrides(
+      id,
+      rawConfig.subgroupOrderOverrides,
+    );
     const config = Object.freeze({
       ...rawConfig,
       id,
       label,
       drgCommon,
       ...(strategy ? { strategy } : {}),
+      ...(subgroupOrderOverrides ? { subgroupOrderOverrides } : {}),
     });
     versionCache.set(id, config);
     return config;

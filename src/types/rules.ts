@@ -17,6 +17,7 @@ export type RpnToken = string | { type: 'SECTION'; name: string };
 export interface AdrgRule {
   logic?: string;
   sections?: Record<string, string[]>;
+  sectionMinimumMatches?: Record<string, number>;
   _logicRPN?: RpnToken[];
   _logicCompileError?: string | null;
   referencedADRGs?: string[];
@@ -58,6 +59,7 @@ export interface MdcDefinition {
 export type ComparisonOperator = 'LT' | 'LE' | 'GT' | 'GE';
 export type AgeCondition = `AGE_${ComparisonOperator}_${number}`;
 export type IcuHoursCondition = `ICU_HOURS_${ComparisonOperator}_${number}`;
+export type CrrtHoursCondition = `CRRT_HOURS_${ComparisonOperator}_${number}`;
 export type LengthOfStayCondition = `LOS_${ComparisonOperator}_${number}`;
 
 export type KnownSubgroupCondition =
@@ -67,6 +69,7 @@ export type KnownSubgroupCondition =
   | 'SPECIFIC_PROCEDURE_PREFIX'
   | AgeCondition
   | IcuHoursCondition
+  | CrrtHoursCondition
   | LengthOfStayCondition
   | 'DEATH'
   | 'INTENSIVE_CARE'
@@ -165,6 +168,8 @@ export interface RulePatient {
 export interface MatchCodeDetail {
   matched: boolean;
   matchedCodes: string[];
+  matchedCount?: number;
+  requiredCount?: number;
 }
 
 export interface RuleMatchDetails {

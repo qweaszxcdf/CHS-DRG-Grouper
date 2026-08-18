@@ -79,6 +79,7 @@ function App() {
   const [previewMultiSiteKey, setPreviewMultiSiteKey] = useState('');
   const [previewIntensiveCareKey, setPreviewIntensiveCareKey] = useState('');
   const [previewIcuHoursKey, setPreviewIcuHoursKey] = useState('');
+  const [previewCrrtHoursKey, setPreviewCrrtHoursKey] = useState('');
   const [previewLengthOfStayKey, setPreviewLengthOfStayKey] = useState('');
   const [previewDaySurgeryKey, setPreviewDaySurgeryKey] = useState('');
   const [previewGenderKey, setPreviewGenderKey] = useState('');
@@ -120,6 +121,7 @@ function App() {
   const previewMultiSiteRef = useRef(previewMultiSiteKey);
   const previewIntensiveCareRef = useRef(previewIntensiveCareKey);
   const previewIcuHoursRef = useRef(previewIcuHoursKey);
+  const previewCrrtHoursRef = useRef(previewCrrtHoursKey);
   const previewLengthOfStayRef = useRef(previewLengthOfStayKey);
   const previewDaySurgeryRef = useRef(previewDaySurgeryKey);
   const previewGenderRef = useRef(previewGenderKey);
@@ -144,6 +146,7 @@ function App() {
     previewMultiSiteRef.current = '';
     previewIntensiveCareRef.current = '';
     previewIcuHoursRef.current = '';
+    previewCrrtHoursRef.current = '';
     previewLengthOfStayRef.current = '';
     previewDaySurgeryRef.current = '';
     previewGenderRef.current = '';
@@ -158,6 +161,7 @@ function App() {
     setPreviewMultiSiteKey('');
     setPreviewIntensiveCareKey('');
     setPreviewIcuHoursKey('');
+    setPreviewCrrtHoursKey('');
     setPreviewLengthOfStayKey('');
     setPreviewDaySurgeryKey('');
     setPreviewGenderKey('');
@@ -196,6 +200,7 @@ function App() {
     previewMultiSiteRef.current = previewMultiSiteKey;
     previewIntensiveCareRef.current = previewIntensiveCareKey;
     previewIcuHoursRef.current = previewIcuHoursKey;
+    previewCrrtHoursRef.current = previewCrrtHoursKey;
     previewLengthOfStayRef.current = previewLengthOfStayKey;
     previewDaySurgeryRef.current = previewDaySurgeryKey;
     previewGenderRef.current = previewGenderKey;
@@ -211,6 +216,7 @@ function App() {
     previewMultiSiteKey,
     previewIntensiveCareKey,
     previewIcuHoursKey,
+    previewCrrtHoursKey,
     previewLengthOfStayKey,
     previewDaySurgeryKey,
     previewGenderKey,
@@ -289,10 +295,10 @@ function App() {
   // Default: collapsed. If any mapping key is present, auto-expand so users see mapped fields.
   const [previewPatientInfoExpanded, setPreviewPatientInfoExpanded] = useState(false);
   useEffect(() => {
-    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewDischargeKey || previewNewTechniqueKey || previewMultiSiteKey || previewIntensiveCareKey || previewIcuHoursKey || previewLengthOfStayKey || previewDaySurgeryKey || previewGenderKey) {
+    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewDischargeKey || previewNewTechniqueKey || previewMultiSiteKey || previewIntensiveCareKey || previewIcuHoursKey || previewCrrtHoursKey || previewLengthOfStayKey || previewDaySurgeryKey || previewGenderKey) {
       setPreviewPatientInfoExpanded(true);
     }
-  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewDischargeKey, previewNewTechniqueKey, previewMultiSiteKey, previewIntensiveCareKey, previewIcuHoursKey, previewLengthOfStayKey, previewDaySurgeryKey, previewGenderKey]);
+  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewDischargeKey, previewNewTechniqueKey, previewMultiSiteKey, previewIntensiveCareKey, previewIcuHoursKey, previewCrrtHoursKey, previewLengthOfStayKey, previewDaySurgeryKey, previewGenderKey]);
 
   // Handlers that update both state and immediate ref to avoid races in async handlers
   const handlePreviewIdChange = (val) => { invalidateBatchState(); previewIdRef.current = val; setPreviewIdKey(val); };
@@ -322,6 +328,7 @@ function App() {
   const handlePreviewMultiSiteChange = (val) => { invalidateBatchState(); previewMultiSiteRef.current = val; setPreviewMultiSiteKey(val); };
   const handlePreviewIntensiveCareChange = (val) => { invalidateBatchState(); previewIntensiveCareRef.current = val; setPreviewIntensiveCareKey(val); };
   const handlePreviewIcuHoursChange = (val) => { invalidateBatchState(); previewIcuHoursRef.current = val; setPreviewIcuHoursKey(val); };
+  const handlePreviewCrrtHoursChange = (val) => { invalidateBatchState(); previewCrrtHoursRef.current = val; setPreviewCrrtHoursKey(val); };
   const handlePreviewLengthOfStayChange = (val) => { invalidateBatchState(); previewLengthOfStayRef.current = val; setPreviewLengthOfStayKey(val); };
   const handlePreviewDaySurgeryChange = (val) => { invalidateBatchState(); previewDaySurgeryRef.current = val; setPreviewDaySurgeryKey(val); };
   const handlePreviewGenderChange = (val) => { invalidateBatchState(); previewGenderRef.current = val; setPreviewGenderKey(val); };
@@ -362,6 +369,7 @@ function App() {
     previewMultiSiteRef,
     previewIntensiveCareRef,
     previewIcuHoursRef,
+    previewCrrtHoursRef,
     previewLengthOfStayRef,
     previewDaySurgeryRef,
     previewGenderRef,
@@ -411,6 +419,7 @@ function App() {
     setPreviewMultiSiteKey,
     setPreviewIntensiveCareKey,
     setPreviewIcuHoursKey,
+    setPreviewCrrtHoursKey,
     setPreviewLengthOfStayKey,
     setPreviewDaySurgeryKey,
     setPreviewGenderKey,
@@ -471,6 +480,7 @@ function App() {
       previewMultiSiteKey,
       previewIntensiveCareKey,
       previewIcuHoursKey,
+      previewCrrtHoursKey,
       previewLengthOfStayKey,
       previewDaySurgeryKey,
       previewGenderKey,
@@ -511,6 +521,7 @@ function App() {
       handlePreviewMultiSiteChange,
       handlePreviewIntensiveCareChange,
       handlePreviewIcuHoursChange,
+      handlePreviewCrrtHoursChange,
       handlePreviewLengthOfStayChange,
       handlePreviewDaySurgeryChange,
       handlePreviewGenderChange,

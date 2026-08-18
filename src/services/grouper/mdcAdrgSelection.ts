@@ -27,6 +27,7 @@ type SectionMeta = SectionClassification & {
   sectionName: string;
   codes: string[];
   codeSet: Set<string>;
+  minimumMatches?: number;
 };
 type RuleSectionMeta = {
   sectionNames: string[];
@@ -147,8 +148,9 @@ function getRuleSectionMeta(rule: AdrgRule): RuleSectionMeta {
 
     const codes = getSectionCodes(rule, sec);
     const codeSet = new Set(codes);
+    const minimumMatches = rule.sectionMinimumMatches?.[sec];
 
-    return { sectionName: sec, category, position, isSimultaneous, codes, codeSet };
+    return { sectionName: sec, category, position, isSimultaneous, codes, codeSet, minimumMatches };
   });
 
   const meta = { sectionNames, sectionDetails, hasDiagSection, hasProcSection };
@@ -166,10 +168,10 @@ function checkSectionMatchByMeta(
   if (!sectionMeta || !sectionMeta.codes || sectionMeta.codes.length === 0) return { matched: false, matchedCodes: [] };
 
   if (sectionMeta.category === 'diagnosis') {
-    return matchCodesForPosition(sectionMeta.codes, patientDiagnoses, sectionMeta.position, diagnosisLookup);
+    return matchCodesForPosition(sectionMeta.codes, patientDiagnoses, sectionMeta.position, diagnosisLookup, sectionMeta.minimumMatches);
   }
   if (sectionMeta.category === 'procedure') {
-    return matchCodesForPosition(sectionMeta.codes, patientProcedures, sectionMeta.position, procedureLookup);
+    return matchCodesForPosition(sectionMeta.codes, patientProcedures, sectionMeta.position, procedureLookup, sectionMeta.minimumMatches);
   }
   return { matched: false, matchedCodes: [] };
 }
@@ -224,13 +226,24 @@ function matchCodesForPosition(
   patientCodes: Array<string | null>,
   position: SectionPosition,
   patientCodeLookup: CodeLookup | null = null,
+  minimumMatches = 1,
 ): MatchCodeDetail {
   if (!codes || codes.length === 0) return { matched: false, matchedCodes: [] };
+
+  const finalize = (hits: string[]): MatchCodeDetail => {
+    const matchedCodes = [...new Set(hits)];
+    const requiredCount = Number.isInteger(minimumMatches) && minimumMatches > 1 ? minimumMatches : undefined;
+    return {
+      matched: matchedCodes.length >= minimumMatches,
+      matchedCodes,
+      ...(requiredCount === undefined ? {} : { matchedCount: matchedCodes.length, requiredCount }),
+    };
+  };
 
   if (position === 'principal') {
     const principal = patientCodeLookup ? patientCodeLookup.principal : (patientCodes.length > 0 ? (patientCodes[0] ?? null) : null);
     const hit = principal != null && codes.includes(principal);
-    return { matched: hit, matchedCodes: hit ? [principal] : [] };
+    return finalize(hit ? [principal] : []);
   }
   if (position === 'other') {
     const secondarySet = patientCodeLookup ? patientCodeLookup.secondarySet : null;
@@ -239,12 +252,12 @@ function matchCodesForPosition(
       for (const code of codes) {
         if (secondarySet.has(code)) hits.push(code);
       }
-      return { matched: hits.length > 0, matchedCodes: hits };
+      return finalize(hits);
     }
 
     const secondaries = patientCodes.slice(1);
     const hits = codes.filter(c => secondaries.includes(c));
-    return { matched: hits.length > 0, matchedCodes: hits };
+    return finalize(hits);
   }
 
   const allSet = patientCodeLookup ? patientCodeLookup.allSet : null;
@@ -253,11 +266,11 @@ function matchCodesForPosition(
     for (const code of codes) {
       if (allSet.has(code)) hits.push(code);
     }
-    return { matched: hits.length > 0, matchedCodes: hits };
+    return finalize(hits);
   }
 
   const hits = codes.filter(c => patientCodes.includes(c));
-  return { matched: hits.length > 0, matchedCodes: hits };
+  return finalize(hits);
 }
 
 function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
@@ -327,7 +340,8 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
   }
 
   if (rule.anyProcedureRequired) {
-    const hasProc = patientProcedures.some(p => p && String(p).trim());
+    const principalProcedure = patientProcedures[0];
+    const hasProc = !!(principalProcedure && String(principalProcedure).trim());
     matchInfo.details.anyProcedureRequired = true;
     matchInfo.matched = hasProc;
     return matchInfo;

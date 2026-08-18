@@ -4,7 +4,7 @@ import { loadRuleSet, loadRuleSetAsync } from '../services/ruleSetLoader.ts';
 import { searchCodes } from '../services/CodeSearch';
 import { convertGLtoYBCode } from '../services/CodeConversion';
 import { buildPatientInfo, groupSingle, groupAllOrders } from '../services/singleEntry';
-import { DEFAULT_RULE_VERSION } from '../services/generated/versionRegistry.ts';
+import { DEFAULT_RULE_VERSION, getVersionDefinition } from '../services/generated/versionRegistry.ts';
 import { ensureSingleTrailingEmpty, reorderWithInfos, normalizeCodesAndInfos, namesSignificantlyDiffer } from './shared.jsx';
 const createEmptyInfo = (overrides = {}) => ({ desc: '', type: '', searchResults: [], showDropdown: false, highlightedIndex: -1, ...overrides });
 const normalizeInfoLength = (infos, targetLength) => {
@@ -81,6 +81,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     return () => { active = false; };
   }, [version]);
   const ruleSet = loadedRuleSet || loadRuleSet();
+  const patientInfoFieldGroups = useMemo(() => getVersionDefinition(version).patientInfo, [version]);
   const { loadCCCodes, loadMCCCodes, loadCCECodes, loadYBDiagNames, loadYBProcNames, isGrayDiag, isGrayProc, isInvalidDiagnosis, isInvalidProcedure } = ruleSet;
   const ybDiagNames = useMemo(() => loadYBDiagNames(), [loadYBDiagNames]);
   const ybProcNames = useMemo(() => loadYBProcNames(), [loadYBProcNames]);
@@ -126,6 +127,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const [patientMultiSite, setPatientMultiSite] = useState(false);
   const [patientIntensiveCare, setPatientIntensiveCare] = useState(false);
   const [patientIcuHours, setPatientIcuHours] = useState('');
+  const [patientCrrtHours, setPatientCrrtHours] = useState('');
   const [patientLengthOfStay, setPatientLengthOfStay] = useState('');
   const [patientDaySurgery, setPatientDaySurgery] = useState(false);
   const [showPatientInfo, setShowPatientInfo] = useState(false);
@@ -154,11 +156,12 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         multiSite: patientMultiSite,
         intensiveCare: patientIntensiveCare,
         icuHours: patientIcuHours,
+        crrtHours: patientCrrtHours,
         lengthOfStay: patientLengthOfStay,
         daySurgery: patientDaySurgery,
       })
       : { gender: patientGender }
-  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite, patientIntensiveCare, patientIcuHours, patientLengthOfStay, patientDaySurgery]);
+  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite, patientIntensiveCare, patientIcuHours, patientCrrtHours, patientLengthOfStay, patientDaySurgery]);
   const handlePatientAgeChange = (value) => {
     setPatientAge(value);
     if (String(value).trim() !== '') setPatientAgeInDays('');
@@ -445,6 +448,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     setPatientMultiSite(false);
     setPatientIntensiveCare(false);
     setPatientIcuHours('');
+    setPatientCrrtHours('');
     setPatientLengthOfStay('');
     setPatientDaySurgery(false);
     setShowPatientInfo(false);
@@ -512,6 +516,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
 
   const patientInfoFields = [
     {
+      key: 'gender',
       label: 'Gender',
       className: '',
       control: (
@@ -522,6 +527,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       )
     },
     {
+      key: 'dischargeStatus',
       label: 'Discharge Status',
       className: '',
       control: (
@@ -532,84 +538,116 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       )
     },
     {
+      key: 'age',
       label: 'Age (years)',
       className: '',
       control: <input type="number" min="0" step="1" value={patientAge} onChange={(e) => handlePatientAgeChange(e.target.value)} placeholder="e.g. 0.5" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
+      key: 'ageInDays',
       label: 'Age (days)',
       className: '',
       control: <input type="number" min="0" max="365" step="1" value={patientAgeInDays} onChange={(e) => handlePatientAgeInDaysChange(e.target.value)} placeholder="e.g. 20" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
+      key: 'birthWeight',
       label: 'Birth weight (grams)',
-      className: 'col-span-2',
+      className: '',
       control: <input type="number" min="1" step="1" value={patientBirthWeight} onChange={(e) => setPatientBirthWeight(e.target.value)} placeholder="e.g. 3200" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
+      key: 'icuHours',
       label: 'ICU duration (hours)',
       className: '',
       control: <input type="number" min="0" step="1" value={patientIcuHours} onChange={(e) => setPatientIcuHours(e.target.value)} placeholder="e.g. 120" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
+      key: 'crrtHours',
+      label: 'CRRT duration (hours)',
+      className: '',
+      control: <input type="number" min="0" step="1" value={patientCrrtHours} onChange={(e) => setPatientCrrtHours(e.target.value)} placeholder="e.g. 24" className="mt-1 w-full p-2 border dark-border rounded" />
+    },
+    {
+      key: 'lengthOfStay',
       label: 'Length of stay (days)',
       className: '',
       control: <input type="number" min="0" step="1" value={patientLengthOfStay} onChange={(e) => setPatientLengthOfStay(e.target.value)} placeholder="e.g. 7" className="mt-1 w-full p-2 border dark-border rounded" />
     }
   ];
 
-  const renderPatientInfoPanel = () => (
-    <div className="mt-2 p-4 border dark-border rounded-lg dark-surface">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {patientInfoFields.map((field) => (
-          <div key={field.label} className={field.className}>
-            <label className="block text-sm text-gray-300 mb-1">{field.label}</label>
-            {field.control}
-          </div>
-        ))}
-        <div className="col-span-2 flex items-center mt-2">
-          <input
-            type="checkbox"
-            id="newtechnique-checkbox"
-            checked={patientNewTechnique}
-            onChange={e => setPatientNewTechnique(e.target.checked)}
-            className="mr-2 w-4 h-4"
-          />
-          <label htmlFor="newtechnique-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">New Technique (新技术)</label>
-        </div>
-        <div className="col-span-2 flex items-center mt-2">
-          <input
-            type="checkbox"
-            id="multisite-checkbox"
-            checked={patientMultiSite}
-            onChange={e => setPatientMultiSite(e.target.checked)}
-            className="mr-2 w-4 h-4"
-          />
-          <label htmlFor="multisite-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Multi-site joint replacement (多部位关节置换)</label>
-        </div>
-        <div className="col-span-2 flex items-center mt-2">
-          <input
-            type="checkbox"
-            id="intensive-care-checkbox"
-            checked={patientIntensiveCare}
-            onChange={e => setPatientIntensiveCare(e.target.checked)}
-            className="mr-2 w-4 h-4"
-          />
-          <label htmlFor="intensive-care-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Intensive care (重症监护)</label>
-        </div>
-        <div className="col-span-2 flex items-center mt-2">
-          <input
-            type="checkbox"
-            id="day-surgery-checkbox"
-            checked={patientDaySurgery}
-            onChange={e => setPatientDaySurgery(e.target.checked)}
-            className="mr-2 w-4 h-4"
-          />
-          <label htmlFor="day-surgery-checkbox" className="text-sm text-gray-300 select-none cursor-pointer">Day surgery (日间手术)</label>
-        </div>
-      </div>
+  const renderPatientInfoField = (field) => (
+    <div key={field.label} className={field.className}>
+      <label className="block text-sm text-gray-300 mb-1">{field.label}</label>
+      {field.control}
     </div>
   );
+
+  const renderPatientInfoPanel = () => {
+    const patientInfoFieldKeys = new Set([
+      ...patientInfoFieldGroups.basic,
+      ...patientInfoFieldGroups.advanced,
+    ]);
+    const fieldsByKey = new Map(patientInfoFields.map((field) => [field.key, field]));
+    const visibleFields = [
+      ...patientInfoFieldGroups.basic,
+      ...patientInfoFieldGroups.advanced,
+    ]
+      .map((key) => fieldsByKey.get(key))
+      .filter(Boolean);
+    const visibleCheckboxes = [
+      {
+        key: 'newTechnique',
+        id: 'newtechnique-checkbox',
+        checked: patientNewTechnique,
+        onChange: e => setPatientNewTechnique(e.target.checked),
+        label: 'New Technique (新技术)',
+      },
+      {
+        key: 'multiSite',
+        id: 'multisite-checkbox',
+        checked: patientMultiSite,
+        onChange: e => setPatientMultiSite(e.target.checked),
+        label: 'Multi-site joint replacement (多部位关节置换)',
+      },
+      {
+        key: 'intensiveCare',
+        id: 'intensive-care-checkbox',
+        checked: patientIntensiveCare,
+        onChange: e => setPatientIntensiveCare(e.target.checked),
+        label: 'Intensive care (重症监护)',
+      },
+      {
+        key: 'daySurgery',
+        id: 'day-surgery-checkbox',
+        checked: patientDaySurgery,
+        onChange: e => setPatientDaySurgery(e.target.checked),
+        label: 'Day surgery (日间手术)',
+      },
+    ].filter(({ key }) => patientInfoFieldKeys.has(key));
+    return (
+      <div className="mt-2 p-4 border dark-border rounded-lg dark-surface">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-3">
+          {visibleFields.map(renderPatientInfoField)}
+          {visibleCheckboxes.length > 0 && (
+            <div className="col-span-full flex flex-wrap items-center gap-x-6 gap-y-2 pt-1">
+              {visibleCheckboxes.map((checkbox) => (
+                <label key={checkbox.id} htmlFor={checkbox.id} className="inline-flex items-center text-sm text-gray-300 select-none cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id={checkbox.id}
+                    checked={checkbox.checked}
+                    onChange={checkbox.onChange}
+                    className="mr-2 w-4 h-4"
+                  />
+                  <span>{checkbox.label}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const renderCodeTagBadge = (tagInfo, principalCCEId, compact = false) => {
     if (!tagInfo) return null;

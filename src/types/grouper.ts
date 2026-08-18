@@ -15,34 +15,73 @@ export type MaybePromise<T> = T | Promise<T>;
 export type PatientScalarInput = string | number | null | undefined;
 export type PatientBooleanInput = boolean | number | string | null | undefined;
 
-export interface PatientInfoInput {
+export interface PatientDemographicsInput {
   gender?: PatientScalarInput;
   age?: PatientScalarInput;
   ageInDays?: PatientScalarInput;
   birthWeight?: PatientScalarInput;
+}
+
+export interface PatientOutcomeInput {
   dischargeStatus?: PatientScalarInput;
+}
+
+export interface PatientFlagsInput {
   newTechnique?: PatientBooleanInput;
   multiSite?: PatientBooleanInput;
   intensiveCare?: PatientBooleanInput;
-  icuHours?: PatientScalarInput;
-  lengthOfStay?: PatientScalarInput;
   daySurgery?: PatientBooleanInput;
-  [key: string]: unknown;
 }
 
-export interface NormalizedPatientInfo {
+export interface PatientDurationsInput {
+  icuHours?: PatientScalarInput;
+  crrtHours?: PatientScalarInput;
+  lengthOfStay?: PatientScalarInput;
+}
+
+// Public input remains flat for API, SingleTab, and BatchTab compatibility.
+export interface PatientInfoInput extends
+  PatientDemographicsInput,
+  PatientOutcomeInput,
+  PatientFlagsInput,
+  PatientDurationsInput {}
+
+export type PatientInfoField = keyof PatientInfoInput;
+
+export interface PatientInfoDisplayConfig {
+  basic: readonly PatientInfoField[];
+  advanced: readonly PatientInfoField[];
+}
+
+export interface NormalizedPatientDemographics {
   gender?: number | string;
   age?: number;
   ageInDays?: number;
   birthWeight?: number;
+}
+
+export interface NormalizedPatientOutcome {
   dischargeStatus?: string;
+}
+
+export interface NormalizedPatientFlags {
   newTechnique?: boolean;
   multiSite?: boolean;
   intensiveCare?: boolean;
-  icuHours?: number;
-  lengthOfStay?: number;
   daySurgery?: boolean;
-  [key: string]: unknown;
+}
+
+export interface NormalizedPatientDurations {
+  icuHours?: number;
+  crrtHours?: number;
+  lengthOfStay?: number;
+}
+
+export interface NormalizedPatientInfo extends
+  NormalizedPatientDemographics,
+  NormalizedPatientOutcome,
+  NormalizedPatientFlags,
+  NormalizedPatientDurations {
 }
 
 export interface MatchTraceEntry {
@@ -115,6 +154,7 @@ export interface VersionDefinition {
   packages: VersionPackages;
   commonStrategy: CommonStrategy;
   versionStrategy: VersionStrategy;
+  patientInfo: PatientInfoDisplayConfig;
   data?: RuleData;
   [key: string]: unknown;
 }

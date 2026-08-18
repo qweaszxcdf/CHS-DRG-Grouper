@@ -52,6 +52,8 @@ let commonRulesDir;
 let outputDir;
 let commonOutputDir;
 let buildScope;
+let inferRegionalSectionMinimumMatches;
+let subgroupOrderOverrides;
 
 // Module-level regex constants — compiled once, reused across all calls
 const _hanRe = /[\p{Script=Han}]/u;
@@ -62,6 +64,69 @@ const _codeExtractRe = /^([A-Za-z0-9.+\-*xX/†]+)/;
 const _suffixRe = /_([nab])$/;   // DRG variant suffix: n=new-technique, a=alternate, b=backup
 const _upperStartRe = /^[A-Z]/;  // diagnosis prefix cluster (ICD alpha)
 const _digitStartRe = /^[0-9]/;  // procedure prefix cluster (ICD-9-CM-3 numeric)
+
+const COMPARISON_OPERATOR_CODES = Object.freeze({
+  大于等于: 'GE',
+  不低于: 'GE',
+  '>=': 'GE',
+  '≥': 'GE',
+  '＞': 'GT',
+  大于: 'GT',
+  '>': 'GT',
+  '＜': 'LT',
+  小于等于: 'LE',
+  不超过: 'LE',
+  '<=': 'LE',
+  '≤': 'LE',
+  小于: 'LT',
+  '<': 'LT',
+  以上: 'GE',
+});
+const COMPARISON_OPERATOR_PATTERN = Object.keys(COMPARISON_OPERATOR_CODES)
+  .filter(value => value !== '以上')
+  .sort((left, right) => right.length - left.length)
+  .map(value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  .join('|');
+const CRRT_HOURS_NAME_CONDITION_PATTERNS = [
+  {
+    pattern: new RegExp(
+      `(?:连续性肾脏替代治疗(?:\\[?CRRT\\]?)?|CRRT)(?:时长)?(?<operator>${COMPARISON_OPERATOR_PATTERN})(?<value>\\d+)(?:小时|h)`,
+      'i',
+    ),
+    conditionPrefix: 'CRRT_HOURS',
+  },
+];
+const ICU_HOURS_NAME_CONDITION_PATTERNS = [
+  {
+    pattern: new RegExp(
+      `重症监护(?:时长)?(?<operator>${COMPARISON_OPERATOR_PATTERN})(?<value>\\d+)(?:小时|h)`,
+      'i',
+    ),
+    conditionPrefix: 'ICU_HOURS',
+  },
+];
+const AGE_NAME_CONDITION_PATTERNS = [
+  {
+    pattern: new RegExp(
+      `(?:(?<operator>${COMPARISON_OPERATOR_PATTERN})\\s*)?(?<value>\\d+)\\s*岁(?<suffix>以上)?`,
+    ),
+    conditionPrefix: 'AGE',
+  },
+];
+const DAY_SURGERY_NAME_PATTERN = /日间|day\s*(?:case|surgery)/i;
+
+function inferNumericCondition(text, definitions = []) {
+  const normalized = String(text || '').replace(/\s+/g, '');
+  for (const { pattern, conditionPrefix } of definitions) {
+    if (!(pattern instanceof RegExp) || !conditionPrefix) continue;
+    const match = normalized.match(pattern);
+    const comparisonToken = match?.groups?.operator || match?.groups?.suffix;
+    const operator = COMPARISON_OPERATOR_CODES[comparisonToken];
+    const value = match?.groups?.value;
+    if (operator && value) return `${conditionPrefix}_${operator}_${value}`;
+  }
+  return null;
+}
 
 let ccCodes;
 let mccCodes;
@@ -227,27 +292,19 @@ function deriveSubgroupRule(drgCode, drgName, adrgData) {
   const normalizedDrgName = String(drgName || '').replace(/\s+/g, ' ').trim();
   const nameConditions = [];
 
-  const agePatterns = [
-    [/小于等于\s*(\d+)\s*岁/, 'AGE_LE_'],
-    [/[＜<]\s*(\d+)\s*岁/, 'AGE_LT_'],
-    [/小于\s*(\d+)\s*岁/, 'AGE_LT_'],
-    [/大于等于\s*(\d+)\s*岁/, 'AGE_GE_'],
-    [/[＞>]\s*(\d+)\s*岁/, 'AGE_GT_'],
-    [/大于\s*(\d+)\s*岁/, 'AGE_GT_'],
-    [/(\d+)\s*岁以上/, 'AGE_GE_'],
-  ];
-  for (const [pattern, conditionPrefix] of agePatterns) {
-    const match = normalizedDrgName.match(pattern);
-    if (match) {
-      nameConditions.push(conditionPrefix + match[1]);
-      break;
-    }
-  }
-  if (/不伴(?:严重|一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('NO_CC');
-  else if (/伴严重(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_MCC');
-  else if (/伴(?:一般)?(?:合并症或并发症|并发症或合并症)/.test(normalizedDrgName)) nameConditions.push('WITH_CC');
+  const ageCondition = inferNumericCondition(normalizedDrgName, AGE_NAME_CONDITION_PATTERNS);
+  if (ageCondition) nameConditions.push(ageCondition);
+  const complicationPair = '(?:合并症[或与]并发症|并发症[或与]合并症)';
+  if (new RegExp(`不伴(?:严重|一般)?${complicationPair}`).test(normalizedDrgName)) nameConditions.push('NO_CC');
+  else if (new RegExp(`伴严重${complicationPair}`).test(normalizedDrgName)) nameConditions.push('WITH_MCC');
+  else if (new RegExp(`伴(?:严重或一般|一般)?${complicationPair}`).test(normalizedDrgName)) nameConditions.push('WITH_CC');
+  const crrtHoursCondition = inferNumericCondition(normalizedDrgName, CRRT_HOURS_NAME_CONDITION_PATTERNS);
+  if (crrtHoursCondition) nameConditions.push(crrtHoursCondition);
   if (/死亡转归/.test(normalizedDrgName)) nameConditions.push('DEATH');
-  if (/伴重症监护/.test(normalizedDrgName)) nameConditions.push('INTENSIVE_CARE');
+  const icuHoursCondition = inferNumericCondition(normalizedDrgName, ICU_HOURS_NAME_CONDITION_PATTERNS);
+  if (icuHoursCondition) nameConditions.push(icuHoursCondition);
+  else if (/伴重症监护/.test(normalizedDrgName)) nameConditions.push('INTENSIVE_CARE');
+  if (DAY_SURGERY_NAME_PATTERN.test(normalizedDrgName)) nameConditions.push('DAY_SURGERY');
 
   const nameComplicationConditions = nameConditions.filter(condition => ['WITH_MCC', 'WITH_CC', 'NO_CC'].includes(condition));
   const nameAgeConditions = nameConditions.filter(condition => condition.startsWith('AGE_'));
@@ -448,64 +505,167 @@ function deriveSubgroupRules(drgMap, adrgRules) {
   return { subgroupRules, skippedDRGList };
 }
 
+const SUBGROUP_COMPLICATION_PRIORITY = Object.freeze({
+  WITH_MCC: 0,
+  WITH_CC: 1,
+  NO_CC: 2,
+});
+const SUBGROUP_NO_COMPLICATION_PRIORITY = Object.keys(SUBGROUP_COMPLICATION_PRIORITY).length;
+const SUBGROUP_COMPLICATION_CONDITIONS = new Set(Object.keys(SUBGROUP_COMPLICATION_PRIORITY));
+
 function orderSubgroupRules(rules) {
-  const complicationConditions = new Set(['WITH_MCC', 'WITH_CC', 'NO_CC']);
   const rulesByAdrg = new Map();
-
-  const getBaseCode = (rule, adrgCode) => {
-    const normalizedCode = rule.drgCode.replace(_suffixRe, '');
-    const lastChar = normalizedCode.at(-1);
-    if (lastChar < 'A' || lastChar > 'H') return normalizedCode;
-
-    const conditions = rule.conditions || [];
-    if (conditions.includes('WITH_MCC')) return `${adrgCode}1`;
-    if (conditions.includes('WITH_CC')) return `${adrgCode}3`;
-    if (conditions.includes('NO_CC')) return `${adrgCode}5`;
-    return `${adrgCode}9`;
-  };
-
-  const getPriority = rule => {
-    const conditions = rule.conditions || [];
-    if (conditions.some(condition => complicationConditions.has(condition))) return 1;
-    if (rule.adrgRule || conditions.some(condition => condition !== 'ADRG_ONLY')) return 0;
-    return 1;
-  };
-
   for (const [sourceIndex, rule] of rules.entries()) {
-    const adrgCode = rule.drgCode.slice(0, 3);
-    if (!rulesByAdrg.has(adrgCode)) {
-      rulesByAdrg.set(adrgCode, []);
+    const conditions = new Set(rule.conditions || []);
+    const drgCode = rule.drgCode;
+    const adrgCode = drgCode.slice(0, 3);
+    const normalizedCode = drgCode.replace(_suffixRe, '');
+    const complicationCondition = Object.keys(SUBGROUP_COMPLICATION_PRIORITY)
+      .find(condition => conditions.has(condition)) || null;
+    const sections = Object.keys(rule.adrgRule?.sections || {});
+    const hasProcedureRule = sections.some(section => section.includes('手术') || section.includes('操作'));
+    const hasDiagnosisRule = sections.some(section => section.includes('诊断'));
+    const isUnderscoreBranch = drgCode.charAt(3) === '_';
+    const extraConditions = new Set(
+      [...conditions].filter(condition => !SUBGROUP_COMPLICATION_CONDITIONS.has(condition)),
+    );
+    const hasAdditionalConstraints = Boolean(rule.adrgRule)
+      || [...extraConditions].some(condition => condition !== 'ADRG_ONLY');
+    const conditionMultiplicityPriority = hasAdditionalConstraints ? 0 : 1;
+    let anchorPriorityClass = 3;
+    let extraLogicalPriority = 9;
+    if (extraConditions.has('DEATH')) {
+      anchorPriorityClass = 0;
+      extraLogicalPriority = 0;
+    } else if ([...extraConditions].some(condition => condition.startsWith('CRRT_HOURS_'))) {
+      anchorPriorityClass = 1;
+      extraLogicalPriority = 1;
+    } else if (extraConditions.has('DAY_SURGERY')) {
+      anchorPriorityClass = 2;
+      extraLogicalPriority = 2;
+    } else if (isUnderscoreBranch) {
+      if (
+        extraConditions.has('INTENSIVE_CARE')
+        || [...extraConditions].some(condition => condition.startsWith('ICU_HOURS_'))
+      ) extraLogicalPriority = 5;
+      else if ([...extraConditions].some(condition => condition.startsWith('AGE_'))) {
+        extraLogicalPriority = 6;
+      } else {
+        extraLogicalPriority = 7;
+      }
+    } else if (
+      extraConditions.has('SPECIFIC_PROCEDURE_PREFIX')
+      || hasProcedureRule
+      || extraConditions.has('NEW_TECHNIQUE')
+    ) {
+      extraLogicalPriority = 3;
+    } else if (extraConditions.has('SPECIFIC_DIAGNOSIS_PREFIX') || hasDiagnosisRule) {
+      extraLogicalPriority = 4;
+    } else if (
+      extraConditions.has('INTENSIVE_CARE')
+      || [...extraConditions].some(condition => condition.startsWith('ICU_HOURS_'))
+    ) {
+      extraLogicalPriority = 5;
+    } else if ([...extraConditions].some(condition => condition.startsWith('AGE_'))) {
+      extraLogicalPriority = 6;
     }
-    rulesByAdrg.get(adrgCode).push({
+    const anchorLogicalPriority = complicationCondition !== null && anchorPriorityClass >= 3
+      ? 8
+      : extraLogicalPriority;
+    const lastChar = normalizedCode.at(-1);
+    let baseCode = normalizedCode;
+    if (lastChar >= 'A' && lastChar <= 'H') {
+      const baseSuffix = complicationCondition === 'WITH_MCC'
+        ? '1'
+        : complicationCondition === 'WITH_CC'
+          ? '3'
+          : complicationCondition === 'NO_CC'
+            ? '5'
+            : '9';
+      baseCode = `${adrgCode}${baseSuffix}`;
+    }
+    const entry = {
       rule,
       sourceIndex,
-      baseCode: getBaseCode(rule, adrgCode),
-    });
+      adrgCode,
+      baseCode,
+      complicationPriority: complicationCondition === null
+        ? SUBGROUP_NO_COMPLICATION_PRIORITY
+        : SUBGROUP_COMPLICATION_PRIORITY[complicationCondition],
+      conditionMultiplicityPriority,
+      anchorPriorityClass,
+      anchorLogicalPriority,
+      extraLogicalPriority,
+      isUnderscoreBranch,
+      isBaseRule: drgCode === baseCode,
+    };
+    if (!rulesByAdrg.has(entry.adrgCode)) rulesByAdrg.set(entry.adrgCode, []);
+    rulesByAdrg.get(entry.adrgCode).push(entry);
   }
 
   const orderedRules = [];
+  for (const adrgCode of Object.keys(subgroupOrderOverrides)) {
+    if (!rulesByAdrg.has(adrgCode)) {
+      throw new Error(`subgroupOrderOverrides references unknown ADRG: ${adrgCode}`);
+    }
+  }
+
   for (const entries of rulesByAdrg.values()) {
+    const adrgCode = entries[0].adrgCode;
+    const configuredOrder = subgroupOrderOverrides[adrgCode] || [];
+    const configuredOrderIndex = new Map(
+      configuredOrder.map((drgCode, index) => [drgCode, index]),
+    );
+    const availableCodes = new Set(entries.map(entry => entry.rule.drgCode));
+    for (const drgCode of configuredOrder) {
+      if (!availableCodes.has(drgCode)) {
+        throw new Error(
+          `subgroupOrderOverrides.${adrgCode} references unknown DRG: ${drgCode}`,
+        );
+      }
+    }
+    const defaultOverridePriority = configuredOrder.length;
+    for (const entry of entries) {
+      entry.orderOverridePriority = configuredOrderIndex.get(entry.rule.drgCode)
+        ?? defaultOverridePriority;
+    }
+
     const groupFirstIndex = new Map();
     for (const entry of entries) {
       if (!groupFirstIndex.has(entry.baseCode)) groupFirstIndex.set(entry.baseCode, entry.sourceIndex);
     }
+    for (const entry of entries) entry.baseGroupIndex = groupFirstIndex.get(entry.baseCode);
 
     entries.sort((left, right) => {
-      const priorityDelta = getPriority(left.rule) - getPriority(right.rule);
-      if (priorityDelta !== 0) return priorityDelta;
+      const orderOverrideDelta = left.orderOverridePriority - right.orderOverridePriority;
+      if (orderOverrideDelta !== 0) return orderOverrideDelta;
 
-      const groupDelta = groupFirstIndex.get(left.baseCode) - groupFirstIndex.get(right.baseCode);
+      const priorityClassDelta = left.anchorPriorityClass - right.anchorPriorityClass;
+      if (priorityClassDelta !== 0) return priorityClassDelta;
+
+      const logicalPriorityDelta = left.anchorLogicalPriority - right.anchorLogicalPriority;
+      if (logicalPriorityDelta !== 0) return logicalPriorityDelta;
+
+      const complicationDelta = left.complicationPriority - right.complicationPriority;
+      if (complicationDelta !== 0) return complicationDelta;
+
+      const conditionMultiplicityDelta =
+        left.conditionMultiplicityPriority - right.conditionMultiplicityPriority;
+      if (conditionMultiplicityDelta !== 0) return conditionMultiplicityDelta;
+
+      const extraLogicalPriorityDelta = left.extraLogicalPriority - right.extraLogicalPriority;
+      if (extraLogicalPriorityDelta !== 0) return extraLogicalPriorityDelta;
+
+      const groupDelta = left.baseGroupIndex - right.baseGroupIndex;
       if (groupDelta !== 0) return groupDelta;
 
-      const baseDelta = Number(left.rule.drgCode === left.baseCode)
-        - Number(right.rule.drgCode === right.baseCode);
+      const baseDelta = Number(left.isBaseRule) - Number(right.isBaseRule);
       if (baseDelta !== 0) return baseDelta;
 
       return left.sourceIndex - right.sourceIndex;
     });
     orderedRules.push(...entries.map(entry => entry.rule));
   }
-
   return orderedRules;
 }
 
@@ -520,10 +680,12 @@ async function buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRule
     seenCodes.add(drgCode);
     const drg = drgMap[drgCode];
     if (!drg) throw new Error(`Explicit subgroup rule ${drgCode} is absent from DRG.dat`);
+    const sectionMinimumMatches = inferRegionalSectionMinimumMatches(item.content);
     return {
       ...item,
       name: String(drg.description || '').trim(),
       content: prepareExplicitSubgroupRuleContent(item.content),
+      ...(Object.keys(sectionMinimumMatches).length > 0 ? { sectionMinimumMatches } : {}),
     };
   });
 
@@ -532,7 +694,9 @@ async function buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRule
     drgCode: item.code,
     drgName: item.name,
     baseAdrg: item.code.slice(0, 3),
-    rule: item.rule,
+    rule: item.rule && item.sectionMinimumMatches
+      ? { ...item.rule, sectionMinimumMatches: item.sectionMinimumMatches }
+      : item.rule,
   }));
 }
 
@@ -555,6 +719,7 @@ function configureBuildContext(scope, config, commonPackage) {
   version = config.id;
   versionConfig = config;
   subgroupConditions = versionConfig.subgroupConditions || {};
+  subgroupOrderOverrides = versionConfig.subgroupOrderOverrides || {};
   buildScope = scope;
 
   const versionDir = path.join(versionsDir, version);
@@ -597,11 +762,13 @@ async function buildPackage(scope, config, commonPackage) {
   const subgroupRulesSourceDir = path.join(rulesDir, 'subgroup_rules');
   const hasSubgroupRulesSource = fs.existsSync(subgroupRulesSourceDir)
     && fs.readdirSync(subgroupRulesSourceDir).some(filename => filename.endsWith('.dat'));
-  if (buildCommon || (buildVersion && hasSubgroupRulesSource)) {
+  if (buildCommon || buildVersion) {
     const ruleParserPath = pathToFileUrl(path.resolve(__dirname, '../src/lib/ruleParserCore.js'));
     try {
       const rp = await import(ruleParserPath);
       parseRule = rp.parseRule;
+      inferRegionalSectionMinimumMatches = rp.inferRegionalSectionMinimumMatches;
+      if (typeof inferRegionalSectionMinimumMatches !== 'function') throw new Error('ruleParserCore must export inferRegionalSectionMinimumMatches');
       if (typeof parseRule !== 'function') throw new Error('ruleParserCore must export parseRule');
       prepareExplicitSubgroupRuleContent = rp.prepareExplicitSubgroupRuleContent;
       if (typeof prepareExplicitSubgroupRuleContent !== 'function') {
@@ -652,7 +819,7 @@ async function buildPackage(scope, config, commonPackage) {
 
   console.log('Deriving DRG subgroup rules...');
   const { subgroupRules: derivedRules, skippedDRGList } = deriveSubgroupRules(drgMap, adrgRules);
-  const explicitSubgroupRules = parseRule
+  const explicitSubgroupRules = parseRule && hasSubgroupRulesSource
     ? await buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRuleContent)
     : [];
   const explicitSubgroupRuleByCode = new Map(explicitSubgroupRules.map(rule => [rule.drgCode, rule.rule]));
@@ -711,35 +878,40 @@ function pathToFileUrl(p) {
   return `file://${resolved}`;
 }
 
-function readConfigs() {
+function readConfigs(versionId) {
+  if (versionId) {
+    const configPath = path.join(versionsDir, versionId, 'config.json');
+    if (!fs.existsSync(configPath)) {
+      throw new Error(`Unknown DRG version: ${versionId}`);
+    }
+    return [configResolver.resolveVersionConfig(versionId).versionConfig];
+  }
   return configResolver.listResolvedVersionConfigs().map(
     config => config.versionConfig,
   );
 }
 
 async function runCli() {
-  const configs = readConfigs();
   const [scope = 'all', requestedId] = process.argv.slice(2);
   if (!['all', 'common', 'version'].includes(scope)) {
     throw new Error('Usage: build_rules_json.cjs [all | common <package-id> | version <version-id>]');
   }
+
+  if (scope === 'version') {
+    const configs = readConfigs(requestedId);
+    for (const config of configs) {
+      await buildPackage('version', config, config.drgCommon);
+    }
+    return;
+  }
+
+  const configs = readConfigs();
 
   if (scope === 'common') {
     if (!requestedId) throw new Error('DRG common package ID is required');
     const config = configs.find(item => item.drgCommon === requestedId);
     if (!config) throw new Error(`DRG common package is not referenced by any version: ${requestedId}`);
     await buildPackage('common', config, requestedId);
-    return;
-  }
-
-  if (scope === 'version') {
-    const selected = requestedId
-      ? configs.filter(item => item.id === requestedId)
-      : configs;
-    if (selected.length === 0) throw new Error(`Unknown DRG version: ${requestedId}`);
-    for (const config of selected) {
-      await buildPackage('version', config, config.drgCommon);
-    }
     return;
   }
 

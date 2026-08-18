@@ -9,7 +9,9 @@ import type {
   GroupingResult,
   MatchTraceEntry,
   NormalizedPatientInfo,
+  PatientBooleanInput,
   PatientInfoInput,
+  PatientScalarInput,
 } from '../types/grouper.js';
 
 // lite build flag - allows dead-code elimination when VITE_LITE=true
@@ -126,6 +128,28 @@ function sanitizeProcedures(effectiveProcedures: Array<string | null>, matchTrac
     return { effectiveProcedures, principalProcedure: principalProcedure ?? null };
 }
 
+const PATIENT_INFO_FIELDS = [
+    'gender',
+    'age',
+    'ageInDays',
+    'birthWeight',
+    'dischargeStatus',
+    'newTechnique',
+    'multiSite',
+    'intensiveCare',
+    'icuHours',
+    'crrtHours',
+    'lengthOfStay',
+    'daySurgery',
+] as const;
+const PATIENT_BOOLEAN_FIELDS = [
+    'newTechnique',
+    'multiSite',
+    'intensiveCare',
+    'daySurgery',
+] as const;
+type RawPatientInfoValue = PatientScalarInput | PatientBooleanInput;
+
 function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): NormalizedPatientInfo {
     if (
         patientInfo === null
@@ -135,12 +159,16 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
     ) {
         throw new TypeError('patientInfo must be a JSON object');
     }
-    const normalized: Record<string, unknown> = { ...patientInfo };
-    const numericFields: Array<[string, number]> = [
+    const normalized: Partial<Record<keyof NormalizedPatientInfo, RawPatientInfoValue>> = {};
+    for (const field of PATIENT_INFO_FIELDS) {
+        if (Object.prototype.hasOwnProperty.call(patientInfo, field)) normalized[field] = patientInfo[field];
+    }
+    const numericFields: Array<[keyof NormalizedPatientInfo, number]> = [
         ['age', 0],
         ['ageInDays', 0],
         ['birthWeight', 1],
         ['icuHours', 0],
+        ['crrtHours', 0],
         ['lengthOfStay', 0],
     ];
     for (const [field, minimum] of numericFields) {
@@ -175,7 +203,7 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
     } else {
         delete normalized.gender;
     }
-    for (const field of ['newTechnique', 'multiSite', 'intensiveCare', 'daySurgery']) {
+    for (const field of PATIENT_BOOLEAN_FIELDS) {
         const raw = normalized[field];
         if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
             delete normalized[field];
@@ -264,12 +292,12 @@ function groupPatient(
 ): GroupingResult {
     const diagnosisList: string[] = typeof diagnoses === 'string' ? [diagnoses] : Array.isArray(diagnoses) ? [...diagnoses] : [];
     const procedureList: string[] = typeof procedures === 'string' ? [procedures] : Array.isArray(procedures) ? [...procedures] : [];
+    let normalizedPatientInfo: NormalizedPatientInfo;
     try {
-        patientInfo = normalizePatientInfo(patientInfo);
+        normalizedPatientInfo = normalizePatientInfo(patientInfo);
     } catch (error) {
         return invalidPatientInfoResult(error);
     }
-    const normalizedPatientInfo = patientInfo as NormalizedPatientInfo;
 
     if (diagnosisList.length === 0) {
         const out: GroupingResult = {
@@ -348,7 +376,8 @@ function groupPatient(
     // --- Step 4: Find DRG within ADRG ---
     // DRGs are evaluated once, in their DRG.dat order. A raw/subgroup_rules source
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
-    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnosisList, effectiveProcedures, normalizedPatientInfo, principalDiagnosis, principalProcedure, matchTrace);
+    const originalPrincipalProcedure = procedureList.length > 0 ? procedureList[0] ?? null : null;
+    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnosisList, procedureList, normalizedPatientInfo, principalDiagnosis, originalPrincipalProcedure, matchTrace);
 
     const out: GroupingResult = {
         drg: matchedDRG ? matchedDRG.code : "0000",

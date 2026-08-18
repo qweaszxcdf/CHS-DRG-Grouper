@@ -24,6 +24,7 @@ interface SubgroupPatientData {
   newTechnique: boolean;
   intensiveCare: boolean;
   icuHours?: number;
+  crrtHours?: number;
   lengthOfStay?: number;
   daySurgery: boolean;
 }
@@ -126,12 +127,13 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
     }
 
     // --- 3. Numeric patient attributes
-    const numericMatch = condition.match(/^(AGE|ICU_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
+    const numericMatch = condition.match(/^(AGE|ICU_HOURS|CRRT_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
     if (numericMatch) {
       const [, dimension, operator, rawLimit] = numericMatch;
-      const dimensions: Record<string, { field: 'age' | 'icuHours' | 'lengthOfStay'; label: string }> = {
+      const dimensions: Record<string, { field: 'age' | 'icuHours' | 'crrtHours' | 'lengthOfStay'; label: string }> = {
         AGE: { field: 'age', label: 'Age' },
         ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
+        CRRT_HOURS: { field: 'crrtHours', label: 'CRRT hours' },
         LOS: { field: 'lengthOfStay', label: 'Length of stay' },
       };
       const dimensionInfo = dimensions[dimension ?? ''];
@@ -252,6 +254,7 @@ function evaluateADRGSubgroups(
       newTechnique: !!patientInfo?.newTechnique,
       intensiveCare: !!patientInfo?.intensiveCare,
       icuHours: patientInfo?.icuHours,
+      crrtHours: patientInfo?.crrtHours,
       lengthOfStay: patientInfo?.lengthOfStay,
       daySurgery: !!patientInfo?.daySurgery
     };

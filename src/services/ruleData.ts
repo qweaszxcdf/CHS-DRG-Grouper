@@ -31,6 +31,12 @@ function isStringArrayRecord(value: unknown): value is Record<string, string[]> 
   return isRecord(value) && Object.values(value).every(isStringArray);
 }
 
+function isPositiveIntegerRecord(value: unknown): value is Record<string, number> {
+  return isRecord(value) && Object.values(value).every((item) => (
+    typeof item === 'number' && Number.isInteger(item) && item >= 1
+  ));
+}
+
 function isRpnToken(value: unknown): value is RpnToken {
   if (typeof value === 'string') return true;
   return isRecord(value) && value.type === 'SECTION' && typeof value.name === 'string';
@@ -40,6 +46,7 @@ function isAdrgRule(value: unknown): value is AdrgRule {
   if (!isRecord(value)) return false;
   if (value.logic !== undefined && typeof value.logic !== 'string') return false;
   if (value.sections !== undefined && !isStringArrayRecord(value.sections)) return false;
+  if (value.sectionMinimumMatches !== undefined && !isPositiveIntegerRecord(value.sectionMinimumMatches)) return false;
   if (value._logicRPN !== undefined && (!Array.isArray(value._logicRPN) || !value._logicRPN.every(isRpnToken))) return false;
   if (value._logicCompileError !== undefined && value._logicCompileError !== null && typeof value._logicCompileError !== 'string') return false;
   for (const field of ['referencedADRGs', 'requiredReferencedADRGs']) {

@@ -51,6 +51,7 @@ export function useBatchHandlers({
   setPreviewMultiSiteKey,
   setPreviewIntensiveCareKey,
   setPreviewIcuHoursKey,
+  setPreviewCrrtHoursKey,
   setPreviewLengthOfStayKey,
   setPreviewDaySurgeryKey,
   setPreviewGenderKey,
@@ -177,6 +178,7 @@ export function useBatchHandlers({
                 multiSiteKey: guessedMultiSite,
                 intensiveCareKey: guessedIntensiveCare,
                 icuHoursKey: guessedIcuHours,
+                crrtHoursKey: guessedCrrtHours,
                 lengthOfStayKey: guessedLengthOfStay,
                 daySurgeryKey: guessedDaySurgery,
                 genderKey: guessedGender,
@@ -193,6 +195,7 @@ export function useBatchHandlers({
               setPreviewMultiSiteKey(prev => (prev && prev.length) ? prev : guessedMultiSite);
               setPreviewIntensiveCareKey(prev => (prev && prev.length) ? prev : guessedIntensiveCare);
               setPreviewIcuHoursKey(prev => (prev && prev.length) ? prev : guessedIcuHours);
+              setPreviewCrrtHoursKey(prev => (prev && prev.length) ? prev : guessedCrrtHours);
               setPreviewLengthOfStayKey(prev => (prev && prev.length) ? prev : guessedLengthOfStay);
               setPreviewDaySurgeryKey(prev => (prev && prev.length) ? prev : guessedDaySurgery);
               setPreviewGenderKey(prev => (prev && prev.length) ? prev : guessedGender);
@@ -285,6 +288,7 @@ export function useBatchHandlers({
     setPreviewMultiSiteKey,
     setPreviewIntensiveCareKey,
     setPreviewIcuHoursKey,
+    setPreviewCrrtHoursKey,
     setPreviewLengthOfStayKey,
     setPreviewDaySurgeryKey,
     setPreviewGenderKey,
