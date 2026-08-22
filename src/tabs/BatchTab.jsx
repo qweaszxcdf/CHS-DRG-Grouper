@@ -1,12 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { FileUp, Download } from "lucide-react";
 import { getVersionDefinition } from '../services/generated/versionRegistry.ts';
-
-const NEW_TECHNIQUE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
-const MULTI_SITE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
-const DAY_SURGERY_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
-const INTENSIVE_CARE_TRUTHY = new Set(['1', 'true', 'yes', 'y', 'on', '是']);
-const INTENSIVE_CARE_FALSY = new Set(['0', 'false', 'no', 'n', 'off', '否']);
+import { extractMappedPatientInfo } from '../services/batchProcess.js';
 
 const DELIMITER_BY_OPTION = {
   PIPE: '|',
@@ -297,31 +292,12 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
 
     if (parsedPreview.headerKeys) {
       const sample = sampleRow || {};
-      const { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, intensiveCareKey, icuHoursKey, crrtHoursKey, lengthOfStayKey, daySurgeryKey, genderKey } = getMappingKeys(sample);
+      const mapping = getMappingKeys(sample);
+      const { idKey, diagsKey, procsKey } = mapping;
       idVal = cleanCell(sample[idKey] != null ? sample[idKey] : '');
       rawDiags = previewRawDiags && previewRawDiags.length ? previewRawDiags : getSampleCols(sample, diagsKey, previewDiagDelimiterResolved, cleanCell);
       rawProcs = previewRawProcs && previewRawProcs.length ? previewRawProcs : getSampleCols(sample, procsKey, previewProcDelimiterResolved, cleanCell);
-
-      try { if (ageKey) { const v = cleanCell(sample[ageKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.age = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (ageDaysKey) { const v = cleanCell(sample[ageDaysKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.ageInDays = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (bwKey) { const v = cleanCell(sample[bwKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.birthWeight = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (dischargeKey) { const v = cleanCell(sample[dischargeKey]); if (v !== '') { samplePatientInfo.dischargeStatus = v === '5' ? 'death' : String(v).trim(); } } } catch { /* ignore */ }
-      try { if (genderKey) { const v = cleanCell(sample[genderKey]); if (v !== '') samplePatientInfo.gender = String(v).trim(); } } catch { /* ignore */ }
-      try { if (newTechKey) { const v = cleanCell(sample[newTechKey]); if (NEW_TECHNIQUE_TRUTHY.has(String(v).trim().toLowerCase())) { samplePatientInfo.newTechnique = true; } } } catch { /* ignore */ }
-      try { if (multiSiteKey) { const v = cleanCell(sample[multiSiteKey]); if (MULTI_SITE_TRUTHY.has(String(v).trim().toLowerCase())) { samplePatientInfo.multiSite = true; } } } catch { /* ignore */ }
-      try {
-        if (intensiveCareKey) {
-          const value = String(cleanCell(sample[intensiveCareKey]) ?? '').trim();
-          const normalized = value.toLowerCase();
-          if (INTENSIVE_CARE_TRUTHY.has(normalized)) samplePatientInfo.intensiveCare = true;
-          else if (INTENSIVE_CARE_FALSY.has(normalized)) samplePatientInfo.intensiveCare = false;
-          else if (value !== '') samplePatientInfo.intensiveCare = value;
-        }
-      } catch { /* ignore */ }
-      try { if (icuHoursKey) { const v = cleanCell(sample[icuHoursKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.icuHours = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (crrtHoursKey) { const v = cleanCell(sample[crrtHoursKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.crrtHours = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (lengthOfStayKey) { const v = cleanCell(sample[lengthOfStayKey]); if (v !== '') { const n = Number(String(v).trim()); if (!Number.isNaN(n)) samplePatientInfo.lengthOfStay = Math.trunc(n); } } } catch { /* ignore */ }
-      try { if (daySurgeryKey) { const v = cleanCell(sample[daySurgeryKey]); if (DAY_SURGERY_TRUTHY.has(String(v).trim().toLowerCase())) samplePatientInfo.daySurgery = true; } } catch { /* ignore */ }
+      samplePatientInfo = extractMappedPatientInfo(sample, mapping, cleanCell);
     }
 
     const convDiags = (previewConvDiags && previewRawDiags && previewRawDiags.length && previewRawDiags === rawDiags)

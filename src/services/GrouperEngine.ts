@@ -150,6 +150,11 @@ const PATIENT_BOOLEAN_FIELDS = [
 ] as const;
 type RawPatientInfoValue = PatientScalarInput | PatientBooleanInput;
 
+function normalizeCodeList(input: CodeListInput | null | undefined): string[] {
+    const values = typeof input === 'string' ? [input] : Array.isArray(input) ? [...input] : [];
+    return values.map(code => code.trim()).filter(Boolean);
+}
+
 function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): NormalizedPatientInfo {
     if (
         patientInfo === null
@@ -290,8 +295,8 @@ function groupPatient(
     procedures: CodeListInput,
     patientInfo: PatientInfoInput | null = {},
 ): GroupingResult {
-    const diagnosisList: string[] = typeof diagnoses === 'string' ? [diagnoses] : Array.isArray(diagnoses) ? [...diagnoses] : [];
-    const procedureList: string[] = typeof procedures === 'string' ? [procedures] : Array.isArray(procedures) ? [...procedures] : [];
+    const diagnosisList = normalizeCodeList(diagnoses);
+    const procedureList = normalizeCodeList(procedures);
     let normalizedPatientInfo: NormalizedPatientInfo;
     try {
         normalizedPatientInfo = normalizePatientInfo(patientInfo);
@@ -313,7 +318,7 @@ function groupPatient(
         }
         return out;
     }
-    // Keep diagnosis input exactly as provided; do not split or reorder tokens.
+    // Keep token boundaries and ordering exactly; only trim outer whitespace.
     // Accept single-string inputs (treat as one token) but do NOT split on delimiters.
     const principalDiagnosis = diagnosisList.length > 0 ? diagnosisList[0] ?? null : null;
 
@@ -434,10 +439,10 @@ function groupBatch(...args: unknown[]): BatchGroupingResult[] {
         const row = (rows[i] || {}) as BatchGroupingRow;
         try {
             // Normalize diagnoses/procedures input: accept arrays or delimited strings.
-            const diagnoses: string[] = Array.isArray(row.diagnoses) ? row.diagnoses.filter(Boolean) : (row.diagnoses ? [row.diagnoses] : []);
-            const procedures: string[] = Array.isArray(row.procedures) ? row.procedures.filter(Boolean) : (row.procedures ? [row.procedures] : []);
+            const diagnoses = normalizeCodeList(row.diagnoses);
+            const procedures = normalizeCodeList(row.procedures);
 
-            // Keep input diagnosis/procedure tokens as provided (do NOT auto-split delimited strings).
+            // Keep input diagnosis/procedure token boundaries (do NOT auto-split delimited strings).
             // This preserves CSV cell contents like 'M35.002+J99.1*' as a single diagnosis token.
             const patientInfo = row.patientInfo || {};
 

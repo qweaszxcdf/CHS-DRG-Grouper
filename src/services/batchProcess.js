@@ -17,10 +17,45 @@ const DELIMITER_BY_OPTION = Object.freeze({
   TAB: '\t',
   PLUS: '+',
 });
-const DAY_SURGERY_TRUTHY = new Set(['1', 'true', 'yes', 'y', 't', 'on', '是']);
 function mapOptionToChar(opt, custom) {
   if (opt === 'CUSTOM') return custom || '|';
   return DELIMITER_BY_OPTION[opt] || custom || '|';
+}
+const toCodeList = (value) => Array.isArray(value) ? value : (value ? [value] : []);
+
+const PATIENT_INFO_FIELD_MAPPINGS = Object.freeze([
+  ['age', 'ageKey'],
+  ['ageInDays', 'ageDaysKey'],
+  ['birthWeight', 'bwKey'],
+  ['dischargeStatus', 'dischargeKey'],
+  ['gender', 'genderKey'],
+  ['newTechnique', 'newTechKey'],
+  ['multiSite', 'multiSiteKey'],
+  ['intensiveCare', 'intensiveCareKey'],
+  ['icuHours', 'icuHoursKey'],
+  ['crrtHours', 'crrtHoursKey'],
+  ['lengthOfStay', 'lengthOfStayKey'],
+  ['daySurgery', 'daySurgeryKey'],
+]);
+
+/**
+ * Extract mapped patient-info values without applying grouping semantics.
+ * The same raw-value boundary is used by batch loading and the preview;
+ * GrouperEngine remains responsible for normalization and validation.
+ */
+export function extractMappedPatientInfo(row, mapping, cleanCell) {
+  const info = {};
+  for (const [field, mappingKey] of PATIENT_INFO_FIELD_MAPPINGS) {
+    try {
+      const sourceKey = mapping?.[mappingKey];
+      const raw = sourceKey ? cleanCell(row?.[sourceKey]) : '';
+      const value = raw == null ? '' : String(raw).trim();
+      if (value !== '') info[field] = value;
+    } catch {
+      // Optional patient-info fields should not prevent the row from loading.
+    }
+  }
+  return info;
 }
 
 
@@ -74,77 +109,9 @@ export function loadParsedFile(parsedRows, { delimiterOption = 'PIPE', customDel
     const diagnoses = normalizeEntries(diagnosesRaw, 'Diagnosis');
     const procedures = normalizeEntries(proceduresRaw, 'Procedure');
 
-    // build `patientInfo` inline (keeps previous try/catch tolerance)
-    let patientInfo;
-    const info = {};
-
-    try {
-      const ageRaw = mapping.ageKey ? cleanCell(row?.[mapping.ageKey]) : '';
-      if (ageRaw != null && String(ageRaw).trim() !== '') {
-        info.age = String(ageRaw).trim();
-      }
-    } catch { /* ignore */ }
-
-    try {
-      const daysRaw = mapping.ageDaysKey ? cleanCell(row?.[mapping.ageDaysKey]) : '';
-      if (daysRaw != null && String(daysRaw).trim() !== '') {
-        info.ageInDays = String(daysRaw).trim();
-      }
-    } catch { /* ignore */ }
-
-    try {
-      const bwRaw = mapping.bwKey ? cleanCell(row?.[mapping.bwKey]) : '';
-      if (bwRaw != null && String(bwRaw).trim() !== '') {
-        info.birthWeight = String(bwRaw).trim();
-      }
-    } catch { /* ignore */ }
-
-    try {
-      const dsRaw = mapping.dischargeKey ? cleanCell(row?.[mapping.dischargeKey]) : '';
-      if (dsRaw !== '') info.dischargeStatus = String(dsRaw).trim() === '5' ? 'death' : String(dsRaw).trim();
-    } catch { /* ignore */ }
-
-    try {
-      const genderRaw = mapping.genderKey ? cleanCell(row?.[mapping.genderKey]) : '';
-      if (genderRaw !== '') info.gender = String(genderRaw).trim();
-    } catch { /* ignore */ }
-
-    try {
-      const ntRaw = mapping.newTechKey ? cleanCell(row?.[mapping.newTechKey]) : '';
-      const ntVal = String(ntRaw ?? '').trim();
-      if (ntVal !== '') info.newTechnique = ntVal;
-    } catch { /* ignore */ }
-
-    try {
-      const multiSiteRaw = mapping.multiSiteKey ? cleanCell(row?.[mapping.multiSiteKey]) : '';
-      const multiSiteValue = String(multiSiteRaw ?? '').trim();
-      if (multiSiteValue !== '') info.multiSite = multiSiteValue;
-    } catch { /* ignore */ }
-
-    try {
-      const intensiveCareRaw = mapping.intensiveCareKey ? cleanCell(row?.[mapping.intensiveCareKey]) : '';
-      const intensiveCareValue = String(intensiveCareRaw ?? '').trim();
-      if (intensiveCareValue !== '') info.intensiveCare = intensiveCareValue;
-    } catch { /* ignore */ }
-
-    for (const [field, mappingKey] of [
-      ['icuHours', 'icuHoursKey'],
-      ['crrtHours', 'crrtHoursKey'],
-      ['lengthOfStay', 'lengthOfStayKey'],
-    ]) {
-      try {
-        const rawValue = mapping[mappingKey] ? cleanCell(row?.[mapping[mappingKey]]) : '';
-        if (rawValue !== '') info[field] = String(rawValue).trim();
-      } catch { /* ignore */ }
-    }
-
-    try {
-      const daySurgeryRaw = mapping.daySurgeryKey ? cleanCell(row?.[mapping.daySurgeryKey]) : '';
-      const daySurgeryValue = String(daySurgeryRaw ?? '').trim().toLowerCase();
-      if (daySurgeryValue !== '') info.daySurgery = DAY_SURGERY_TRUTHY.has(daySurgeryValue);
-    } catch { /* ignore */ }
-
-    if (Object.keys(info).length) patientInfo = info;
+    // Copy raw patient-info fields; GrouperEngine owns normalization and validation.
+    const info = extractMappedPatientInfo(row, mapping, cleanCell);
+    const patientInfo = Object.keys(info).length ? info : undefined;
 
     const raw = idRaw && String(idRaw).trim();
     const id = raw && raw.length ? raw : `${uploadedBatchFileName || 'file'}-${idx + 1}`;
@@ -177,8 +144,8 @@ export async function processBatch(rows, { groupBatch, convertGLtoYBCode, search
     const uniqueDiags = new Set();
     const uniqueProcs = new Set();
     for (const row of rows) {
-      const diags = Array.isArray(row.diagnoses) ? row.diagnoses : (row.diagnoses ? [row.diagnoses] : []);
-      const procs = Array.isArray(row.procedures) ? row.procedures : (row.procedures ? [row.procedures] : []);
+      const diags = toCodeList(row.diagnoses);
+      const procs = toCodeList(row.procedures);
       diags.forEach(d => d && uniqueDiags.add(d));
       procs.forEach(p => p && uniqueProcs.add(p));
     }
@@ -197,8 +164,8 @@ export async function processBatch(rows, { groupBatch, convertGLtoYBCode, search
     for (let i = chunkStart; i < chunkEnd; i++) {
       const row = rows[i];
       const chunkIdx = i - chunkStart;
-      const origDiags = Array.isArray(row.diagnoses) ? row.diagnoses : (row.diagnoses ? [row.diagnoses] : []);
-      const origProcs = Array.isArray(row.procedures) ? row.procedures : (row.procedures ? [row.procedures] : []);
+      const origDiags = toCodeList(row.diagnoses);
+      const origProcs = toCodeList(row.procedures);
 
       const diagnoses = conversionApplied ? origDiags.map(d => diagCache.get(d) || d) : origDiags;
       const procedures = conversionApplied ? origProcs.map(p => procCache.get(p) || p) : origProcs;
@@ -218,8 +185,8 @@ export async function processBatch(rows, { groupBatch, convertGLtoYBCode, search
       const rowIdx = chunkStart + i;
       const origRow = rows[rowIdx];
 
-      const origDiags = Array.isArray(origRow.diagnoses) ? origRow.diagnoses : (origRow.diagnoses ? [origRow.diagnoses] : []);
-      const origProcs = Array.isArray(origRow.procedures) ? origRow.procedures : (origRow.procedures ? [origRow.procedures] : []);
+      const origDiags = toCodeList(origRow.diagnoses);
+      const origProcs = toCodeList(origRow.procedures);
 
       if (conversionApplied) {
         result.original_diagnoses = origDiags;
