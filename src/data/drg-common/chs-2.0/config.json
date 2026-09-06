@@ -1,7 +1,7 @@
 {
   "id": "chs-2.0",
   "packages": {
-    "clinicalIcd": "gl-2022",
+    "clinicalIcd": "gl-3.0",
     "insuranceIcd": "yb-2.0"
   },
   "strategy": {

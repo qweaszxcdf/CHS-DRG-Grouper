@@ -5,6 +5,7 @@ import { getGLData, preloadGLData } from './glDataLoader.js';
 // DRG-common and ICD dictionaries are package-specific. Final DRG maps remain
 // version-specific because versions sharing one common package can still have
 // different subgroup maps.
+const SEARCH_LIMIT = 100;
 const drgCommonIndexStates = new Map();
 const drgMapIndexStates = new Map();
 const icdIndexStates = new Map();
@@ -173,10 +174,10 @@ export function searchCodes(query, type, source = 'YB', version = DEFAULT_RULE_V
     const src = (source || 'YB').toUpperCase();
 
     /** Resolve candidates from the separate DRG-common and ICD indexes. */
-    function getCandidates(t, s) {
-        if (!t || t === 'All') {
+    function getCandidates() {
+        if (!type || type === 'All') {
             const drgs = (drgMapBuckets['DRG:DRG'] || []).concat(drgCommonBuckets['ADRG:ADRG'] || []);
-            if (s === 'ALL') {
+            if (src === 'ALL') {
                 return drgs.concat(
                     icdBuckets['Diagnosis:GL'] || [],
                     icdBuckets['Diagnosis:YB'] || [],
@@ -185,25 +186,25 @@ export function searchCodes(query, type, source = 'YB', version = DEFAULT_RULE_V
                 );
             }
             return drgs.concat(
-                icdBuckets[`Diagnosis:${s}`] || [],
-                icdBuckets[`Procedure:${s}`] || [],
+                icdBuckets[`Diagnosis:${src}`] || [],
+                icdBuckets[`Procedure:${src}`] || [],
             );
         }
-        if (t === 'DRG') return drgMapBuckets['DRG:DRG'] || [];
-        if (t === 'ADRG') return drgCommonBuckets['ADRG:ADRG'] || [];
-        if (s === 'ALL') {
-            return (icdBuckets[`${t}:GL`] || []).concat(icdBuckets[`${t}:YB`] || []);
+        if (type === 'DRG') return drgMapBuckets['DRG:DRG'] || [];
+        if (type === 'ADRG') return drgCommonBuckets['ADRG:ADRG'] || [];
+        if (src === 'ALL') {
+            return (icdBuckets[`${type}:GL`] || []).concat(icdBuckets[`${type}:YB`] || []);
         }
-        return icdBuckets[`${t}:${s}`] || [];
+        return icdBuckets[`${type}:${src}`] || [];
     }
 
-    /** Collect up to `limit` matches with early exit. */
-    function collect(candidates, limit, predicate) {
+    /** Collect up to SEARCH_LIMIT matches with early exit. */
+    function collect(candidates, predicate) {
         const out = [];
         for (let i = 0; i < candidates.length; i++) {
             if (predicate(candidates[i])) {
                 out.push(candidates[i]);
-                if (out.length === limit) break;
+                if (out.length === SEARCH_LIMIT) break;
             }
         }
         return out;
@@ -237,8 +238,8 @@ export function searchCodes(query, type, source = 'YB', version = DEFAULT_RULE_V
         }
         const codeRegex = new RegExp(pattern);
         const nameRegex = new RegExp(pattern, 'i');
-        const candidates = getCandidates(type, src);
-        return collect(candidates, 100, item =>
+        const candidates = getCandidates();
+        return collect(candidates, item =>
             codeRegex.test(item.code || '') || nameRegex.test(item.name || ''));
     }
 
@@ -246,8 +247,8 @@ export function searchCodes(query, type, source = 'YB', version = DEFAULT_RULE_V
     const lowerQuery = query.toLowerCase().trim();
     const escaped = lowerQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(escaped.replace(/\s+/g, '.*'));
-    const candidates = getCandidates(type, src);
-    return collect(candidates, 100, item => {
+    const candidates = getCandidates();
+    return collect(candidates, item => {
         const code = (item.code || '').toString().toLowerCase();
         const name = (item.name || '').toString().toLowerCase();
         return regex.test(code) || regex.test(name) || regex.test(item.initials || '');

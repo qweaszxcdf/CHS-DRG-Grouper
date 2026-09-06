@@ -6,11 +6,18 @@ const COMMON_STRATEGY_DEFAULTS = Object.freeze({
   allowedInvalidPrincipalProcedures: Object.freeze([]),
   allowedGrayPrincipalProcedures: Object.freeze(['99.1000']),
   mdcyPrincipalDiagnosisOnly: true,
-  allowSecondarySectionPrimaryFallback: false,
 });
 
 const VERSION_STRATEGY_DEFAULTS = Object.freeze({
   daySurgeryAsNoCC: false,
+  robotAssistedSurgery: Object.freeze({
+    adrgCodes: Object.freeze([]),
+    procedureCodes: Object.freeze([]),
+  }),
+  highRiskPregnancyAsMcc: Object.freeze({
+    adrgCodes: Object.freeze([]),
+    diagnosisCodes: Object.freeze([]),
+  }),
 });
 
 const allowedInvalidPrincipalProcedureActions = new Set([
@@ -21,13 +28,20 @@ const allowedInvalidPrincipalProcedureActions = new Set([
 
 const booleanCommonStrategyFields = Object.freeze([
   'mdcyPrincipalDiagnosisOnly',
-  'allowSecondarySectionPrimaryFallback',
 ]);
 
 const arrayCommonStrategyFields = Object.freeze([
   'allowedInvalidPrincipalProcedures',
   'allowedGrayPrincipalProcedures',
 ]);
+
+const adrgCodePattern = /^[A-Z]{2}\d$/;
+const adrgLimitedVersionStrategyFields = Object.freeze([
+  'robotAssistedSurgery',
+  'highRiskPregnancyAsMcc',
+]);
+
+const versionOwnedStrategyFields = new Set(adrgLimitedVersionStrategyFields);
 
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -84,6 +98,15 @@ function freezeOptionalObject(config, field, description) {
 }
 
 function resolveCommonStrategy(commonPackageId, suppliedStrategy) {
+  const movedFields = Object.keys(suppliedStrategy || {})
+    .filter(field => versionOwnedStrategyFields.has(field));
+  if (movedFields.length > 0) {
+    throw new Error(
+      `drg-common/${commonPackageId}/config.json strategy contains version-only fields: `
+      + `${movedFields.join(', ')}`,
+    );
+  }
+
   const strategy = {
     ...COMMON_STRATEGY_DEFAULTS,
     ...(suppliedStrategy || {}),
@@ -121,6 +144,7 @@ function resolveCommonStrategy(commonPackageId, suppliedStrategy) {
       );
     }
   }
+
   return Object.freeze(strategy);
 }
 
@@ -148,6 +172,39 @@ function resolveVersionStrategy(versionId, suppliedStrategy) {
       `${versionId}/config.json strategy.daySurgeryAsNoCC must be boolean`,
     );
   }
+
+  for (const field of adrgLimitedVersionStrategyFields) {
+    const value = {
+      ...VERSION_STRATEGY_DEFAULTS[field],
+      ...(strategy[field] || {}),
+    };
+    const codeListField = field === 'robotAssistedSurgery'
+      ? 'procedureCodes'
+      : 'diagnosisCodes';
+    if (
+      !isPlainObject(value)
+      || !Array.isArray(value.adrgCodes)
+      || value.adrgCodes.some(
+        code => typeof code !== 'string' || code.trim() === '' || !adrgCodePattern.test(code.trim().toUpperCase()),
+      )
+      || !Array.isArray(value[codeListField])
+      || value[codeListField].some(code => typeof code !== 'string' || code.trim() === '')
+    ) {
+      throw new Error(
+        `${versionId}/config.json strategy.${field} ` +
+        `must contain arrays of ADRG codes and ${codeListField}`,
+      );
+    }
+    strategy[field] = Object.freeze({
+      adrgCodes: Object.freeze([
+        ...new Set(value.adrgCodes.map(code => code.trim().toUpperCase())),
+      ]),
+      [codeListField]: Object.freeze([
+        ...new Set(value[codeListField].map(code => code.trim())),
+      ]),
+    });
+  }
+
   return Object.freeze(strategy);
 }
 
@@ -245,6 +302,11 @@ function createDrgConfigResolver(projectRoot) {
       'insuranceIcd',
       `${description} packages`,
     );
+    if (Object.prototype.hasOwnProperty.call(rawConfig, 'specialContentExtraction')) {
+      throw new Error(
+        `${description} specialContentExtraction belongs to the version config, not drg-common`,
+      );
+    }
     const strategy = freezeOptionalObject(rawConfig, 'strategy', description);
     resolveCommonStrategy(id, strategy);
     const config = Object.freeze({
@@ -283,7 +345,6 @@ function createDrgConfigResolver(projectRoot) {
         'at the top level',
       );
     }
-
     const strategy = freezeOptionalObject(rawConfig, 'strategy', description);
     resolveVersionStrategy(id, strategy);
     const subgroupOrderOverrides = resolveSubgroupOrderOverrides(

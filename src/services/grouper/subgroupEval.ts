@@ -5,7 +5,6 @@ import type {
   VersionStrategy,
 } from '../../types/grouper.js';
 import type {
-  AdrgDefinition,
   AdrgRule,
   DrgSubgroupRule,
   MatchedSubgroup,
@@ -16,11 +15,18 @@ import type {
 
 type CCStatus = 'none' | 'cc' | 'mcc';
 
+const DEFAULT_VERSION_STRATEGY: VersionStrategy = {
+  daySurgeryAsNoCC: false,
+  robotAssistedSurgery: { adrgCodes: [], procedureCodes: [] },
+  highRiskPregnancyAsMcc: { adrgCodes: [], diagnosisCodes: [] },
+};
+
 interface SubgroupPatientData {
   primaryDiagnosis: string | null;
   primaryProcedure: string | null;
   age?: number;
   dischargeStatus?: string | number;
+  robotAssistedSurgery: boolean;
   newTechnique: boolean;
   intensiveCare: boolean;
   icuHours?: number;
@@ -32,9 +38,14 @@ interface SubgroupPatientData {
 export function createSubgroupEvaluator(
   ruleSet: RuleSet,
   matchesAdrgRule: ((rule: AdrgRule, patient: RulePatient) => RuleMatchResult) | undefined,
-  versionStrategy: VersionStrategy = { daySurgeryAsNoCC: false },
+  versionStrategy: VersionStrategy = DEFAULT_VERSION_STRATEGY,
 ) {
-  const { loadDRGSubgroupRulesForADRG, loadCCCodes, loadMCCCodes, loadCCECodes } = ruleSet;
+  const {
+    loadDRGSubgroupRulesForADRG,
+    loadCCCodes,
+    loadMCCCodes,
+    loadCCECodes,
+  } = ruleSet;
 
 /*
  * Subgroup evaluation — evaluate detailed ADRG subgroup rules and CC/MCC status.
@@ -46,6 +57,12 @@ export function createSubgroupEvaluator(
 const _ccList = loadCCCodes();
 const _mccList = loadMCCCodes();
 const _cceList = loadCCECodes();
+const _robotAssistedSurgeryProcedures = new Set(
+  versionStrategy.robotAssistedSurgery?.procedureCodes || [],
+);
+const _highRiskPregnancyDiagnoses = new Set(
+  versionStrategy.highRiskPregnancyAsMcc?.diagnosisCodes || [],
+);
 const _ruleNeedsCCCache = new WeakMap<DrgSubgroupRule, boolean>();
 
 function ruleNeedsCC(rule: DrgSubgroupRule) {
@@ -56,16 +73,19 @@ function ruleNeedsCC(rule: DrgSubgroupRule) {
   return needs;
 }
 
-function calculateCCStatus(diagnoses: string[], principalDiagnosis: string | null): CCStatus {
+function calculateCCStatus(diagnoses: string[]): CCStatus {
   if (!Array.isArray(diagnoses) || diagnoses.length <= 1) return 'none';
-  const exclusionId = principalDiagnosis ? _cceList[principalDiagnosis] || null : null;
+  const principalDiagnosis = diagnoses[0] ?? null;
+  const exclusionId = principalDiagnosis && Object.hasOwn(_cceList, principalDiagnosis)
+    ? _cceList[principalDiagnosis] || null
+    : null;
   for (let index = 1; index < diagnoses.length; index += 1) {
     const diagnosis = diagnoses[index];
-    if (diagnosis && _mccList[diagnosis] && _mccList[diagnosis] !== exclusionId) return 'mcc';
+    if (diagnosis && Object.hasOwn(_mccList, diagnosis) && _mccList[diagnosis] && _mccList[diagnosis] !== exclusionId) return 'mcc';
   }
   for (let index = 1; index < diagnoses.length; index += 1) {
     const diagnosis = diagnoses[index];
-    if (diagnosis && _ccList[diagnosis] && _ccList[diagnosis] !== exclusionId) return 'cc';
+    if (diagnosis && Object.hasOwn(_ccList, diagnosis) && _ccList[diagnosis] && _ccList[diagnosis] !== exclusionId) return 'cc';
   }
   return 'none';
 }
@@ -189,6 +209,13 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
     }
 
     // --- 6. 其他独立标签校验
+    if (condition === 'ROBOT_ASSISTED_SURGERY') {
+      if (!patientData.robotAssistedSurgery) {
+        return { matched: false, reason: 'Official robot-assisted surgery procedure required but not present' };
+      }
+      continue;
+    }
+
     if (condition === 'NEW_TECHNIQUE') {
       if (!patientData.newTechnique) return { matched: false, reason: 'NEW_TECHNIQUE required but not present' };
       continue;
@@ -211,16 +238,17 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
    * - Returns { matchedDRG, matchedSubgroup } where matchedSubgroup contains the matching rule and matchResult.
    */
 function evaluateADRGSubgroups(
-  matchedADRG: AdrgDefinition | null,
+  adrgCode: string | null,
   diagnoses: string[],
   procedures: Array<string | null>,
   patientInfo: NormalizedPatientInfo,
-  principalDiagnosis: string | null,
-  principalProcedure: string | null,
   matchTrace: MatchTraceEntry[],
 ): SubgroupEvaluation {
-    const candidateRules = matchedADRG ? loadDRGSubgroupRulesForADRG(matchedADRG.code) : [];
+    const candidateRules = adrgCode !== null ? loadDRGSubgroupRulesForADRG(adrgCode) : [];
     if (!candidateRules || candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
+
+    const principalDiagnosis = diagnoses[0] ?? null;
+    const principalProcedure = procedures[0] ?? null;
 
     matchTrace.push({ stage: 'Subgroup', description: `Evaluating ${candidateRules.length} detailed rules (${candidateRules.map(r => r.drgCode).join(', ')})` });
 
@@ -228,29 +256,56 @@ function evaluateADRGSubgroups(
     const hasAnyCCRule = candidateRules.some(ruleNeedsCC);
 
     if (hasAnyCCRule) {
-      if (Array.isArray(diagnoses) && diagnoses.length > 1) {
-        ccStatus = calculateCCStatus(diagnoses, principalDiagnosis);
-      }
+      const calculatedStatus: CCStatus = Array.isArray(diagnoses) && diagnoses.length > 1
+        ? calculateCCStatus(diagnoses)
+        : 'none';
+      const configuredAdrgCodes = versionStrategy.highRiskPregnancyAsMcc?.adrgCodes;
+      const highRiskPregnancyAsMcc = Boolean(
+        adrgCode !== null
+        && Array.isArray(configuredAdrgCodes)
+        && configuredAdrgCodes.includes(adrgCode)
+        && principalDiagnosis
+        && _highRiskPregnancyDiagnoses.has(principalDiagnosis),
+      );
+      ccStatus = highRiskPregnancyAsMcc ? 'mcc' : calculatedStatus;
+
       if (versionStrategy.daySurgeryAsNoCC === true && patientInfo?.daySurgery === true) {
-        const calculatedStatus = ccStatus;
+        const statusBeforeOverride = ccStatus;
         ccStatus = 'none';
         matchTrace.push({
           stage: 'CC/MCC',
           status: ccStatus,
           calculatedStatus,
           overridden: true,
-          description: `Edition strategy treats day surgery as NO_CC (calculated: ${calculatedStatus})`,
+          strategy: 'daySurgeryAsNoCC',
+          description: `Edition strategy treats day surgery as NO_CC (before override: ${statusBeforeOverride}, calculated: ${calculatedStatus})`,
         });
-      } else if (Array.isArray(diagnoses) && diagnoses.length > 1) {
-        matchTrace.push({ stage: 'CC/MCC', status: ccStatus, description: `Calculated CC Status: ${ccStatus}` });
+      } else if (highRiskPregnancyAsMcc || (Array.isArray(diagnoses) && diagnoses.length > 1)) {
+        matchTrace.push({
+          stage: 'CC/MCC',
+          status: ccStatus,
+          calculatedStatus,
+          ...(highRiskPregnancyAsMcc ? { strategy: 'highRiskPregnancyAsMcc' } : {}),
+          description: highRiskPregnancyAsMcc
+            ? `Version strategy promotes high-risk pregnancy principal diagnosis to MCC (calculated: ${calculatedStatus})`
+            : `Calculated CC Status: ${ccStatus}`,
+        });
       }
     }
 
+    const configuredRobotAdrgCodes = versionStrategy.robotAssistedSurgery?.adrgCodes;
+    const robotAssistedSurgery = Boolean(
+      adrgCode !== null
+      && Array.isArray(configuredRobotAdrgCodes)
+      && configuredRobotAdrgCodes.includes(adrgCode)
+      && procedures.some(code => code && _robotAssistedSurgeryProcedures.has(code)),
+    );
     const patientData = {
       primaryDiagnosis: principalDiagnosis,
       primaryProcedure: principalProcedure,
       age: patientInfo?.age,
       dischargeStatus: patientInfo?.dischargeStatus,
+      robotAssistedSurgery,
       newTechnique: !!patientInfo?.newTechnique,
       intensiveCare: !!patientInfo?.intensiveCare,
       icuHours: patientInfo?.icuHours,

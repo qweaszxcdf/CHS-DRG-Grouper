@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from 'react';
 import { Trash2, ArrowUp } from 'lucide-react';
 import { loadRuleSet, loadRuleSetAsync } from '../services/ruleSetLoader.ts';
 import { searchCodes } from '../services/CodeSearch';
@@ -7,6 +7,18 @@ import { buildPatientInfo, groupSingle, groupAllOrders } from '../services/singl
 import { DEFAULT_RULE_VERSION, getVersionDefinition } from '../services/generated/versionRegistry.ts';
 import { ensureSingleTrailingEmpty, reorderWithInfos, normalizeCodesAndInfos, namesSignificantlyDiffer } from './shared.jsx';
 const createEmptyInfo = (overrides = {}) => ({ desc: '', type: '', searchResults: [], showDropdown: false, highlightedIndex: -1, ...overrides });
+const createGroupingRequestError = (error) => {
+  const message = error instanceof Error ? error.message : String(error);
+  return {
+    drg: null,
+    mdc: null,
+    adrg: null,
+    code: 'ERR',
+    error: 'GROUPING_REQUEST_FAILED',
+    description: message,
+    matchTrace: [{ stage: 'Transport', error: true, description: message }],
+  };
+};
 const normalizeInfoLength = (infos, targetLength) => {
   const next = [...(infos || [])];
   if (next.length > targetLength) next.splice(targetLength);
@@ -90,7 +102,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const excludeIndex = useMemo(() => loadCCECodes() || {}, [loadCCECodes]);
   const getCodeTagAndIndex = useCallback((code, kind = 'diagnosis', idx = 0) => {
     if (!code) return null;
-    const normalizedCode = searchSource === 'GL' ? convertGLtoYBCode(code, false, version) : code;
+    const normalizedCode = searchSource === 'GL' ? convertGLtoYBCode(code, kind === 'procedure', version) : code;
     const tags = [];
 
     if (kind === 'procedure') {
@@ -104,10 +116,10 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     if (isInvalidDiagnosis(normalizedCode)) tags.push({ tag: 'INVALID' });
     if (isGrayDiag(normalizedCode)) tags.push({ tag: 'GRAY' });
     if (idx === 0) {
-      if (excludeIndex[normalizedCode]) tags.push({ tag: 'CCE', idx: excludeIndex[normalizedCode] });
+      if (Object.hasOwn(excludeIndex, normalizedCode) && excludeIndex[normalizedCode]) tags.push({ tag: 'CCE', idx: excludeIndex[normalizedCode] });
     } else {
-      if (mccIndex[normalizedCode]) tags.push({ tag: 'MCC', idx: mccIndex[normalizedCode] });
-      if (ccIndex[normalizedCode]) tags.push({ tag: 'CC', idx: ccIndex[normalizedCode] });
+      if (Object.hasOwn(mccIndex, normalizedCode) && mccIndex[normalizedCode]) tags.push({ tag: 'MCC', idx: mccIndex[normalizedCode] });
+      if (Object.hasOwn(ccIndex, normalizedCode) && ccIndex[normalizedCode]) tags.push({ tag: 'CC', idx: ccIndex[normalizedCode] });
     }
 
     if (!tags.length) return null;
@@ -118,18 +130,18 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const [procedures, setProcedures] = useState(['']);
   const [result, setResult] = useState(null);
   const [hasGrouped, setHasGrouped] = useState(false);
-  const [patientGender, setPatientGender] = useState('1');
-  const [patientAge, setPatientAge] = useState('30');
+  const [patientGender, setPatientGender] = useState('');
+  const [patientAge, setPatientAge] = useState('');
   const [patientAgeInDays, setPatientAgeInDays] = useState('');
   const [patientBirthWeight, setPatientBirthWeight] = useState('');
-  const [patientDischargeStatus, setPatientDischargeStatus] = useState('alive');
-  const [patientNewTechnique, setPatientNewTechnique] = useState(false);
-  const [patientMultiSite, setPatientMultiSite] = useState(false);
-  const [patientIntensiveCare, setPatientIntensiveCare] = useState(false);
+  const [patientAdmissionWeight, setPatientAdmissionWeight] = useState('');
+  const [patientDischargeStatus, setPatientDischargeStatus] = useState('');
+  const [patientNewTechnique, setPatientNewTechnique] = useState('');
+  const [patientIntensiveCare, setPatientIntensiveCare] = useState('');
   const [patientIcuHours, setPatientIcuHours] = useState('');
   const [patientCrrtHours, setPatientCrrtHours] = useState('');
   const [patientLengthOfStay, setPatientLengthOfStay] = useState('');
-  const [patientDaySurgery, setPatientDaySurgery] = useState(false);
+  const [patientDaySurgery, setPatientDaySurgery] = useState('');
   const [showPatientInfo, setShowPatientInfo] = useState(false);
   const [diagnosisInfos, setDiagnosisInfos] = useState([]);
   const [procedureInfos, setProcedureInfos] = useState([createEmptyInfo()]);
@@ -140,6 +152,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const prevSearchContextRef = useRef(null);
   const searchSourceRef = useRef(searchSource);
   const groupRequestRef = useRef(0);
+  const resultRef = useRef(null);
   const setDiagRef = (el, idx) => { diagInputRefs.current[idx] = el; };
   const setProcRef = (el, idx) => { procInputRefs.current[idx] = el; };
   const focusDiagAt = (idx) => { const el = diagInputRefs.current[idx]; if (el && typeof el.focus === 'function') el.focus(); };
@@ -151,9 +164,9 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         age: patientAge,
         ageInDays: patientAgeInDays,
         birthWeight: patientBirthWeight,
+        admissionWeight: patientAdmissionWeight,
         dischargeStatus: patientDischargeStatus,
         newTechnique: patientNewTechnique,
-        multiSite: patientMultiSite,
         intensiveCare: patientIntensiveCare,
         icuHours: patientIcuHours,
         crrtHours: patientCrrtHours,
@@ -161,7 +174,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         daySurgery: patientDaySurgery,
       })
       : { gender: patientGender }
-  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientDischargeStatus, patientNewTechnique, patientMultiSite, patientIntensiveCare, patientIcuHours, patientCrrtHours, patientLengthOfStay, patientDaySurgery]);
+  ), [patientGender, patientAge, patientAgeInDays, patientBirthWeight, patientAdmissionWeight, patientDischargeStatus, patientNewTechnique, patientIntensiveCare, patientIcuHours, patientCrrtHours, patientLengthOfStay, patientDaySurgery]);
   const handlePatientAgeChange = (value) => {
     setPatientAge(value);
     if (String(value).trim() !== '') setPatientAgeInDays('');
@@ -402,35 +415,59 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
   const handleGroupSingle = useCallback(async () => {
     const requestId = ++groupRequestRef.current;
     const info = getPatientInfo();
-    const out = groupSingle ? await groupSingle(diagnoses, procedures, info, searchSource, version) : null;
-    if (requestId !== groupRequestRef.current) return;
-    setHasGrouped(true);
-    setPermResults(null);
-    setPermRunning(false);
-    if (out) {
-      setResult({
-        ...out.finalRes,
-        diagnoses: out.diagnoses,
-        procedures: out.procedures,
-        diagnosesConverted: out.diagnosesConverted,
-        proceduresConverted: out.proceduresConverted,
-        conversionApplied: out.conversionApplied,
-        patientInfo: out.patientInfo
-      });
+    try {
+      const out = groupSingle ? await groupSingle(diagnoses, procedures, info, searchSource, version) : null;
+      if (requestId !== groupRequestRef.current) return;
+      setHasGrouped(true);
+      setPermResults(null);
+      setPermRunning(false);
+      if (out) {
+        setResult({
+          ...out.finalRes,
+          diagnoses: out.diagnoses,
+          procedures: out.procedures,
+          diagnosesConverted: out.diagnosesConverted,
+          proceduresConverted: out.proceduresConverted,
+          conversionApplied: out.conversionApplied,
+          patientInfo: out.patientInfo
+        });
+      }
+    } catch (error) {
+      if (requestId !== groupRequestRef.current) return;
+      setPermResults(null);
+      setPermRunning(false);
+      setResult(createGroupingRequestError(error));
     }
   }, [diagnoses, procedures, getPatientInfo, searchSource, version]);
   const handleGroupSingleRef = useRef(handleGroupSingle);
-  useEffect(() => {
+  useLayoutEffect(() => {
     handleGroupSingleRef.current = handleGroupSingle;
   }, [handleGroupSingle]);
 
-  const previousVersionRef = useRef(version);
+  const previousGroupingContextRef = useRef({ version, searchSource });
+  useLayoutEffect(() => {
+    const previous = previousGroupingContextRef.current;
+    previousGroupingContextRef.current = { version, searchSource };
+    if (previous.version === version && previous.searchSource === searchSource) return;
+
+    // Invalidate before paint, including the first request before hasGrouped is true.
+    groupRequestRef.current += 1;
+    // Keep displayed results until replacement; an invalidated All Orders run must stop spinning.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- The invalidated request can no longer reset its running state.
+    setPermRunning(false);
+    if (previous.version !== version && hasGrouped) handleGroupSingleRef.current();
+  }, [version, searchSource, hasGrouped]);
+
   useEffect(() => {
-    const previousVersion = previousVersionRef.current;
-    previousVersionRef.current = version;
-    if (previousVersion === version || !hasGrouped) return;
-    handleGroupSingleRef.current();
-  }, [version, hasGrouped]);
+    if (!result || !resultRef.current) return undefined;
+    const frame = requestAnimationFrame(() => {
+      const element = resultRef.current;
+      if (!element) return;
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      element.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [result]);
 
   const handleFlushAll = () => {
     groupRequestRef.current += 1;
@@ -439,18 +476,18 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     setProcedures(['']);
     setDiagnosisInfos([createEmptyInfo()]);
     setProcedureInfos([createEmptyInfo()]);
-    setPatientGender('1');
-    setPatientAge('30');
+    setPatientGender('');
+    setPatientAge('');
     setPatientAgeInDays('');
     setPatientBirthWeight('');
-    setPatientDischargeStatus('alive');
-    setPatientNewTechnique(false);
-    setPatientMultiSite(false);
-    setPatientIntensiveCare(false);
+    setPatientAdmissionWeight('');
+    setPatientDischargeStatus('');
+    setPatientNewTechnique('');
+    setPatientIntensiveCare('');
     setPatientIcuHours('');
     setPatientCrrtHours('');
     setPatientLengthOfStay('');
-    setPatientDaySurgery(false);
+    setPatientDaySurgery('');
     setShowPatientInfo(false);
     setResult(null);
     setPermResults(null);
@@ -471,10 +508,17 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
     setPermRunning(true);
     setPermResults(null);
     const info = getPatientInfo();
-    const out = groupAllOrders ? await groupAllOrders(diagnoses, procedures, info, searchSource, 720, version) : null;
-    if (requestId !== groupRequestRef.current) return;
-    if (out) setPermResults(out);
-    setPermRunning(false);
+    try {
+      const out = groupAllOrders ? await groupAllOrders(diagnoses, procedures, info, searchSource, version) : null;
+      if (requestId !== groupRequestRef.current) return;
+      if (out) setPermResults(out);
+      setPermRunning(false);
+    } catch (error) {
+      if (requestId !== groupRequestRef.current) return;
+      const failed = createGroupingRequestError(error);
+      setPermResults({ totalCombos: 0, processed: 0, results: [], error: failed.error, description: failed.description });
+      setPermRunning(false);
+    }
   };
 
   useEffect(() => {
@@ -521,6 +565,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       className: '',
       control: (
         <select value={patientGender} onChange={(e) => setPatientGender(e.target.value)} className="mt-1 w-full p-2 border dark-border rounded">
+          <option value="">Not set</option>
           <option value="1">Male</option>
           <option value="2">Female</option>
         </select>
@@ -532,6 +577,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       className: '',
       control: (
         <select value={patientDischargeStatus} onChange={(e) => setPatientDischargeStatus(e.target.value)} className="mt-1 w-full p-2 border dark-border rounded">
+          <option value="">Not set</option>
           <option value="alive">Alive</option>
           <option value="5">Dead</option>
         </select>
@@ -541,7 +587,7 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       key: 'age',
       label: 'Age (years)',
       className: '',
-      control: <input type="number" min="0" step="1" value={patientAge} onChange={(e) => handlePatientAgeChange(e.target.value)} placeholder="e.g. 0.5" className="mt-1 w-full p-2 border dark-border rounded" />
+      control: <input type="number" min="0" step="1" value={patientAge} onChange={(e) => handlePatientAgeChange(e.target.value)} placeholder="e.g. 30" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
       key: 'ageInDays',
@@ -554,6 +600,12 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
       label: 'Birth weight (grams)',
       className: '',
       control: <input type="number" min="1" step="1" value={patientBirthWeight} onChange={(e) => setPatientBirthWeight(e.target.value)} placeholder="e.g. 3200" className="mt-1 w-full p-2 border dark-border rounded" />
+    },
+    {
+      key: 'admissionWeight',
+      label: 'Admission weight (grams)',
+      className: '',
+      control: <input type="number" min="1" step="1" value={patientAdmissionWeight} onChange={(e) => setPatientAdmissionWeight(e.target.value)} placeholder="e.g. 3200" className="mt-1 w-full p-2 border dark-border rounded" />
     },
     {
       key: 'icuHours',
@@ -601,13 +653,6 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         checked: patientNewTechnique,
         onChange: e => setPatientNewTechnique(e.target.checked),
         label: 'New Technique (新技术)',
-      },
-      {
-        key: 'multiSite',
-        id: 'multisite-checkbox',
-        checked: patientMultiSite,
-        onChange: e => setPatientMultiSite(e.target.checked),
-        label: 'Multi-site joint replacement (多部位关节置换)',
       },
       {
         key: 'intensiveCare',
@@ -929,7 +974,14 @@ export default function SingleTab({ searchSource, lite = false, version = DEFAUL
         </div>
       )}
       {result && (
-        <div className={`mt-6 p-4 rounded-xl border-l-4 ${result.code === 'ERR' ? 'bg-error border-error' : 'bg-success border-success'}`}>
+        <div
+          ref={resultRef}
+          tabIndex={-1}
+          role={result.code === 'ERR' ? 'alert' : 'status'}
+          aria-live={result.code === 'ERR' ? 'assertive' : 'polite'}
+          aria-atomic="true"
+          className={`mt-6 p-4 rounded-xl border-l-4 focus:outline-none ${result.code === 'ERR' ? 'bg-error border-error' : 'bg-success border-success'}`}
+        >
           <h3 className="text-lg font-bold mb-2 text-gray-100">Result</h3>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">

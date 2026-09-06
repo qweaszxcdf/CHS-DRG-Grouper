@@ -1,5 +1,4 @@
 import type {
-  AdrgDefinition,
   AdrgRule,
   DrgSubgroupRule,
   RuleData,
@@ -20,6 +19,7 @@ export interface PatientDemographicsInput {
   age?: PatientScalarInput;
   ageInDays?: PatientScalarInput;
   birthWeight?: PatientScalarInput;
+  admissionWeight?: PatientScalarInput;
 }
 
 export interface PatientOutcomeInput {
@@ -28,7 +28,6 @@ export interface PatientOutcomeInput {
 
 export interface PatientFlagsInput {
   newTechnique?: PatientBooleanInput;
-  multiSite?: PatientBooleanInput;
   intensiveCare?: PatientBooleanInput;
   daySurgery?: PatientBooleanInput;
 }
@@ -58,6 +57,7 @@ export interface NormalizedPatientDemographics {
   age?: number;
   ageInDays?: number;
   birthWeight?: number;
+  admissionWeight?: number;
 }
 
 export interface NormalizedPatientOutcome {
@@ -66,7 +66,6 @@ export interface NormalizedPatientOutcome {
 
 export interface NormalizedPatientFlags {
   newTechnique?: boolean;
-  multiSite?: boolean;
   intensiveCare?: boolean;
   daySurgery?: boolean;
 }
@@ -132,12 +131,19 @@ export interface CommonStrategy {
   allowedInvalidPrincipalProcedures: string[];
   allowedGrayPrincipalProcedures: string[];
   mdcyPrincipalDiagnosisOnly: boolean;
-  allowSecondarySectionPrimaryFallback: boolean;
   [key: string]: unknown;
 }
 
 export interface VersionStrategy {
   daySurgeryAsNoCC: boolean;
+  robotAssistedSurgery: {
+    adrgCodes: string[];
+    procedureCodes: string[];
+  };
+  highRiskPregnancyAsMcc: {
+    adrgCodes: string[];
+    diagnosisCodes: string[];
+  };
   [key: string]: unknown;
 }
 
@@ -180,12 +186,10 @@ export interface GrouperEngine {
   groupBatch(rows?: BatchGroupingRow[]): BatchGroupingResult[];
   matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult;
   evaluateADRGSubgroups(
-    matchedADRG: AdrgDefinition | null,
+    adrgCode: string | null,
     diagnoses: string[],
     procedures: Array<string | null>,
     patientInfo: NormalizedPatientInfo,
-    principalDiagnosis: string | null,
-    principalProcedure: string | null,
     matchTrace: MatchTraceEntry[],
   ): SubgroupEvaluation;
 }

@@ -41,7 +41,7 @@
   },
   {
     "drgCode": "AC19",
-    "drgName": "胰/肾联合移植",
+    "drgName": "胰／肾联合移植",
     "adrgCode": "AC1",
     "conditions": [
       "ADRG_ONLY"
@@ -89,7 +89,7 @@
   },
   {
     "drgCode": "AH19",
-    "drgName": "ECMO 或全人工心脏植入术",
+    "drgName": "ECMO或全人工心脏植入术",
     "adrgCode": "AH1",
     "conditions": [
       "ADRG_ONLY"
@@ -97,7 +97,7 @@
   },
   {
     "drgCode": "AH29",
-    "drgName": "有创呼吸机支持≥96 小时,伴 CRRT",
+    "drgName": "有创呼吸机支持≥96小时,伴CRRT",
     "adrgCode": "AH2",
     "conditions": [
       "ADRG_ONLY"
@@ -105,7 +105,7 @@
   },
   {
     "drgCode": "AH39",
-    "drgName": "有创呼吸机支持≥96 小时,不伴 CRRT",
+    "drgName": "有创呼吸机支持≥96小时,不伴CRRT",
     "adrgCode": "AH3",
     "conditions": [
       "ADRG_ONLY"
@@ -121,7 +121,7 @@
   },
   {
     "drgCode": "BB21",
-    "drgName": "伴出血诊断的颅脑手术，伴严重合并症或并发症",
+    "drgName": "伴出血诊断的颅脑手术,伴严重合并症或并发症",
     "adrgCode": "BB2",
     "conditions": [
       "WITH_MCC"
@@ -129,7 +129,7 @@
   },
   {
     "drgCode": "BB23",
-    "drgName": "伴出血诊断的颅脑手术，伴一般合并症或并发症",
+    "drgName": "伴出血诊断的颅脑手术,伴一般合并症或并发症",
     "adrgCode": "BB2",
     "conditions": [
       "WITH_CC"
@@ -137,7 +137,7 @@
   },
   {
     "drgCode": "BB25",
-    "drgName": "伴出血诊断的颅脑手术，不伴合并症或并发症",
+    "drgName": "伴出血诊断的颅脑手术,不伴合并症或并发症",
     "adrgCode": "BB2",
     "conditions": [
       "NO_CC"
@@ -153,7 +153,7 @@
   },
   {
     "drgCode": "BB41",
-    "drgName": "伴创伤诊断的颅脑手术，伴严重合并症或并发症",
+    "drgName": "伴创伤诊断的颅脑手术,伴严重合并症或并发症",
     "adrgCode": "BB4",
     "conditions": [
       "WITH_MCC"
@@ -161,7 +161,7 @@
   },
   {
     "drgCode": "BB43",
-    "drgName": "伴创伤诊断的颅脑手术，伴一般合并症或并发症",
+    "drgName": "伴创伤诊断的颅脑手术,伴一般合并症或并发症",
     "adrgCode": "BB4",
     "conditions": [
       "WITH_CC"
@@ -169,7 +169,7 @@
   },
   {
     "drgCode": "BB45",
-    "drgName": "伴创伤诊断的颅脑手术，不伴合并症或并发症",
+    "drgName": "伴创伤诊断的颅脑手术,不伴合并症或并发症",
     "adrgCode": "BB4",
     "conditions": [
       "NO_CC"
@@ -177,7 +177,7 @@
   },
   {
     "drgCode": "BB51",
-    "drgName": "其他颅脑相关手术，伴严重合并症或并发症",
+    "drgName": "其他颅脑相关手术,伴严重合并症或并发症",
     "adrgCode": "BB5",
     "conditions": [
       "WITH_MCC"
@@ -185,7 +185,7 @@
   },
   {
     "drgCode": "BB55",
-    "drgName": "其他颅脑相关手术，不伴严重合并症或并发症",
+    "drgName": "其他颅脑相关手术,不伴严重合并症或并发症",
     "adrgCode": "BB5",
     "conditions": [
       "NO_CC"
@@ -193,7 +193,7 @@
   },
   {
     "drgCode": "BC11",
-    "drgName": "脑室分流及翻修手术，伴严重合并症或并发症",
+    "drgName": "脑室分流及翻修手术,伴严重合并症或并发症",
     "adrgCode": "BC1",
     "conditions": [
       "WITH_MCC"
@@ -201,7 +201,7 @@
   },
   {
     "drgCode": "BC15",
-    "drgName": "脑室分流及翻修手术，不伴严重合并症或并发症",
+    "drgName": "脑室分流及翻修手术,不伴严重合并症或并发症",
     "adrgCode": "BC1",
     "conditions": [
       "NO_CC"
@@ -209,7 +209,7 @@
   },
   {
     "drgCode": "BD13",
-    "drgName": "脊柱脊髓手术，伴合并症或并发症",
+    "drgName": "脊柱脊髓手术,伴合并症或并发症",
     "adrgCode": "BD1",
     "conditions": [
       "WITH_CC"
@@ -217,7 +217,7 @@
   },
   {
     "drgCode": "BD15",
-    "drgName": "脊柱脊髓手术，不伴合并症或并发症",
+    "drgName": "脊柱脊髓手术,不伴合并症或并发症",
     "adrgCode": "BD1",
     "conditions": [
       "NO_CC"
@@ -225,7 +225,7 @@
   },
   {
     "drgCode": "BD29",
-    "drgName": "神经刺激发生器置入/置换术",
+    "drgName": "神经刺激发生器置入／置换术",
     "adrgCode": "BD2",
     "conditions": [
       "ADRG_ONLY"
@@ -233,7 +233,7 @@
   },
   {
     "drgCode": "BD39",
-    "drgName": "中枢神经刺激器置入/置换术",
+    "drgName": "中枢神经刺激器置入／置换术",
     "adrgCode": "BD3",
     "conditions": [
       "ADRG_ONLY"
@@ -241,7 +241,7 @@
   },
   {
     "drgCode": "BD49",
-    "drgName": "周围神经刺激器置入/置换术",
+    "drgName": "周围神经刺激器置入／置换术",
     "adrgCode": "BD4",
     "conditions": [
       "ADRG_ONLY"
@@ -265,7 +265,7 @@
   },
   {
     "drgCode": "BE31",
-    "drgName": "除外栓塞术的神经介入治疗，伴严重合并症或并发症",
+    "drgName": "除外栓塞术的神经介入治疗,伴严重合并症或并发症",
     "adrgCode": "BE3",
     "conditions": [
       "WITH_MCC"
@@ -273,7 +273,7 @@
   },
   {
     "drgCode": "BE35",
-    "drgName": "除外栓塞术的神经介入治疗，不伴严重合并症或并发症",
+    "drgName": "除外栓塞术的神经介入治疗,不伴严重合并症或并发症",
     "adrgCode": "BE3",
     "conditions": [
       "NO_CC"
@@ -289,7 +289,7 @@
   },
   {
     "drgCode": "BJ13",
-    "drgName": "神经系统其他手术，伴合并症或并发症",
+    "drgName": "神经系统其他手术,伴合并症或并发症",
     "adrgCode": "BJ1",
     "conditions": [
       "WITH_CC"
@@ -297,31 +297,47 @@
   },
   {
     "drgCode": "BJ15",
-    "drgName": "神经系统其他手术，不伴合并症或并发症",
+    "drgName": "神经系统其他手术,不伴合并症或并发症",
     "adrgCode": "BJ1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "BL19",
-    "drgName": "神经系统血管病溶栓治疗",
+    "drgCode": "BL11",
+    "drgName": "神经系统血管病溶栓治疗,伴严重合并症或并发症",
     "adrgCode": "BL1",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_MCC"
     ]
   },
   {
-    "drgCode": "BM19",
-    "drgName": "神经介入检查术",
+    "drgCode": "BL15",
+    "drgName": "神经系统血管病溶栓治疗,不伴严重合并症或并发症",
+    "adrgCode": "BL1",
+    "conditions": [
+      "NO_CC"
+    ]
+  },
+  {
+    "drgCode": "BM13",
+    "drgName": "神经介入检查术,伴合并症或并发症",
     "adrgCode": "BM1",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_CC"
+    ]
+  },
+  {
+    "drgCode": "BM15",
+    "drgName": "神经介入检查术,不伴合并症或并发症",
+    "adrgCode": "BM1",
+    "conditions": [
+      "NO_CC"
     ]
   },
   {
     "drgCode": "BN11",
-    "drgName": "神经系统早期康复治疗，伴严重合并症或并发症",
+    "drgName": "神经系统早期康复治疗,伴严重合并症或并发症",
     "adrgCode": "BN1",
     "conditions": [
       "WITH_MCC"
@@ -329,7 +345,7 @@
   },
   {
     "drgCode": "BN15",
-    "drgName": "神经系统早期康复治疗，不伴严重合并症或并发症",
+    "drgName": "神经系统早期康复治疗,不伴严重合并症或并发症",
     "adrgCode": "BN1",
     "conditions": [
       "NO_CC"
@@ -353,7 +369,7 @@
   },
   {
     "drgCode": "BR13",
-    "drgName": "脑卒中，伴合并症或并发症",
+    "drgName": "脑卒中,伴合并症或并发症",
     "adrgCode": "BR1",
     "conditions": [
       "WITH_CC"
@@ -361,7 +377,7 @@
   },
   {
     "drgCode": "BR15",
-    "drgName": "脑卒中，不伴合并症或并发症",
+    "drgName": "脑卒中,不伴合并症或并发症",
     "adrgCode": "BR1",
     "conditions": [
       "NO_CC"
@@ -377,7 +393,7 @@
   },
   {
     "drgCode": "BS11",
-    "drgName": "非创伤性意识障碍，伴严重合并症或并发症",
+    "drgName": "非创伤性意识障碍,伴严重合并症或并发症",
     "adrgCode": "BS1",
     "conditions": [
       "WITH_MCC"
@@ -385,7 +401,7 @@
   },
   {
     "drgCode": "BS13",
-    "drgName": "非创伤性意识障碍，伴一般合并症或并发症",
+    "drgName": "非创伤性意识障碍,伴一般合并症或并发症",
     "adrgCode": "BS1",
     "conditions": [
       "WITH_CC"
@@ -393,7 +409,7 @@
   },
   {
     "drgCode": "BS15",
-    "drgName": "非创伤性意识障碍，不伴合并症或并发症",
+    "drgName": "非创伤性意识障碍,不伴合并症或并发症",
     "adrgCode": "BS1",
     "conditions": [
       "NO_CC"
@@ -401,7 +417,7 @@
   },
   {
     "drgCode": "BT11",
-    "drgName": "病毒性脑、脊髓和脑膜炎，伴严重合并症或并发症",
+    "drgName": "病毒性脑、脊髓和脑膜炎,伴严重合并症或并发症",
     "adrgCode": "BT1",
     "conditions": [
       "WITH_MCC"
@@ -409,7 +425,7 @@
   },
   {
     "drgCode": "BT13",
-    "drgName": "病毒性脑、脊髓和脑膜炎，伴一般合并症或并发症",
+    "drgName": "病毒性脑、脊髓和脑膜炎,伴一般合并症或并发症",
     "adrgCode": "BT1",
     "conditions": [
       "WITH_CC"
@@ -417,7 +433,7 @@
   },
   {
     "drgCode": "BT15",
-    "drgName": "病毒性脑、脊髓和脑膜炎，不伴合并症或并发症",
+    "drgName": "病毒性脑、脊髓和脑膜炎,不伴合并症或并发症",
     "adrgCode": "BT1",
     "conditions": [
       "NO_CC"
@@ -425,7 +441,7 @@
   },
   {
     "drgCode": "BT21",
-    "drgName": "细菌性脑、脊髓和脑膜炎，伴严重合并症或并发症",
+    "drgName": "细菌性脑、脊髓和脑膜炎,伴严重合并症或并发症",
     "adrgCode": "BT2",
     "conditions": [
       "WITH_MCC"
@@ -433,7 +449,7 @@
   },
   {
     "drgCode": "BT23",
-    "drgName": "细菌性脑、脊髓和脑膜炎，伴一般合并症或并发症",
+    "drgName": "细菌性脑、脊髓和脑膜炎,伴一般合并症或并发症",
     "adrgCode": "BT2",
     "conditions": [
       "WITH_CC"
@@ -441,7 +457,7 @@
   },
   {
     "drgCode": "BT25",
-    "drgName": "细菌性脑、脊髓和脑膜炎，不伴合并症或并发症",
+    "drgName": "细菌性脑、脊髓和脑膜炎,不伴合并症或并发症",
     "adrgCode": "BT2",
     "conditions": [
       "NO_CC"
@@ -449,15 +465,24 @@
   },
   {
     "drgCode": "BT33",
-    "drgName": "神经系统的其他感染，伴合并症或并发症",
+    "drgName": "神经系统的其他感染,伴合并症或并发症",
     "adrgCode": "BT3",
     "conditions": [
       "WITH_CC"
     ]
   },
   {
+    "drgCode": "BT3C",
+    "drgName": "神经系统的其他感染,不伴合并症或并发症,小于等于6岁",
+    "adrgCode": "BT3",
+    "conditions": [
+      "AGE_LE_6",
+      "NO_CC"
+    ]
+  },
+  {
     "drgCode": "BT35",
-    "drgName": "神经系统的其他感染，不伴合并症或并发症",
+    "drgName": "神经系统的其他感染,不伴合并症或并发症",
     "adrgCode": "BT3",
     "conditions": [
       "NO_CC"
@@ -465,7 +490,7 @@
   },
   {
     "drgCode": "BU13",
-    "drgName": "神经系统肿瘤，伴合并症或并发症",
+    "drgName": "神经系统肿瘤,伴合并症或并发症",
     "adrgCode": "BU1",
     "conditions": [
       "WITH_CC"
@@ -473,7 +498,7 @@
   },
   {
     "drgCode": "BU15",
-    "drgName": "神经系统肿瘤，不伴合并症或并发症",
+    "drgName": "神经系统肿瘤,不伴合并症或并发症",
     "adrgCode": "BU1",
     "conditions": [
       "NO_CC"
@@ -481,7 +506,7 @@
   },
   {
     "drgCode": "BU23",
-    "drgName": "神经系统变性疾病，伴合并症或并发症",
+    "drgName": "神经系统变性疾病,伴合并症或并发症",
     "adrgCode": "BU2",
     "conditions": [
       "WITH_CC"
@@ -489,16 +514,16 @@
   },
   {
     "drgCode": "BU2C",
-    "drgName": "神经系统变性疾病，不伴合并症或并发症，小于 6 岁",
+    "drgName": "神经系统变性疾病,不伴合并症或并发症,小于等于6岁",
     "adrgCode": "BU2",
     "conditions": [
-      "AGE_LT_6",
+      "AGE_LE_6",
       "NO_CC"
     ]
   },
   {
     "drgCode": "BU25",
-    "drgName": "神经系统变性疾病，不伴合并症或并发症",
+    "drgName": "神经系统变性疾病,不伴合并症或并发症",
     "adrgCode": "BU2",
     "conditions": [
       "NO_CC"
@@ -506,7 +531,7 @@
   },
   {
     "drgCode": "BU33",
-    "drgName": "中枢神经系统脱髓鞘病，伴合并症或并发症",
+    "drgName": "中枢神经系统脱髓鞘病,伴合并症或并发症",
     "adrgCode": "BU3",
     "conditions": [
       "WITH_CC"
@@ -514,15 +539,32 @@
   },
   {
     "drgCode": "BU35",
-    "drgName": "中枢神经系统脱髓鞘病，不伴合并症或并发症",
+    "drgName": "中枢神经系统脱髓鞘病,不伴合并症或并发症",
     "adrgCode": "BU3",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "BV1E",
+    "drgName": "癫痫,伴严重合并症或并发症,大于等于70岁",
+    "adrgCode": "BV1",
+    "conditions": [
+      "AGE_GE_70",
+      "WITH_MCC"
+    ]
+  },
+  {
+    "drgCode": "BV11",
+    "drgName": "癫痫,伴严重合并症或并发症",
+    "adrgCode": "BV1",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "BV1F",
-    "drgName": "癫痫，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "癫痫,伴一般合并症或并发症,大于等于70岁",
     "adrgCode": "BV1",
     "conditions": [
       "AGE_GE_70",
@@ -531,7 +573,7 @@
   },
   {
     "drgCode": "BV13",
-    "drgName": "癫痫，伴合并症或并发症",
+    "drgName": "癫痫,伴一般合并症或并发症",
     "adrgCode": "BV1",
     "conditions": [
       "WITH_CC"
@@ -539,7 +581,7 @@
   },
   {
     "drgCode": "BV1G",
-    "drgName": "癫痫，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "癫痫,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "BV1",
     "conditions": [
       "AGE_GE_70",
@@ -548,7 +590,7 @@
   },
   {
     "drgCode": "BV15",
-    "drgName": "癫痫，不伴合并症或并发症",
+    "drgName": "癫痫,不伴合并症或并发症",
     "adrgCode": "BV1",
     "conditions": [
       "NO_CC"
@@ -556,7 +598,7 @@
   },
   {
     "drgCode": "BV2F",
-    "drgName": "神经肌肉接头及肌肉病，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "神经肌肉接头及肌肉病,伴合并症或并发症,大于等于70岁",
     "adrgCode": "BV2",
     "conditions": [
       "AGE_GE_70",
@@ -565,7 +607,7 @@
   },
   {
     "drgCode": "BV23",
-    "drgName": "神经肌肉接头及肌肉病，伴合并症或并发症",
+    "drgName": "神经肌肉接头及肌肉病,伴合并症或并发症",
     "adrgCode": "BV2",
     "conditions": [
       "WITH_CC"
@@ -573,7 +615,7 @@
   },
   {
     "drgCode": "BV2G",
-    "drgName": "神经肌肉接头及肌肉病，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "神经肌肉接头及肌肉病,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "BV2",
     "conditions": [
       "AGE_GE_70",
@@ -582,7 +624,7 @@
   },
   {
     "drgCode": "BV25",
-    "drgName": "神经肌肉接头及肌肉病，不伴合并症或并发症",
+    "drgName": "神经肌肉接头及肌肉病,不伴合并症或并发症",
     "adrgCode": "BV2",
     "conditions": [
       "NO_CC"
@@ -614,7 +656,7 @@
   },
   {
     "drgCode": "BX1F",
-    "drgName": "认知功能障碍，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "认知功能障碍,伴合并症或并发症,大于等于70岁",
     "adrgCode": "BX1",
     "conditions": [
       "AGE_GE_70",
@@ -623,7 +665,7 @@
   },
   {
     "drgCode": "BX13",
-    "drgName": "认知功能障碍，伴合并症或并发症",
+    "drgName": "认知功能障碍,伴合并症或并发症",
     "adrgCode": "BX1",
     "conditions": [
       "WITH_CC"
@@ -631,7 +673,7 @@
   },
   {
     "drgCode": "BX1G",
-    "drgName": "认知功能障碍，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "认知功能障碍,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "BX1",
     "conditions": [
       "AGE_GE_70",
@@ -640,7 +682,7 @@
   },
   {
     "drgCode": "BX15",
-    "drgName": "认知功能障碍，不伴合并症或并发症",
+    "drgName": "认知功能障碍,不伴合并症或并发症",
     "adrgCode": "BX1",
     "conditions": [
       "NO_CC"
@@ -648,15 +690,23 @@
   },
   {
     "drgCode": "BX29",
-    "drgName": "脑神经/周围神经疾病",
+    "drgName": "脑神经／周围神经疾病",
     "adrgCode": "BX2",
     "conditions": [
       "ADRG_ONLY"
     ]
   },
   {
+    "drgCode": "BY11",
+    "drgName": "颅脑损伤,伴严重合并症或并发症",
+    "adrgCode": "BY1",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "BY13",
-    "drgName": "颅脑损伤，伴合并症或并发症",
+    "drgName": "颅脑损伤,伴一般合并症或并发症",
     "adrgCode": "BY1",
     "conditions": [
       "WITH_CC"
@@ -664,7 +714,7 @@
   },
   {
     "drgCode": "BY1G",
-    "drgName": "颅脑损伤，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "颅脑损伤,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "BY1",
     "conditions": [
       "AGE_GE_70",
@@ -673,15 +723,23 @@
   },
   {
     "drgCode": "BY15",
-    "drgName": "颅脑损伤，不伴合并症或并发症",
+    "drgName": "颅脑损伤,不伴合并症或并发症",
     "adrgCode": "BY1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "BY21",
+    "drgName": "脊髓伤病及功能障碍,伴严重合并症或并发症",
+    "adrgCode": "BY2",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "BY23",
-    "drgName": "脊髓伤病及功能障碍，伴合并症或并发症",
+    "drgName": "脊髓伤病及功能障碍,伴一般合并症或并发症",
     "adrgCode": "BY2",
     "conditions": [
       "WITH_CC"
@@ -689,15 +747,23 @@
   },
   {
     "drgCode": "BY25",
-    "drgName": "脊髓伤病及功能障碍，不伴合并症或并发症",
+    "drgName": "脊髓伤病及功能障碍,不伴合并症或并发症",
     "adrgCode": "BY2",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "BZ11",
+    "drgName": "神经系统其他疾病,伴严重合并症或并发症",
+    "adrgCode": "BZ1",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "BZ13",
-    "drgName": "神经系统其他疾病，伴合并症或并发症",
+    "drgName": "神经系统其他疾病,伴一般合并症或并发症",
     "adrgCode": "BZ1",
     "conditions": [
       "WITH_CC"
@@ -705,7 +771,7 @@
   },
   {
     "drgCode": "BZ15",
-    "drgName": "神经系统其他疾病，不伴合并症或并发症",
+    "drgName": "神经系统其他疾病,不伴合并症或并发症",
     "adrgCode": "BZ1",
     "conditions": [
       "NO_CC"
@@ -809,10 +875,10 @@
   },
   {
     "drgCode": "CD4D",
-    "drgName": "除眼眶外的外眼手术，小于 6 岁",
+    "drgName": "除眼眶外的外眼手术,小于等于6岁",
     "adrgCode": "CD4",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -865,7 +931,7 @@
   },
   {
     "drgCode": "CV1H",
-    "drgName": "各种类型青光眼，大于等于 70 岁",
+    "drgName": "各种类型青光眼,大于等于70岁",
     "adrgCode": "CV1",
     "conditions": [
       "AGE_GE_70"
@@ -953,7 +1019,7 @@
   },
   {
     "drgCode": "DC53",
-    "drgName": "口腔颌面头颈恶性肿瘤切除术，伴合并症或并发症",
+    "drgName": "口腔颌面头颈恶性肿瘤切除术,伴合并症或并发症",
     "adrgCode": "DC5",
     "conditions": [
       "WITH_CC"
@@ -961,7 +1027,7 @@
   },
   {
     "drgCode": "DC55",
-    "drgName": "口腔颌面头颈恶性肿瘤切除术，不伴合并症或并发症",
+    "drgName": "口腔颌面头颈恶性肿瘤切除术,不伴合并症或并发症",
     "adrgCode": "DC5",
     "conditions": [
       "NO_CC"
@@ -969,7 +1035,7 @@
   },
   {
     "drgCode": "DC6H",
-    "drgName": "口腔颌面头颈良性肿瘤切除术，大于等于 70 岁",
+    "drgName": "口腔颌面头颈良性肿瘤切除术,大于等于70岁",
     "adrgCode": "DC6",
     "conditions": [
       "AGE_GE_70"
@@ -1009,7 +1075,7 @@
   },
   {
     "drgCode": "DD39",
-    "drgName": "中耳/内耳/侧颅底手术",
+    "drgName": "中耳／内耳／侧颅底手术",
     "adrgCode": "DD3",
     "conditions": [
       "ADRG_ONLY"
@@ -1057,10 +1123,10 @@
   },
   {
     "drgCode": "DE3D",
-    "drgName": "耳廓及外耳道病损切除术，小于 6 岁",
+    "drgName": "耳廓及外耳道病损切除术,小于等于6岁",
     "adrgCode": "DE3",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -1096,6 +1162,14 @@
     ]
   },
   {
+    "drgCode": "DG1D",
+    "drgName": "咽、喉、气管手术,小于等于6岁",
+    "adrgCode": "DG1",
+    "conditions": [
+      "AGE_LE_6"
+    ]
+  },
+  {
     "drgCode": "DG19",
     "drgName": "咽、喉、气管手术",
     "adrgCode": "DG1",
@@ -1105,7 +1179,7 @@
   },
   {
     "drgCode": "DG29",
-    "drgName": "扁桃体和/或腺样体切除手术",
+    "drgName": "扁桃体和／或腺样体切除手术",
     "adrgCode": "DG2",
     "conditions": [
       "ADRG_ONLY"
@@ -1177,7 +1251,7 @@
   },
   {
     "drgCode": "DT1H",
-    "drgName": "中耳炎及上呼吸道感染，大于等于 70 岁",
+    "drgName": "中耳炎及上呼吸道感染,大于等于70岁",
     "adrgCode": "DT1",
     "conditions": [
       "AGE_GE_70"
@@ -1217,15 +1291,15 @@
   },
   {
     "drgCode": "DW1D",
-    "drgName": "口腔、牙齿有关疾病，小于 6 岁",
+    "drgName": "口腔、牙齿有关疾病,小于等于6岁",
     "adrgCode": "DW1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
     "drgCode": "DW1H",
-    "drgName": "口腔、牙齿有关疾病，大于等于 70 岁",
+    "drgName": "口腔、牙齿有关疾病,大于等于70岁",
     "adrgCode": "DW1",
     "conditions": [
       "AGE_GE_70"
@@ -1249,10 +1323,10 @@
   },
   {
     "drgCode": "EB10",
-    "drgName": "肺大手术，机器人辅助手术",
+    "drgName": "肺大手术,机器人辅助手术",
     "adrgCode": "EB1",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -1289,41 +1363,23 @@
   },
   {
     "drgCode": "ED11",
-    "drgName": "除肺、纵隔、气管、胸壁外的其他手术，伴严重合并症或并发症",
+    "drgName": "除肺、纵隔、气管、胸壁外的其他手术,伴严重合并症或并发症",
     "adrgCode": "ED1",
     "conditions": [
       "WITH_MCC"
     ]
   },
   {
-    "drgCode": "ED1F",
-    "drgName": "除肺、纵隔、气管、胸壁外的其他手术，伴一般合并症或并发症，大于等于 70 岁",
-    "adrgCode": "ED1",
-    "conditions": [
-      "AGE_GE_70",
-      "WITH_CC"
-    ]
-  },
-  {
     "drgCode": "ED13",
-    "drgName": "除肺、纵隔、气管、胸壁外的其他手术，伴一般合并症或并发症",
+    "drgName": "除肺、纵隔、气管、胸壁外的其他手术,伴一般合并症或并发症",
     "adrgCode": "ED1",
     "conditions": [
       "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "ED1G",
-    "drgName": "除肺、纵隔、气管、胸壁外的其他手术，不伴合并症或并发症，大于等于 70 岁",
-    "adrgCode": "ED1",
-    "conditions": [
-      "AGE_GE_70",
-      "NO_CC"
     ]
   },
   {
     "drgCode": "ED15",
-    "drgName": "除肺、纵隔、气管、胸壁外的其他手术，不伴合并症或并发症",
+    "drgName": "除肺、纵隔、气管、胸壁外的其他手术,不伴合并症或并发症",
     "adrgCode": "ED1",
     "conditions": [
       "NO_CC"
@@ -1331,23 +1387,15 @@
   },
   {
     "drgCode": "EJ11",
-    "drgName": "呼吸系统其他手术，伴严重合并症或并发症",
+    "drgName": "呼吸系统其他手术,伴严重合并症或并发症",
     "adrgCode": "EJ1",
     "conditions": [
       "WITH_MCC"
     ]
   },
   {
-    "drgCode": "EJ13",
-    "drgName": "呼吸系统其他手术，伴一般合并症或并发症",
-    "adrgCode": "EJ1",
-    "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
     "drgCode": "EJ15",
-    "drgName": "呼吸系统其他手术，不伴合并症或并发症",
+    "drgName": "呼吸系统其他手术,不伴严重合并症或并发症",
     "adrgCode": "EJ1",
     "conditions": [
       "NO_CC"
@@ -1355,7 +1403,7 @@
   },
   {
     "drgCode": "EK11",
-    "drgName": "复杂呼吸介入手术/操作，伴严重合并症或并发症",
+    "drgName": "复杂呼吸介入手术／操作,伴严重合并症或并发症",
     "adrgCode": "EK1",
     "conditions": [
       "WITH_MCC"
@@ -1363,7 +1411,7 @@
   },
   {
     "drgCode": "EK13",
-    "drgName": "复杂呼吸介入手术/操作，伴一般合并症或并发症",
+    "drgName": "复杂呼吸介入手术／操作,伴一般合并症或并发症",
     "adrgCode": "EK1",
     "conditions": [
       "WITH_CC"
@@ -1371,7 +1419,7 @@
   },
   {
     "drgCode": "EK1G",
-    "drgName": "复杂呼吸介入手术/操作，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "复杂呼吸介入手术／操作,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "EK1",
     "conditions": [
       "AGE_GE_70",
@@ -1380,7 +1428,7 @@
   },
   {
     "drgCode": "EK15",
-    "drgName": "复杂呼吸介入手术/操作，不伴合并症或并发症",
+    "drgName": "复杂呼吸介入手术／操作,不伴合并症或并发症",
     "adrgCode": "EK1",
     "conditions": [
       "NO_CC"
@@ -1388,7 +1436,7 @@
   },
   {
     "drgCode": "EK21",
-    "drgName": "一般呼吸介入手术/操作，伴严重合并症或并发症",
+    "drgName": "一般呼吸介入手术／操作,伴严重合并症或并发症",
     "adrgCode": "EK2",
     "conditions": [
       "WITH_MCC"
@@ -1396,7 +1444,7 @@
   },
   {
     "drgCode": "EK23",
-    "drgName": "一般呼吸介入手术/操作，伴一般合并症或并发症",
+    "drgName": "一般呼吸介入手术／操作,伴一般合并症或并发症",
     "adrgCode": "EK2",
     "conditions": [
       "WITH_CC"
@@ -1404,7 +1452,7 @@
   },
   {
     "drgCode": "EK25",
-    "drgName": "一般呼吸介入手术/操作，不伴合并症或并发症",
+    "drgName": "一般呼吸介入手术／操作,不伴合并症或并发症",
     "adrgCode": "EK2",
     "conditions": [
       "NO_CC"
@@ -1412,7 +1460,7 @@
   },
   {
     "drgCode": "EK3E",
-    "drgName": "常规呼吸诊断性手术/操作，伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "常规呼吸诊断性手术／操作,伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "EK3",
     "conditions": [
       "AGE_GE_70",
@@ -1421,7 +1469,7 @@
   },
   {
     "drgCode": "EK31",
-    "drgName": "常规呼吸诊断性手术/操作，伴严重合并症或并发症",
+    "drgName": "常规呼吸诊断性手术／操作,伴严重合并症或并发症",
     "adrgCode": "EK3",
     "conditions": [
       "WITH_MCC"
@@ -1429,7 +1477,7 @@
   },
   {
     "drgCode": "EK3F",
-    "drgName": "常规呼吸诊断性手术/操作，伴一般合并症或并发症，大于等于 70 岁",
+    "drgName": "常规呼吸诊断性手术／操作,伴一般合并症或并发症,大于等于70岁",
     "adrgCode": "EK3",
     "conditions": [
       "AGE_GE_70",
@@ -1438,7 +1486,7 @@
   },
   {
     "drgCode": "EK33",
-    "drgName": "常规呼吸诊断性手术/操作，伴一般合并症或并发症",
+    "drgName": "常规呼吸诊断性手术／操作,伴一般合并症或并发症",
     "adrgCode": "EK3",
     "conditions": [
       "WITH_CC"
@@ -1446,7 +1494,7 @@
   },
   {
     "drgCode": "EK3G",
-    "drgName": "常规呼吸诊断性手术/操作，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "常规呼吸诊断性手术／操作,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "EK3",
     "conditions": [
       "AGE_GE_70",
@@ -1455,7 +1503,7 @@
   },
   {
     "drgCode": "EK35",
-    "drgName": "常规呼吸诊断性手术/操作，不伴合并症或并发症",
+    "drgName": "常规呼吸诊断性手术／操作,不伴合并症或并发症",
     "adrgCode": "EK3",
     "conditions": [
       "NO_CC"
@@ -1463,7 +1511,7 @@
   },
   {
     "drgCode": "EL19",
-    "drgName": "有创呼吸机治疗小于 96 小时",
+    "drgName": "有创呼吸机治疗小于96小时",
     "adrgCode": "EL1",
     "conditions": [
       "ADRG_ONLY"
@@ -1471,7 +1519,7 @@
   },
   {
     "drgCode": "EM11",
-    "drgName": "呼吸系统感染/炎症的无创呼吸支持技术，伴严重合并症或并发症",
+    "drgName": "呼吸系统感染／炎症的无创呼吸支持技术,伴严重合并症或并发症",
     "adrgCode": "EM1",
     "conditions": [
       "WITH_MCC"
@@ -1479,7 +1527,7 @@
   },
   {
     "drgCode": "EM1G",
-    "drgName": "呼吸系统感染/炎症的无创呼吸支持技术，不伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "呼吸系统感染／炎症的无创呼吸支持技术,不伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "EM1",
     "conditions": [
       "AGE_GE_70",
@@ -1488,7 +1536,7 @@
   },
   {
     "drgCode": "EM15",
-    "drgName": "呼吸系统感染/炎症的无创呼吸支持技术，不伴严重合并症或并发症",
+    "drgName": "呼吸系统感染／炎症的无创呼吸支持技术,不伴严重合并症或并发症",
     "adrgCode": "EM1",
     "conditions": [
       "NO_CC"
@@ -1503,16 +1551,17 @@
     ]
   },
   {
-    "drgCode": "EN11",
-    "drgName": "呼吸系统早期康复治疗，伴严重合并症或并发症",
+    "drgCode": "EN1F",
+    "drgName": "呼吸系统早期康复治疗,伴合并症或并发症,大于等于70岁",
     "adrgCode": "EN1",
     "conditions": [
-      "WITH_MCC"
+      "AGE_GE_70",
+      "WITH_CC"
     ]
   },
   {
     "drgCode": "EN13",
-    "drgName": "呼吸系统早期康复治疗，伴一般合并症或并发症",
+    "drgName": "呼吸系统早期康复治疗,伴合并症或并发症",
     "adrgCode": "EN1",
     "conditions": [
       "WITH_CC"
@@ -1520,7 +1569,7 @@
   },
   {
     "drgCode": "EN15",
-    "drgName": "呼吸系统早期康复治疗，不伴合并症或并发症",
+    "drgName": "呼吸系统早期康复治疗,不伴合并症或并发症",
     "adrgCode": "EN1",
     "conditions": [
       "NO_CC"
@@ -1528,7 +1577,7 @@
   },
   {
     "drgCode": "ER11",
-    "drgName": "呼吸系统肿瘤，伴严重合并症或并发症",
+    "drgName": "呼吸系统肿瘤,伴严重合并症或并发症",
     "adrgCode": "ER1",
     "conditions": [
       "WITH_MCC"
@@ -1536,7 +1585,7 @@
   },
   {
     "drgCode": "ER15",
-    "drgName": "呼吸系统肿瘤，不伴严重合并症或并发症",
+    "drgName": "呼吸系统肿瘤,不伴严重合并症或并发症",
     "adrgCode": "ER1",
     "conditions": [
       "NO_CC"
@@ -1544,7 +1593,7 @@
   },
   {
     "drgCode": "ER23",
-    "drgName": "肺水肿或呼吸衰竭，伴合并症或并发症",
+    "drgName": "肺水肿或呼吸衰竭,伴合并症或并发症",
     "adrgCode": "ER2",
     "conditions": [
       "WITH_CC"
@@ -1552,7 +1601,7 @@
   },
   {
     "drgCode": "ER25",
-    "drgName": "肺水肿或呼吸衰竭，不伴合并症或并发症",
+    "drgName": "肺水肿或呼吸衰竭,不伴合并症或并发症",
     "adrgCode": "ER2",
     "conditions": [
       "NO_CC"
@@ -1560,7 +1609,7 @@
   },
   {
     "drgCode": "ES11",
-    "drgName": "肺真菌病，伴严重合并症或并发症",
+    "drgName": "肺真菌病,伴严重合并症或并发症",
     "adrgCode": "ES1",
     "conditions": [
       "WITH_MCC"
@@ -1568,7 +1617,7 @@
   },
   {
     "drgCode": "ES13",
-    "drgName": "肺真菌病，伴一般合并症或并发症",
+    "drgName": "肺真菌病,伴一般合并症或并发症",
     "adrgCode": "ES1",
     "conditions": [
       "WITH_CC"
@@ -1576,7 +1625,7 @@
   },
   {
     "drgCode": "ES15",
-    "drgName": "肺真菌病，不伴合并症或并发症",
+    "drgName": "肺真菌病,不伴合并症或并发症",
     "adrgCode": "ES1",
     "conditions": [
       "NO_CC"
@@ -1584,7 +1633,7 @@
   },
   {
     "drgCode": "ES23",
-    "drgName": "呼吸系统耐药结核，伴合并症或并发症",
+    "drgName": "呼吸系统耐药结核,伴合并症或并发症",
     "adrgCode": "ES2",
     "conditions": [
       "WITH_CC"
@@ -1592,7 +1641,7 @@
   },
   {
     "drgCode": "ES25",
-    "drgName": "呼吸系统耐药结核，不伴合并症或并发症",
+    "drgName": "呼吸系统耐药结核,不伴合并症或并发症",
     "adrgCode": "ES2",
     "conditions": [
       "NO_CC"
@@ -1600,7 +1649,7 @@
   },
   {
     "drgCode": "ES31",
-    "drgName": "呼吸系统非耐药结核，伴严重合并症或并发症",
+    "drgName": "呼吸系统非耐药结核,伴严重合并症或并发症",
     "adrgCode": "ES3",
     "conditions": [
       "WITH_MCC"
@@ -1608,7 +1657,7 @@
   },
   {
     "drgCode": "ES35",
-    "drgName": "呼吸系统非耐药结核，不伴严重合并症或并发症",
+    "drgName": "呼吸系统非耐药结核,不伴严重合并症或并发症",
     "adrgCode": "ES3",
     "conditions": [
       "NO_CC"
@@ -1616,7 +1665,7 @@
   },
   {
     "drgCode": "ES4E",
-    "drgName": "呼吸系统感染/炎症，伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "呼吸系统感染／炎症,伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "ES4",
     "conditions": [
       "AGE_GE_70",
@@ -1625,7 +1674,7 @@
   },
   {
     "drgCode": "ES41",
-    "drgName": "呼吸系统感染/炎症，伴严重合并症或并发症",
+    "drgName": "呼吸系统感染／炎症,伴严重合并症或并发症",
     "adrgCode": "ES4",
     "conditions": [
       "WITH_MCC"
@@ -1633,7 +1682,7 @@
   },
   {
     "drgCode": "ES4F",
-    "drgName": "呼吸系统感染/炎症，伴一般合并症或并发症，大于等于 70 岁",
+    "drgName": "呼吸系统感染／炎症,伴一般合并症或并发症,大于等于70岁",
     "adrgCode": "ES4",
     "conditions": [
       "AGE_GE_70",
@@ -1642,7 +1691,7 @@
   },
   {
     "drgCode": "ES43",
-    "drgName": "呼吸系统感染/炎症，伴一般合并症或并发症",
+    "drgName": "呼吸系统感染／炎症,伴一般合并症或并发症",
     "adrgCode": "ES4",
     "conditions": [
       "WITH_CC"
@@ -1650,7 +1699,7 @@
   },
   {
     "drgCode": "ES4G",
-    "drgName": "呼吸系统感染/炎症，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "呼吸系统感染／炎症,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "ES4",
     "conditions": [
       "AGE_GE_70",
@@ -1659,7 +1708,7 @@
   },
   {
     "drgCode": "ES45",
-    "drgName": "呼吸系统感染/炎症，不伴合并症或并发症",
+    "drgName": "呼吸系统感染／炎症,不伴合并症或并发症",
     "adrgCode": "ES4",
     "conditions": [
       "NO_CC"
@@ -1667,7 +1716,7 @@
   },
   {
     "drgCode": "ET13",
-    "drgName": "肺间质性疾病，伴合并症或并发症",
+    "drgName": "肺间质性疾病,伴合并症或并发症",
     "adrgCode": "ET1",
     "conditions": [
       "WITH_CC"
@@ -1675,7 +1724,7 @@
   },
   {
     "drgCode": "ET15",
-    "drgName": "肺间质性疾病，不伴合并症或并发症",
+    "drgName": "肺间质性疾病,不伴合并症或并发症",
     "adrgCode": "ET1",
     "conditions": [
       "NO_CC"
@@ -1683,7 +1732,7 @@
   },
   {
     "drgCode": "ET23",
-    "drgName": "慢性气道阻塞病，伴合并症或并发症",
+    "drgName": "慢性气道阻塞病,伴合并症或并发症",
     "adrgCode": "ET2",
     "conditions": [
       "WITH_CC"
@@ -1691,7 +1740,7 @@
   },
   {
     "drgCode": "ET25",
-    "drgName": "慢性气道阻塞病，不伴合并症或并发症",
+    "drgName": "慢性气道阻塞病,不伴合并症或并发症",
     "adrgCode": "ET2",
     "conditions": [
       "NO_CC"
@@ -1699,7 +1748,7 @@
   },
   {
     "drgCode": "EU13",
-    "drgName": "重大胸部创伤，伴合并症或并发症",
+    "drgName": "重大胸部创伤,伴合并症或并发症",
     "adrgCode": "EU1",
     "conditions": [
       "WITH_CC"
@@ -1707,7 +1756,7 @@
   },
   {
     "drgCode": "EU15",
-    "drgName": "重大胸部创伤，不伴合并症或并发症",
+    "drgName": "重大胸部创伤,不伴合并症或并发症",
     "adrgCode": "EU1",
     "conditions": [
       "NO_CC"
@@ -1722,8 +1771,16 @@
     ]
   },
   {
+    "drgCode": "EW11",
+    "drgName": "胸膜病变及胸腔积液,伴严重合并症或并发症",
+    "adrgCode": "EW1",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "EW13",
-    "drgName": "胸膜病变及胸腔积液，伴合并症或并发症",
+    "drgName": "胸膜病变及胸腔积液,伴一般合并症或并发症",
     "adrgCode": "EW1",
     "conditions": [
       "WITH_CC"
@@ -1731,7 +1788,7 @@
   },
   {
     "drgCode": "EW1G",
-    "drgName": "胸膜病变及胸腔积液，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "胸膜病变及胸腔积液,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "EW1",
     "conditions": [
       "AGE_GE_70",
@@ -1740,34 +1797,34 @@
   },
   {
     "drgCode": "EW15",
-    "drgName": "胸膜病变及胸腔积液，不伴合并症或并发症",
+    "drgName": "胸膜病变及胸腔积液,不伴合并症或并发症",
     "adrgCode": "EW1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "EX1H",
-    "drgName": "哮喘及喘息性支气管炎，大于等于 70 岁",
+    "drgCode": "EX13",
+    "drgName": "哮喘及喘息性支气管炎,伴合并症或并发症",
     "adrgCode": "EX1",
     "conditions": [
-      "AGE_GE_70"
+      "WITH_CC"
     ]
   },
   {
-    "drgCode": "EX19",
-    "drgName": "哮喘及喘息性支气管炎",
+    "drgCode": "EX15",
+    "drgName": "哮喘及喘息性支气管炎,不伴合并症或并发症",
     "adrgCode": "EX1",
     "conditions": [
-      "ADRG_ONLY"
+      "NO_CC"
     ]
   },
   {
     "drgCode": "EX2D",
-    "drgName": "百日咳，小于 6 岁",
+    "drgName": "百日咳,小于等于6岁",
     "adrgCode": "EX2",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -1780,7 +1837,7 @@
   },
   {
     "drgCode": "EX3H",
-    "drgName": "急性支气管炎，大于等于 70 岁",
+    "drgName": "急性支气管炎,大于等于70岁",
     "adrgCode": "EX3",
     "conditions": [
       "AGE_GE_70"
@@ -1796,7 +1853,7 @@
   },
   {
     "drgCode": "EZ13",
-    "drgName": "其他呼吸系统疾病，伴合并症或并发症",
+    "drgName": "其他呼吸系统疾病,伴合并症或并发症",
     "adrgCode": "EZ1",
     "conditions": [
       "WITH_CC"
@@ -1804,7 +1861,7 @@
   },
   {
     "drgCode": "EZ15",
-    "drgName": "其他呼吸系统疾病，不伴合并症或并发症",
+    "drgName": "其他呼吸系统疾病,不伴合并症或并发症",
     "adrgCode": "EZ1",
     "conditions": [
       "NO_CC"
@@ -1820,7 +1877,7 @@
   },
   {
     "drgCode": "FB21",
-    "drgName": "心脏瓣膜手术，伴严重合并症或并发症",
+    "drgName": "心脏瓣膜手术,伴严重合并症或并发症",
     "adrgCode": "FB2",
     "conditions": [
       "WITH_MCC"
@@ -1828,7 +1885,7 @@
   },
   {
     "drgCode": "FB2G",
-    "drgName": "心脏瓣膜手术，不伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "心脏瓣膜手术,不伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "FB2",
     "conditions": [
       "AGE_GE_70",
@@ -1837,7 +1894,7 @@
   },
   {
     "drgCode": "FB25",
-    "drgName": "心脏瓣膜手术，不伴严重合并症或并发症",
+    "drgName": "心脏瓣膜手术,不伴严重合并症或并发症",
     "adrgCode": "FB2",
     "conditions": [
       "NO_CC"
@@ -1861,7 +1918,7 @@
   },
   {
     "drgCode": "FD23",
-    "drgName": "先天性心脏病常规手术，伴合并症或并发症",
+    "drgName": "先天性心脏病常规手术,伴合并症或并发症",
     "adrgCode": "FD2",
     "conditions": [
       "WITH_CC"
@@ -1869,7 +1926,7 @@
   },
   {
     "drgCode": "FD25",
-    "drgName": "先天性心脏病常规手术，不伴合并症或并发症",
+    "drgName": "先天性心脏病常规手术,不伴合并症或并发症",
     "adrgCode": "FD2",
     "conditions": [
       "NO_CC"
@@ -1877,7 +1934,7 @@
   },
   {
     "drgCode": "FE11",
-    "drgName": "大血管复杂手术，伴严重合并症或并发症",
+    "drgName": "大血管复杂手术,伴严重合并症或并发症",
     "adrgCode": "FE1",
     "conditions": [
       "WITH_MCC"
@@ -1885,7 +1942,7 @@
   },
   {
     "drgCode": "FE15",
-    "drgName": "大血管复杂手术，不伴严重合并症或并发症",
+    "drgName": "大血管复杂手术,不伴严重合并症或并发症",
     "adrgCode": "FE1",
     "conditions": [
       "NO_CC"
@@ -1909,7 +1966,7 @@
   },
   {
     "drgCode": "FF23",
-    "drgName": "外周血管（除大隐静脉外）其他的手术，伴合并症或并发症",
+    "drgName": "外周血管（除大隐静脉外）其他的手术,伴合并症或并发症",
     "adrgCode": "FF2",
     "conditions": [
       "WITH_CC"
@@ -1917,7 +1974,7 @@
   },
   {
     "drgCode": "FF25",
-    "drgName": "外周血管（除大隐静脉外）其他的手术，不伴合并症或并发症",
+    "drgName": "外周血管（除大隐静脉外）其他的手术,不伴合并症或并发症",
     "adrgCode": "FF2",
     "conditions": [
       "NO_CC"
@@ -1933,7 +1990,7 @@
   },
   {
     "drgCode": "FJ1H",
-    "drgName": "心血管系统其他手术，大于等于 70 岁",
+    "drgName": "心血管系统其他手术,大于等于70岁",
     "adrgCode": "FJ1",
     "conditions": [
       "AGE_GE_70"
@@ -1957,7 +2014,7 @@
   },
   {
     "drgCode": "FK29",
-    "drgName": "伴急性心肌梗死/心衰/休克的心脏除颤器及心室同步",
+    "drgName": "伴急性心肌梗死／心衰／休克的心脏除颤器及心室同步",
     "adrgCode": "FK2",
     "conditions": [
       "ADRG_ONLY"
@@ -1965,7 +2022,7 @@
   },
   {
     "drgCode": "FK39",
-    "drgName": "不伴急性心肌梗死/心衰/休克的心脏除颤器及心室同步",
+    "drgName": "不伴急性心肌梗死／心衰／休克的心脏除颤器及心室同步",
     "adrgCode": "FK3",
     "conditions": [
       "ADRG_ONLY"
@@ -1973,7 +2030,7 @@
   },
   {
     "drgCode": "FK49",
-    "drgName": "永久性起搏器植入/置换/更新",
+    "drgName": "永久性起搏器植入／置换／更新",
     "adrgCode": "FK4",
     "conditions": [
       "ADRG_ONLY"
@@ -1997,7 +2054,7 @@
   },
   {
     "drgCode": "FL39",
-    "drgName": "经皮心脏消融术伴房颤和/或房扑",
+    "drgName": "经皮心脏消融术伴房颤和／或房扑",
     "adrgCode": "FL3",
     "conditions": [
       "ADRG_ONLY"
@@ -2052,19 +2109,11 @@
     ]
   },
   {
-    "drgCode": "FM51",
-    "drgName": "经皮心导管检查操作，伴严重合并症或并发症",
+    "drgCode": "FM59",
+    "drgName": "经皮心导管检查操作",
     "adrgCode": "FM5",
     "conditions": [
-      "WITH_MCC"
-    ]
-  },
-  {
-    "drgCode": "FM55",
-    "drgName": "经皮心导管检查操作，不伴严重合并症或并发症",
-    "adrgCode": "FM5",
-    "conditions": [
-      "NO_CC"
+      "ADRG_ONLY"
     ]
   },
   {
@@ -2084,8 +2133,16 @@
     ]
   },
   {
+    "drgCode": "FN31",
+    "drgName": "其他外周血管的检查,伴严重合并症或并发症",
+    "adrgCode": "FN3",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "FN33",
-    "drgName": "其他外周血管的检查，伴合并症或并发症",
+    "drgName": "其他外周血管的检查,伴一般合并症或并发症",
     "adrgCode": "FN3",
     "conditions": [
       "WITH_CC"
@@ -2093,7 +2150,7 @@
   },
   {
     "drgCode": "FN35",
-    "drgName": "其他外周血管的检查，不伴合并症或并发症",
+    "drgName": "其他外周血管的检查,不伴合并症或并发症",
     "adrgCode": "FN3",
     "conditions": [
       "NO_CC"
@@ -2101,7 +2158,7 @@
   },
   {
     "drgCode": "FP11",
-    "drgName": "心力衰竭、休克伴操作性治疗，伴严重合并症或并发症",
+    "drgName": "心力衰竭、休克伴操作性治疗,伴严重合并症或并发症",
     "adrgCode": "FP1",
     "conditions": [
       "WITH_MCC"
@@ -2109,7 +2166,7 @@
   },
   {
     "drgCode": "FP15",
-    "drgName": "心力衰竭、休克伴操作性治疗，不伴严重合并症或并发症",
+    "drgName": "心力衰竭、休克伴操作性治疗,不伴严重合并症或并发症",
     "adrgCode": "FP1",
     "conditions": [
       "NO_CC"
@@ -2132,8 +2189,16 @@
     ]
   },
   {
+    "drgCode": "FR21",
+    "drgName": "心力衰竭、休克,伴严重合并症或并发症",
+    "adrgCode": "FR2",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "FR23",
-    "drgName": "心力衰竭、休克，伴合并症或并发症",
+    "drgName": "心力衰竭、休克,伴一般合并症或并发症",
     "adrgCode": "FR2",
     "conditions": [
       "WITH_CC"
@@ -2141,7 +2206,7 @@
   },
   {
     "drgCode": "FR25",
-    "drgName": "心力衰竭、休克，不伴合并症或并发症",
+    "drgName": "心力衰竭、休克,不伴合并症或并发症",
     "adrgCode": "FR2",
     "conditions": [
       "NO_CC"
@@ -2149,7 +2214,7 @@
   },
   {
     "drgCode": "FR33",
-    "drgName": "肺栓塞，伴合并症或并发症",
+    "drgName": "肺栓塞,伴合并症或并发症",
     "adrgCode": "FR3",
     "conditions": [
       "WITH_CC"
@@ -2157,7 +2222,7 @@
   },
   {
     "drgCode": "FR35",
-    "drgName": "肺栓塞，不伴合并症或并发症",
+    "drgName": "肺栓塞,不伴合并症或并发症",
     "adrgCode": "FR3",
     "conditions": [
       "NO_CC"
@@ -2173,18 +2238,26 @@
   },
   {
     "drgCode": "FR59",
-    "drgName": "冠状动脉粥样硬化/血栓/闭塞",
+    "drgName": "冠状动脉粥样硬化／血栓／闭塞",
     "adrgCode": "FR5",
     "conditions": [
       "ADRG_ONLY"
     ]
   },
   {
-    "drgCode": "FT19",
-    "drgName": "心肌病",
+    "drgCode": "FT11",
+    "drgName": "心肌病,伴严重合并症或并发症",
     "adrgCode": "FT1",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_MCC"
+    ]
+  },
+  {
+    "drgCode": "FT15",
+    "drgName": "心肌病,不伴严重合并症或并发症",
+    "adrgCode": "FT1",
+    "conditions": [
+      "NO_CC"
     ]
   },
   {
@@ -2197,7 +2270,7 @@
   },
   {
     "drgCode": "FT31",
-    "drgName": "瓣膜疾病，伴严重合并症或并发症",
+    "drgName": "瓣膜疾病,伴严重合并症或并发症",
     "adrgCode": "FT3",
     "conditions": [
       "WITH_MCC"
@@ -2205,7 +2278,7 @@
   },
   {
     "drgCode": "FT35",
-    "drgName": "瓣膜疾病，不伴严重合并症或并发症",
+    "drgName": "瓣膜疾病,不伴严重合并症或并发症",
     "adrgCode": "FT3",
     "conditions": [
       "NO_CC"
@@ -2213,7 +2286,7 @@
   },
   {
     "drgCode": "FT43",
-    "drgName": "心包疾病，伴合并症或并发症",
+    "drgName": "心包疾病,伴合并症或并发症",
     "adrgCode": "FT4",
     "conditions": [
       "WITH_CC"
@@ -2221,7 +2294,7 @@
   },
   {
     "drgCode": "FT45",
-    "drgName": "心包疾病，不伴合并症或并发症",
+    "drgName": "心包疾病,不伴合并症或并发症",
     "adrgCode": "FT4",
     "conditions": [
       "NO_CC"
@@ -2229,7 +2302,7 @@
   },
   {
     "drgCode": "FU11",
-    "drgName": "严重心律失常及心脏停搏，伴严重合并症或并发症",
+    "drgName": "严重心律失常及心脏停搏,伴严重合并症或并发症",
     "adrgCode": "FU1",
     "conditions": [
       "WITH_MCC"
@@ -2237,7 +2310,7 @@
   },
   {
     "drgCode": "FU13",
-    "drgName": "严重心律失常及心脏停搏，伴一般合并症或并发症",
+    "drgName": "严重心律失常及心脏停搏,伴一般合并症或并发症",
     "adrgCode": "FU1",
     "conditions": [
       "WITH_CC"
@@ -2245,7 +2318,7 @@
   },
   {
     "drgCode": "FU1G",
-    "drgName": "严重心律失常及心脏停搏，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "严重心律失常及心脏停搏,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "FU1",
     "conditions": [
       "AGE_GE_70",
@@ -2254,7 +2327,7 @@
   },
   {
     "drgCode": "FU15",
-    "drgName": "严重心律失常及心脏停搏，不伴合并症或并发症",
+    "drgName": "严重心律失常及心脏停搏,不伴合并症或并发症",
     "adrgCode": "FU1",
     "conditions": [
       "NO_CC"
@@ -2262,7 +2335,7 @@
   },
   {
     "drgCode": "FU2H",
-    "drgName": "心律失常及传导障碍，大于等于 70 岁",
+    "drgName": "心律失常及传导障碍,大于等于70岁",
     "adrgCode": "FU2",
     "conditions": [
       "AGE_GE_70"
@@ -2294,7 +2367,7 @@
   },
   {
     "drgCode": "FV39",
-    "drgName": "晕厥及/或虚脱",
+    "drgName": "晕厥及／或虚脱",
     "adrgCode": "FV3",
     "conditions": [
       "ADRG_ONLY"
@@ -2310,7 +2383,7 @@
   },
   {
     "drgCode": "FW23",
-    "drgName": "静脉疾病，伴合并症或并发症",
+    "drgName": "静脉疾病,伴合并症或并发症",
     "adrgCode": "FW2",
     "conditions": [
       "WITH_CC"
@@ -2318,23 +2391,23 @@
   },
   {
     "drgCode": "FW25",
-    "drgName": "静脉疾病，不伴合并症或并发症",
+    "drgName": "静脉疾病,不伴合并症或并发症",
     "adrgCode": "FW2",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "FZ13",
-    "drgName": "其他循环系统疾病，伴合并症或并发症",
+    "drgCode": "FZ11",
+    "drgName": "其他循环系统疾病,伴严重合并症或并发症",
     "adrgCode": "FZ1",
     "conditions": [
-      "WITH_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "FZ15",
-    "drgName": "其他循环系统疾病，不伴合并症或并发症",
+    "drgName": "其他循环系统疾病,不伴严重合并症或并发症",
     "adrgCode": "FZ1",
     "conditions": [
       "NO_CC"
@@ -2358,7 +2431,7 @@
   },
   {
     "drgCode": "GB31",
-    "drgName": "胃、十二指肠大手术，伴严重合并症或并发症",
+    "drgName": "胃、十二指肠大手术,伴严重合并症或并发症",
     "adrgCode": "GB3",
     "conditions": [
       "WITH_MCC"
@@ -2366,7 +2439,7 @@
   },
   {
     "drgCode": "GB35",
-    "drgName": "胃、十二指肠大手术，不伴严重合并症或并发症",
+    "drgName": "胃、十二指肠大手术,不伴严重合并症或并发症",
     "adrgCode": "GB3",
     "conditions": [
       "NO_CC"
@@ -2374,10 +2447,10 @@
   },
   {
     "drgCode": "GB40",
-    "drgName": "小肠、大肠（含直肠）的大手术，机器人辅助手术",
+    "drgName": "小肠、大肠（含直肠）的大手术,机器人辅助手术",
     "adrgCode": "GB4",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -2398,7 +2471,7 @@
   },
   {
     "drgCode": "GC21",
-    "drgName": "胃、十二指肠其他手术，伴严重合并症或并发症",
+    "drgName": "胃、十二指肠其他手术,伴严重合并症或并发症",
     "adrgCode": "GC2",
     "conditions": [
       "WITH_MCC"
@@ -2406,7 +2479,7 @@
   },
   {
     "drgCode": "GC2G",
-    "drgName": "胃、十二指肠其他手术，不伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "胃、十二指肠其他手术,不伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "GC2",
     "conditions": [
       "AGE_GE_70",
@@ -2415,7 +2488,7 @@
   },
   {
     "drgCode": "GC25",
-    "drgName": "胃、十二指肠其他手术，不伴严重合并症或并发症",
+    "drgName": "胃、十二指肠其他手术,不伴严重合并症或并发症",
     "adrgCode": "GC2",
     "conditions": [
       "NO_CC"
@@ -2423,32 +2496,15 @@
   },
   {
     "drgCode": "GC31",
-    "drgName": "小肠、大肠（含直肠）的其他手术，伴严重合并症或并发症",
+    "drgName": "小肠、大肠（含直肠）的其他手术,伴严重合并症或并发症",
     "adrgCode": "GC3",
     "conditions": [
       "WITH_MCC"
     ]
   },
   {
-    "drgCode": "GC33",
-    "drgName": "小肠、大肠（含直肠）的其他手术，伴一般合并症或并发症",
-    "adrgCode": "GC3",
-    "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "GC3G",
-    "drgName": "小肠、大肠（含直肠）的其他手术，不伴合并症或并发症，大于等于 70 岁",
-    "adrgCode": "GC3",
-    "conditions": [
-      "AGE_GE_70",
-      "NO_CC"
-    ]
-  },
-  {
     "drgCode": "GC35",
-    "drgName": "小肠、大肠（含直肠）的其他手术，不伴合并症或并发症",
+    "drgName": "小肠、大肠（含直肠）的其他手术,不伴严重合并症或并发症",
     "adrgCode": "GC3",
     "conditions": [
       "NO_CC"
@@ -2456,7 +2512,7 @@
   },
   {
     "drgCode": "GD13",
-    "drgName": "腹膜后肿瘤手术，伴合并症或并发症",
+    "drgName": "腹膜后肿瘤手术,伴合并症或并发症",
     "adrgCode": "GD1",
     "conditions": [
       "WITH_CC"
@@ -2464,7 +2520,7 @@
   },
   {
     "drgCode": "GD15",
-    "drgName": "腹膜后肿瘤手术，不伴合并症或并发症",
+    "drgName": "腹膜后肿瘤手术,不伴合并症或并发症",
     "adrgCode": "GD1",
     "conditions": [
       "NO_CC"
@@ -2472,10 +2528,10 @@
   },
   {
     "drgCode": "GE1D",
-    "drgName": "伴穿孔、化脓、坏疽等阑尾切除术，小于 6 岁",
+    "drgName": "伴穿孔、化脓、坏疽等阑尾切除术,小于等于6岁",
     "adrgCode": "GE1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -2504,7 +2560,7 @@
   },
   {
     "drgCode": "GF23",
-    "drgName": "腹壁疝及脐疝手术，伴合并症或并发症",
+    "drgName": "腹壁疝及脐疝手术,伴合并症或并发症",
     "adrgCode": "GF2",
     "conditions": [
       "WITH_CC"
@@ -2512,7 +2568,7 @@
   },
   {
     "drgCode": "GF2G",
-    "drgName": "腹壁疝及脐疝手术，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "腹壁疝及脐疝手术,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "GF2",
     "conditions": [
       "AGE_GE_70",
@@ -2521,7 +2577,7 @@
   },
   {
     "drgCode": "GF25",
-    "drgName": "腹壁疝及脐疝手术，不伴合并症或并发症",
+    "drgName": "腹壁疝及脐疝手术,不伴合并症或并发症",
     "adrgCode": "GF2",
     "conditions": [
       "NO_CC"
@@ -2529,7 +2585,7 @@
   },
   {
     "drgCode": "GF3H",
-    "drgName": "双侧腹股沟疝及股疝手术，大于等于 70 岁",
+    "drgName": "双侧腹股沟疝及股疝手术,大于等于70岁",
     "adrgCode": "GF3",
     "conditions": [
       "AGE_GE_70"
@@ -2544,19 +2600,11 @@
     ]
   },
   {
-    "drgCode": "GF43",
-    "drgName": "单侧腹股沟疝及股疝手术，伴合并症或并发症",
+    "drgCode": "GF49",
+    "drgName": "单侧腹股沟疝及股疝手术",
     "adrgCode": "GF4",
     "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "GF45",
-    "drgName": "单侧腹股沟疝及股疝手术，不伴合并症或并发症",
-    "adrgCode": "GF4",
-    "conditions": [
-      "NO_CC"
+      "ADRG_ONLY"
     ]
   },
   {
@@ -2577,7 +2625,7 @@
   },
   {
     "drgCode": "GH13",
-    "drgName": "腹腔/盆腔内粘连松解术，伴合并症或并发症",
+    "drgName": "腹腔／盆腔内粘连松解术,伴合并症或并发症",
     "adrgCode": "GH1",
     "conditions": [
       "WITH_CC"
@@ -2585,23 +2633,15 @@
   },
   {
     "drgCode": "GH15",
-    "drgName": "腹腔/盆腔内粘连松解术，不伴合并症或并发症",
+    "drgName": "腹腔／盆腔内粘连松解术,不伴合并症或并发症",
     "adrgCode": "GH1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "GJ11",
-    "drgName": "消化系统其他手术，伴严重合并症或并发症",
-    "adrgCode": "GJ1",
-    "conditions": [
-      "WITH_MCC"
-    ]
-  },
-  {
     "drgCode": "GJ13",
-    "drgName": "消化系统其他手术，伴一般合并症或并发症",
+    "drgName": "消化系统其他手术,伴合并症或并发症",
     "adrgCode": "GJ1",
     "conditions": [
       "WITH_CC"
@@ -2609,7 +2649,7 @@
   },
   {
     "drgCode": "GJ15",
-    "drgName": "消化系统其他手术，不伴合并症或并发症",
+    "drgName": "消化系统其他手术,不伴合并症或并发症",
     "adrgCode": "GJ1",
     "conditions": [
       "NO_CC"
@@ -2625,7 +2665,7 @@
   },
   {
     "drgCode": "GK2F",
-    "drgName": "胃镜治疗操作，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "胃镜治疗操作,伴合并症或并发症,大于等于70岁",
     "adrgCode": "GK2",
     "conditions": [
       "AGE_GE_70",
@@ -2634,7 +2674,7 @@
   },
   {
     "drgCode": "GK23",
-    "drgName": "胃镜治疗操作，伴合并症或并发症",
+    "drgName": "胃镜治疗操作,伴合并症或并发症",
     "adrgCode": "GK2",
     "conditions": [
       "WITH_CC"
@@ -2642,31 +2682,31 @@
   },
   {
     "drgCode": "GK25",
-    "drgName": "胃镜治疗操作，不伴合并症或并发症",
+    "drgName": "胃镜治疗操作,不伴合并症或并发症",
     "adrgCode": "GK2",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "GK33",
-    "drgName": "结肠镜治疗操作，伴合并症或并发症",
+    "drgCode": "GK39",
+    "drgName": "结肠镜治疗操作",
     "adrgCode": "GK3",
     "conditions": [
-      "WITH_CC"
+      "ADRG_ONLY"
     ]
   },
   {
-    "drgCode": "GK35",
-    "drgName": "结肠镜治疗操作，不伴合并症或并发症",
-    "adrgCode": "GK3",
+    "drgCode": "GR11",
+    "drgName": "消化系统恶性肿瘤,伴严重合并症或并发症",
+    "adrgCode": "GR1",
     "conditions": [
-      "NO_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "GR13",
-    "drgName": "消化系统恶性肿瘤，伴合并症或并发症",
+    "drgName": "消化系统恶性肿瘤,伴一般合并症或并发症",
     "adrgCode": "GR1",
     "conditions": [
       "WITH_CC"
@@ -2674,7 +2714,7 @@
   },
   {
     "drgCode": "GR15",
-    "drgName": "消化系统恶性肿瘤，不伴合并症或并发症",
+    "drgName": "消化系统恶性肿瘤,不伴合并症或并发症",
     "adrgCode": "GR1",
     "conditions": [
       "NO_CC"
@@ -2682,7 +2722,7 @@
   },
   {
     "drgCode": "GS11",
-    "drgName": "胃肠出血，伴严重合并症或并发症",
+    "drgName": "胃肠出血,伴严重合并症或并发症",
     "adrgCode": "GS1",
     "conditions": [
       "WITH_MCC"
@@ -2690,7 +2730,7 @@
   },
   {
     "drgCode": "GS13",
-    "drgName": "胃肠出血，伴一般合并症或并发症",
+    "drgName": "胃肠出血,伴一般合并症或并发症",
     "adrgCode": "GS1",
     "conditions": [
       "WITH_CC"
@@ -2698,7 +2738,7 @@
   },
   {
     "drgCode": "GS15",
-    "drgName": "胃肠出血，不伴合并症或并发症",
+    "drgName": "胃肠出血,不伴合并症或并发症",
     "adrgCode": "GS1",
     "conditions": [
       "NO_CC"
@@ -2714,7 +2754,7 @@
   },
   {
     "drgCode": "GU11",
-    "drgName": "消化道溃疡伴穿孔，伴严重合并症或并发症",
+    "drgName": "消化道溃疡伴穿孔,伴严重合并症或并发症",
     "adrgCode": "GU1",
     "conditions": [
       "WITH_MCC"
@@ -2722,7 +2762,7 @@
   },
   {
     "drgCode": "GU13",
-    "drgName": "消化道溃疡伴穿孔，伴一般合并症或并发症",
+    "drgName": "消化道溃疡伴穿孔,伴一般合并症或并发症",
     "adrgCode": "GU1",
     "conditions": [
       "WITH_CC"
@@ -2730,15 +2770,23 @@
   },
   {
     "drgCode": "GU15",
-    "drgName": "消化道溃疡伴穿孔，不伴合并症或并发症",
+    "drgName": "消化道溃疡伴穿孔,不伴合并症或并发症",
     "adrgCode": "GU1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "GU21",
+    "drgName": "其他消化道溃疡,伴严重合并症或并发症",
+    "adrgCode": "GU2",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "GU23",
-    "drgName": "其他消化道溃疡，伴合并症或并发症",
+    "drgName": "其他消化道溃疡,伴一般合并症或并发症",
     "adrgCode": "GU2",
     "conditions": [
       "WITH_CC"
@@ -2746,7 +2794,7 @@
   },
   {
     "drgCode": "GU25",
-    "drgName": "其他消化道溃疡，不伴合并症或并发症",
+    "drgName": "其他消化道溃疡,不伴合并症或并发症",
     "adrgCode": "GU2",
     "conditions": [
       "NO_CC"
@@ -2754,7 +2802,7 @@
   },
   {
     "drgCode": "GV13",
-    "drgName": "消化道梗阻或腹痛，伴合并症或并发症",
+    "drgName": "消化道梗阻或腹痛,伴合并症或并发症",
     "adrgCode": "GV1",
     "conditions": [
       "WITH_CC"
@@ -2762,7 +2810,7 @@
   },
   {
     "drgCode": "GV15",
-    "drgName": "消化道梗阻或腹痛，不伴合并症或并发症",
+    "drgName": "消化道梗阻或腹痛,不伴合并症或并发症",
     "adrgCode": "GV1",
     "conditions": [
       "NO_CC"
@@ -2786,7 +2834,7 @@
   },
   {
     "drgCode": "HB13",
-    "drgName": "胰切除和/或分流手术，伴合并症或并发症",
+    "drgName": "胰切除和／或分流手术,伴合并症或并发症",
     "adrgCode": "HB1",
     "conditions": [
       "WITH_CC"
@@ -2794,7 +2842,7 @@
   },
   {
     "drgCode": "HB15",
-    "drgName": "胰切除和/或分流手术，不伴合并症或并发症",
+    "drgName": "胰切除和／或分流手术,不伴合并症或并发症",
     "adrgCode": "HB1",
     "conditions": [
       "NO_CC"
@@ -2802,7 +2850,7 @@
   },
   {
     "drgCode": "HB23",
-    "drgName": "肝切除和/或分流手术，伴合并症或并发症",
+    "drgName": "肝切除和／或分流手术,伴合并症或并发症",
     "adrgCode": "HB2",
     "conditions": [
       "WITH_CC"
@@ -2810,7 +2858,7 @@
   },
   {
     "drgCode": "HB25",
-    "drgName": "肝切除和/或分流手术，不伴合并症或并发症",
+    "drgName": "肝切除和／或分流手术,不伴合并症或并发症",
     "adrgCode": "HB2",
     "conditions": [
       "NO_CC"
@@ -2818,7 +2866,7 @@
   },
   {
     "drgCode": "HC13",
-    "drgName": "胆总管、胆囊联合手术，伴合并症或并发症",
+    "drgName": "胆总管、胆囊联合手术,伴合并症或并发症",
     "adrgCode": "HC1",
     "conditions": [
       "WITH_CC"
@@ -2826,7 +2874,7 @@
   },
   {
     "drgCode": "HC15",
-    "drgName": "胆总管、胆囊联合手术，不伴合并症或并发症",
+    "drgName": "胆总管、胆囊联合手术,不伴合并症或并发症",
     "adrgCode": "HC1",
     "conditions": [
       "NO_CC"
@@ -2834,7 +2882,7 @@
   },
   {
     "drgCode": "HC23",
-    "drgName": "胆总管手术，伴合并症或并发症",
+    "drgName": "胆总管手术,伴合并症或并发症",
     "adrgCode": "HC2",
     "conditions": [
       "WITH_CC"
@@ -2842,7 +2890,7 @@
   },
   {
     "drgCode": "HC25",
-    "drgName": "胆总管手术，不伴合并症或并发症",
+    "drgName": "胆总管手术,不伴合并症或并发症",
     "adrgCode": "HC2",
     "conditions": [
       "NO_CC"
@@ -2850,7 +2898,7 @@
   },
   {
     "drgCode": "HC33",
-    "drgName": "除胆囊切除术以外的胆道手术，伴合并症或并发症",
+    "drgName": "除胆囊切除术以外的胆道手术,伴合并症或并发症",
     "adrgCode": "HC3",
     "conditions": [
       "WITH_CC"
@@ -2858,7 +2906,7 @@
   },
   {
     "drgCode": "HC35",
-    "drgName": "除胆囊切除术以外的胆道手术，不伴合并症或并发症",
+    "drgName": "除胆囊切除术以外的胆道手术,不伴合并症或并发症",
     "adrgCode": "HC3",
     "conditions": [
       "NO_CC"
@@ -2866,7 +2914,7 @@
   },
   {
     "drgCode": "HC4F",
-    "drgName": "胆囊切除手术，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "胆囊切除手术,伴合并症或并发症,大于等于70岁",
     "adrgCode": "HC4",
     "conditions": [
       "AGE_GE_70",
@@ -2875,7 +2923,7 @@
   },
   {
     "drgCode": "HC43",
-    "drgName": "胆囊切除手术，伴合并症或并发症",
+    "drgName": "胆囊切除手术,伴合并症或并发症",
     "adrgCode": "HC4",
     "conditions": [
       "WITH_CC"
@@ -2883,7 +2931,7 @@
   },
   {
     "drgCode": "HC45",
-    "drgName": "胆囊切除手术，不伴合并症或并发症",
+    "drgName": "胆囊切除手术,不伴合并症或并发症",
     "adrgCode": "HC4",
     "conditions": [
       "NO_CC"
@@ -2891,7 +2939,7 @@
   },
   {
     "drgCode": "HJ11",
-    "drgName": "与肝、胆或胰腺疾病有关的其他手术，伴严重合并症或并发症",
+    "drgName": "与肝、胆或胰腺疾病有关的其他手术,伴严重合并症或并发症",
     "adrgCode": "HJ1",
     "conditions": [
       "WITH_MCC"
@@ -2899,7 +2947,7 @@
   },
   {
     "drgCode": "HJ13",
-    "drgName": "与肝、胆或胰腺疾病有关的其他手术，伴一般合并症或并发症",
+    "drgName": "与肝、胆或胰腺疾病有关的其他手术,伴一般合并症或并发症",
     "adrgCode": "HJ1",
     "conditions": [
       "WITH_CC"
@@ -2907,7 +2955,7 @@
   },
   {
     "drgCode": "HJ15",
-    "drgName": "与肝、胆或胰腺疾病有关的其他手术，不伴合并症或并发症",
+    "drgName": "与肝、胆或胰腺疾病有关的其他手术,不伴合并症或并发症",
     "adrgCode": "HJ1",
     "conditions": [
       "NO_CC"
@@ -2915,7 +2963,7 @@
   },
   {
     "drgCode": "HK11",
-    "drgName": "食管曲张静脉出血的治疗性内镜操作，伴严重合并症或并发症",
+    "drgName": "食管曲张静脉出血的治疗性内镜操作,伴严重合并症或并发症",
     "adrgCode": "HK1",
     "conditions": [
       "WITH_MCC"
@@ -2923,7 +2971,7 @@
   },
   {
     "drgCode": "HK15",
-    "drgName": "食管曲张静脉出血的治疗性内镜操作，不伴严重合并症或并发症",
+    "drgName": "食管曲张静脉出血的治疗性内镜操作,不伴严重合并症或并发症",
     "adrgCode": "HK1",
     "conditions": [
       "NO_CC"
@@ -2931,7 +2979,7 @@
   },
   {
     "drgCode": "HL13",
-    "drgName": "肝胆胰系统的治疗性操作，伴合并症或并发症",
+    "drgName": "肝胆胰系统的治疗性操作,伴合并症或并发症",
     "adrgCode": "HL1",
     "conditions": [
       "WITH_CC"
@@ -2939,7 +2987,7 @@
   },
   {
     "drgCode": "HL15",
-    "drgName": "肝胆胰系统的治疗性操作，不伴合并症或并发症",
+    "drgName": "肝胆胰系统的治疗性操作,不伴合并症或并发症",
     "adrgCode": "HL1",
     "conditions": [
       "NO_CC"
@@ -2947,7 +2995,7 @@
   },
   {
     "drgCode": "HL23",
-    "drgName": "肝胆胰系统的诊断性操作，伴合并症或并发症",
+    "drgName": "肝胆胰系统的诊断性操作,伴合并症或并发症",
     "adrgCode": "HL2",
     "conditions": [
       "WITH_CC"
@@ -2955,7 +3003,7 @@
   },
   {
     "drgCode": "HL25",
-    "drgName": "肝胆胰系统的诊断性操作，不伴合并症或并发症",
+    "drgName": "肝胆胰系统的诊断性操作,不伴合并症或并发症",
     "adrgCode": "HL2",
     "conditions": [
       "NO_CC"
@@ -2963,7 +3011,7 @@
   },
   {
     "drgCode": "HR13",
-    "drgName": "肝胆胰系统恶性肿瘤，伴合并症或并发症",
+    "drgName": "肝胆胰系统恶性肿瘤,伴合并症或并发症",
     "adrgCode": "HR1",
     "conditions": [
       "WITH_CC"
@@ -2971,7 +3019,7 @@
   },
   {
     "drgCode": "HR15",
-    "drgName": "肝胆胰系统恶性肿瘤，不伴合并症或并发症",
+    "drgName": "肝胆胰系统恶性肿瘤,不伴合并症或并发症",
     "adrgCode": "HR1",
     "conditions": [
       "NO_CC"
@@ -2979,7 +3027,7 @@
   },
   {
     "drgCode": "HS11",
-    "drgName": "肝功能衰竭，伴严重合并症或并发症",
+    "drgName": "肝功能衰竭,伴严重合并症或并发症",
     "adrgCode": "HS1",
     "conditions": [
       "WITH_MCC"
@@ -2987,7 +3035,7 @@
   },
   {
     "drgCode": "HS13",
-    "drgName": "肝功能衰竭，伴一般合并症或并发症",
+    "drgName": "肝功能衰竭,伴一般合并症或并发症",
     "adrgCode": "HS1",
     "conditions": [
       "WITH_CC"
@@ -2995,23 +3043,15 @@
   },
   {
     "drgCode": "HS15",
-    "drgName": "肝功能衰竭，不伴合并症或并发症",
+    "drgName": "肝功能衰竭,不伴合并症或并发症",
     "adrgCode": "HS1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "HS21",
-    "drgName": "肝硬化，伴严重合并症或并发症",
-    "adrgCode": "HS2",
-    "conditions": [
-      "WITH_MCC"
-    ]
-  },
-  {
     "drgCode": "HS23",
-    "drgName": "肝硬化，伴一般合并症或并发症",
+    "drgName": "肝硬化,伴合并症或并发症",
     "adrgCode": "HS2",
     "conditions": [
       "WITH_CC"
@@ -3019,7 +3059,7 @@
   },
   {
     "drgCode": "HS25",
-    "drgName": "肝硬化，不伴合并症或并发症",
+    "drgName": "肝硬化,不伴合并症或并发症",
     "adrgCode": "HS2",
     "conditions": [
       "NO_CC"
@@ -3027,7 +3067,7 @@
   },
   {
     "drgCode": "HS3H",
-    "drgName": "病毒性肝炎，大于等于 70 岁",
+    "drgName": "病毒性肝炎,大于等于70岁",
     "adrgCode": "HS3",
     "conditions": [
       "AGE_GE_70"
@@ -3043,7 +3083,7 @@
   },
   {
     "drgCode": "HT11",
-    "drgName": "重症胰腺炎，伴严重合并症或并发症",
+    "drgName": "重症胰腺炎,伴严重合并症或并发症",
     "adrgCode": "HT1",
     "conditions": [
       "WITH_MCC"
@@ -3051,7 +3091,7 @@
   },
   {
     "drgCode": "HT13",
-    "drgName": "重症胰腺炎，伴一般合并症或并发症",
+    "drgName": "重症胰腺炎,伴一般合并症或并发症",
     "adrgCode": "HT1",
     "conditions": [
       "WITH_CC"
@@ -3059,7 +3099,7 @@
   },
   {
     "drgCode": "HT15",
-    "drgName": "重症胰腺炎，不伴合并症或并发症",
+    "drgName": "重症胰腺炎,不伴合并症或并发症",
     "adrgCode": "HT1",
     "conditions": [
       "NO_CC"
@@ -3067,7 +3107,7 @@
   },
   {
     "drgCode": "HT23",
-    "drgName": "急性胰腺炎，伴合并症或并发症",
+    "drgName": "急性胰腺炎,伴合并症或并发症",
     "adrgCode": "HT2",
     "conditions": [
       "WITH_CC"
@@ -3075,7 +3115,7 @@
   },
   {
     "drgCode": "HT2G",
-    "drgName": "急性胰腺炎，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "急性胰腺炎,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "HT2",
     "conditions": [
       "AGE_GE_70",
@@ -3084,7 +3124,7 @@
   },
   {
     "drgCode": "HT25",
-    "drgName": "急性胰腺炎，不伴合并症或并发症",
+    "drgName": "急性胰腺炎,不伴合并症或并发症",
     "adrgCode": "HT2",
     "conditions": [
       "NO_CC"
@@ -3092,7 +3132,7 @@
   },
   {
     "drgCode": "HU13",
-    "drgName": "急性胆道疾病，伴合并症或并发症",
+    "drgName": "急性胆道疾病,伴合并症或并发症",
     "adrgCode": "HU1",
     "conditions": [
       "WITH_CC"
@@ -3100,7 +3140,7 @@
   },
   {
     "drgCode": "HU15",
-    "drgName": "急性胆道疾病，不伴合并症或并发症",
+    "drgName": "急性胆道疾病,不伴合并症或并发症",
     "adrgCode": "HU1",
     "conditions": [
       "NO_CC"
@@ -3108,7 +3148,7 @@
   },
   {
     "drgCode": "HZ13",
-    "drgName": "其他肝脏疾病，伴合并症或并发症",
+    "drgName": "其他肝脏疾病,伴合并症或并发症",
     "adrgCode": "HZ1",
     "conditions": [
       "WITH_CC"
@@ -3116,7 +3156,7 @@
   },
   {
     "drgCode": "HZ15",
-    "drgName": "其他肝脏疾病，不伴合并症或并发症",
+    "drgName": "其他肝脏疾病,不伴合并症或并发症",
     "adrgCode": "HZ1",
     "conditions": [
       "NO_CC"
@@ -3124,7 +3164,7 @@
   },
   {
     "drgCode": "HZ23",
-    "drgName": "胆道其他疾病，伴合并症或并发症",
+    "drgName": "胆道其他疾病,伴合并症或并发症",
     "adrgCode": "HZ2",
     "conditions": [
       "WITH_CC"
@@ -3132,7 +3172,7 @@
   },
   {
     "drgCode": "HZ25",
-    "drgName": "胆道其他疾病，不伴合并症或并发症",
+    "drgName": "胆道其他疾病,不伴合并症或并发症",
     "adrgCode": "HZ2",
     "conditions": [
       "NO_CC"
@@ -3140,7 +3180,7 @@
   },
   {
     "drgCode": "HZ33",
-    "drgName": "胰腺其他疾病，伴合并症或并发症",
+    "drgName": "胰腺其他疾病,伴合并症或并发症",
     "adrgCode": "HZ3",
     "conditions": [
       "WITH_CC"
@@ -3148,7 +3188,7 @@
   },
   {
     "drgCode": "HZ35",
-    "drgName": "胰腺其他疾病，不伴合并症或并发症",
+    "drgName": "胰腺其他疾病,不伴合并症或并发症",
     "adrgCode": "HZ3",
     "conditions": [
       "NO_CC"
@@ -3164,7 +3204,7 @@
   },
   {
     "drgCode": "IA23",
-    "drgName": "其他骨与软组织肿瘤手术，伴合并症或并发症",
+    "drgName": "其他骨与软组织肿瘤手术,伴合并症或并发症",
     "adrgCode": "IA2",
     "conditions": [
       "WITH_CC"
@@ -3172,7 +3212,7 @@
   },
   {
     "drgCode": "IA25",
-    "drgName": "其他骨与软组织肿瘤手术，不伴合并症或并发症",
+    "drgName": "其他骨与软组织肿瘤手术,不伴合并症或并发症",
     "adrgCode": "IA2",
     "conditions": [
       "NO_CC"
@@ -3180,7 +3220,7 @@
   },
   {
     "drgCode": "IB19",
-    "drgName": "复杂脊柱疾病或 3 节段及以上脊柱融合手术或翻修手术",
+    "drgName": "复杂脊柱疾病或3节段及以上脊柱融合手术或翻修手术",
     "adrgCode": "IB1",
     "conditions": [
       "ADRG_ONLY"
@@ -3188,7 +3228,7 @@
   },
   {
     "drgCode": "IB29",
-    "drgName": "脊柱 2 节段及以下脊柱融合术",
+    "drgName": "脊柱2节段及以下脊柱融合术",
     "adrgCode": "IB2",
     "conditions": [
       "ADRG_ONLY"
@@ -3204,10 +3244,10 @@
   },
   {
     "drgCode": "IB40",
-    "drgName": "与脊柱有关的其他手术，机器人辅助手术",
+    "drgName": "与脊柱有关的其他手术,机器人辅助手术",
     "adrgCode": "IB4",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -3220,7 +3260,7 @@
   },
   {
     "drgCode": "IC19",
-    "drgName": "髋、肩、膝、肘和踝关节假体翻修/修正手术",
+    "drgName": "髋、肩、膝、肘和踝关节假体翻修／修正手术",
     "adrgCode": "IC1",
     "conditions": [
       "ADRG_ONLY"
@@ -3236,10 +3276,10 @@
   },
   {
     "drgCode": "IC30",
-    "drgName": "其他髋、肩、膝、肘和踝关节置换术，机器人辅助手术",
+    "drgName": "其他髋、肩、膝、肘和踝关节置换术,机器人辅助手术",
     "adrgCode": "IC3",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -3252,7 +3292,7 @@
   },
   {
     "drgCode": "IC49",
-    "drgName": "除置换/翻修外的髋、肩、膝、肘、踝和足部关节的修复、重建手术",
+    "drgName": "除置换／翻修外的髋、肩、膝、肘、踝和足部关节的修复、重建手术",
     "adrgCode": "IC4",
     "conditions": [
       "ADRG_ONLY"
@@ -3260,7 +3300,7 @@
   },
   {
     "drgCode": "IC59",
-    "drgName": "除置换/翻修外的髋、肩、膝、肘、踝和足部关节其他手术",
+    "drgName": "除置换／翻修外的髋、肩、膝、肘、踝和足部关节其他手术",
     "adrgCode": "IC5",
     "conditions": [
       "ADRG_ONLY"
@@ -3284,23 +3324,23 @@
   },
   {
     "drgCode": "IE20",
-    "drgName": "股骨手术，机器人辅助手术",
+    "drgName": "股骨手术,机器人辅助手术",
     "adrgCode": "IE2",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
-    "drgCode": "IE23",
-    "drgName": "股骨手术，伴合并症或并发症",
+    "drgCode": "IE21",
+    "drgName": "股骨手术,伴严重合并症或并发症",
     "adrgCode": "IE2",
     "conditions": [
-      "WITH_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "IE25",
-    "drgName": "股骨手术，不伴合并症或并发症",
+    "drgName": "股骨手术,不伴严重合并症或并发症",
     "adrgCode": "IE2",
     "conditions": [
       "NO_CC"
@@ -3308,7 +3348,7 @@
   },
   {
     "drgCode": "IE33",
-    "drgName": "除股骨以外的下肢骨手术，伴合并症或并发症",
+    "drgName": "除股骨以外的下肢骨手术,伴合并症或并发症",
     "adrgCode": "IE3",
     "conditions": [
       "WITH_CC"
@@ -3316,7 +3356,7 @@
   },
   {
     "drgCode": "IE35",
-    "drgName": "除股骨以外的下肢骨手术，不伴合并症或并发症",
+    "drgName": "除股骨以外的下肢骨手术,不伴合并症或并发症",
     "adrgCode": "IE3",
     "conditions": [
       "NO_CC"
@@ -3332,7 +3372,7 @@
   },
   {
     "drgCode": "IE5H",
-    "drgName": "上肢骨手术，大于等于 70 岁",
+    "drgName": "上肢骨手术,大于等于70岁",
     "adrgCode": "IE5",
     "conditions": [
       "AGE_GE_70"
@@ -3348,7 +3388,7 @@
   },
   {
     "drgCode": "IE69",
-    "drgName": "指/趾再植手术",
+    "drgName": "指／趾再植手术",
     "adrgCode": "IE6",
     "conditions": [
       "ADRG_ONLY"
@@ -3364,7 +3404,7 @@
   },
   {
     "drgCode": "IF19",
-    "drgName": "骨科固定装置去除/修正术",
+    "drgName": "骨科固定装置去除／修正术",
     "adrgCode": "IF1",
     "conditions": [
       "ADRG_ONLY"
@@ -3372,7 +3412,7 @@
   },
   {
     "drgCode": "IG13",
-    "drgName": "周围神经手术，伴合并症或并发症",
+    "drgName": "周围神经手术,伴合并症或并发症",
     "adrgCode": "IG1",
     "conditions": [
       "WITH_CC"
@@ -3380,31 +3420,23 @@
   },
   {
     "drgCode": "IG15",
-    "drgName": "周围神经手术，不伴合并症或并发症",
+    "drgName": "周围神经手术,不伴合并症或并发症",
     "adrgCode": "IG1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "IH13",
-    "drgName": "肌肉、肌腱手术，伴合并症或并发症",
+    "drgCode": "IH19",
+    "drgName": "肌肉、肌腱手术",
     "adrgCode": "IH1",
     "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "IH15",
-    "drgName": "肌肉、肌腱手术，不伴合并症或并发症",
-    "adrgCode": "IH1",
-    "conditions": [
-      "NO_CC"
+      "ADRG_ONLY"
     ]
   },
   {
     "drgCode": "IJ13",
-    "drgName": "骨骼肌肉系统的其他手术，伴合并症或并发症",
+    "drgName": "骨骼肌肉系统的其他手术,伴合并症或并发症",
     "adrgCode": "IJ1",
     "conditions": [
       "WITH_CC"
@@ -3412,7 +3444,7 @@
   },
   {
     "drgCode": "IJ15",
-    "drgName": "骨骼肌肉系统的其他手术，不伴合并症或并发症",
+    "drgName": "骨骼肌肉系统的其他手术,不伴合并症或并发症",
     "adrgCode": "IJ1",
     "conditions": [
       "NO_CC"
@@ -3420,7 +3452,7 @@
   },
   {
     "drgCode": "IN13",
-    "drgName": "骨骼肌肉系统早期康复治疗，伴合并症或并发症",
+    "drgName": "骨骼肌肉系统早期康复治疗,伴合并症或并发症",
     "adrgCode": "IN1",
     "conditions": [
       "WITH_CC"
@@ -3428,7 +3460,7 @@
   },
   {
     "drgCode": "IN15",
-    "drgName": "骨骼肌肉系统早期康复治疗，不伴合并症或并发症",
+    "drgName": "骨骼肌肉系统早期康复治疗,不伴合并症或并发症",
     "adrgCode": "IN1",
     "conditions": [
       "NO_CC"
@@ -3436,7 +3468,7 @@
   },
   {
     "drgCode": "IR1F",
-    "drgName": "骨盆骨折，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "骨盆骨折,伴合并症或并发症,大于等于70岁",
     "adrgCode": "IR1",
     "conditions": [
       "AGE_GE_70",
@@ -3445,7 +3477,7 @@
   },
   {
     "drgCode": "IR13",
-    "drgName": "骨盆骨折，伴合并症或并发症",
+    "drgName": "骨盆骨折,伴合并症或并发症",
     "adrgCode": "IR1",
     "conditions": [
       "WITH_CC"
@@ -3453,15 +3485,23 @@
   },
   {
     "drgCode": "IR15",
-    "drgName": "骨盆骨折，不伴合并症或并发症",
+    "drgName": "骨盆骨折,不伴合并症或并发症",
     "adrgCode": "IR1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "IR21",
+    "drgName": "股骨骨折,伴严重合并症或并发症",
+    "adrgCode": "IR2",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "IR23",
-    "drgName": "股骨骨折，伴合并症或并发症",
+    "drgName": "股骨骨折,伴一般合并症或并发症",
     "adrgCode": "IR2",
     "conditions": [
       "WITH_CC"
@@ -3469,7 +3509,7 @@
   },
   {
     "drgCode": "IR25",
-    "drgName": "股骨骨折，不伴合并症或并发症",
+    "drgName": "股骨骨折,不伴合并症或并发症",
     "adrgCode": "IR2",
     "conditions": [
       "NO_CC"
@@ -3509,15 +3549,24 @@
   },
   {
     "drgCode": "IT33",
-    "drgName": "系统性风湿免疫病，伴合并症或并发症",
+    "drgName": "系统性风湿免疫病,伴合并症或并发症",
     "adrgCode": "IT3",
     "conditions": [
       "WITH_CC"
     ]
   },
   {
+    "drgCode": "IT3G",
+    "drgName": "系统性风湿免疫病,不伴合并症或并发症,大于等于70岁",
+    "adrgCode": "IT3",
+    "conditions": [
+      "AGE_GE_70",
+      "NO_CC"
+    ]
+  },
+  {
     "drgCode": "IT35",
-    "drgName": "系统性风湿免疫病，不伴合并症或并发症",
+    "drgName": "系统性风湿免疫病,不伴合并症或并发症",
     "adrgCode": "IT3",
     "conditions": [
       "NO_CC"
@@ -3533,7 +3582,7 @@
   },
   {
     "drgCode": "IT53",
-    "drgName": "感染性关节炎，伴合并症或并发症",
+    "drgName": "感染性关节炎,伴合并症或并发症",
     "adrgCode": "IT5",
     "conditions": [
       "WITH_CC"
@@ -3541,7 +3590,7 @@
   },
   {
     "drgCode": "IT55",
-    "drgName": "感染性关节炎，不伴合并症或并发症",
+    "drgName": "感染性关节炎,不伴合并症或并发症",
     "adrgCode": "IT5",
     "conditions": [
       "NO_CC"
@@ -3564,16 +3613,16 @@
     ]
   },
   {
-    "drgCode": "IU31",
-    "drgName": "骨骼、肌肉、结缔组织恶性病损、病理性骨折，伴严重合并症或并发症",
+    "drgCode": "IU33",
+    "drgName": "骨骼、肌肉、结缔组织恶性病损、病理性骨折,伴合并症或并发症",
     "adrgCode": "IU3",
     "conditions": [
-      "WITH_MCC"
+      "WITH_CC"
     ]
   },
   {
     "drgCode": "IU35",
-    "drgName": "骨骼、肌肉、结缔组织恶性病损、病理性骨折，不伴严重合并症或并发症",
+    "drgName": "骨骼、肌肉、结缔组织恶性病损、病理性骨折,不伴合并症或并发症",
     "adrgCode": "IU3",
     "conditions": [
       "NO_CC"
@@ -3589,7 +3638,7 @@
   },
   {
     "drgCode": "IZ1F",
-    "drgName": "肌肉骨骼系统植入物/假体的康复照护，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "肌肉骨骼系统植入物／假体的康复照护,伴合并症或并发症,大于等于70岁",
     "adrgCode": "IZ1",
     "conditions": [
       "AGE_GE_70",
@@ -3598,7 +3647,7 @@
   },
   {
     "drgCode": "IZ13",
-    "drgName": "肌肉骨骼系统植入物/假体的康复照护，伴合并症或并发症",
+    "drgName": "肌肉骨骼系统植入物／假体的康复照护,伴合并症或并发症",
     "adrgCode": "IZ1",
     "conditions": [
       "WITH_CC"
@@ -3606,7 +3655,7 @@
   },
   {
     "drgCode": "IZ15",
-    "drgName": "肌肉骨骼系统植入物/假体的康复照护，不伴合并症或并发症",
+    "drgName": "肌肉骨骼系统植入物／假体的康复照护,不伴合并症或并发症",
     "adrgCode": "IZ1",
     "conditions": [
       "NO_CC"
@@ -3614,7 +3663,7 @@
   },
   {
     "drgCode": "IZ23",
-    "drgName": "骨骼、肌肉、肌腱、结缔组织的其他疾病，伴合并症或并发症",
+    "drgName": "骨骼、肌肉、肌腱、结缔组织的其他疾病,伴合并症或并发症",
     "adrgCode": "IZ2",
     "conditions": [
       "WITH_CC"
@@ -3622,7 +3671,7 @@
   },
   {
     "drgCode": "IZ25",
-    "drgName": "骨骼、肌肉、肌腱、结缔组织的其他疾病，不伴合并症或并发症",
+    "drgName": "骨骼、肌肉、肌腱、结缔组织的其他疾病,不伴合并症或并发症",
     "adrgCode": "IZ2",
     "conditions": [
       "NO_CC"
@@ -3654,7 +3703,7 @@
   },
   {
     "drgCode": "JB2H",
-    "drgName": "乳腺切除手术，大于等于 70 岁",
+    "drgName": "乳腺切除手术,大于等于70岁",
     "adrgCode": "JB2",
     "conditions": [
       "AGE_GE_70"
@@ -3686,7 +3735,7 @@
   },
   {
     "drgCode": "JD13",
-    "drgName": "皮肤移植手术，伴合并症或并发症",
+    "drgName": "皮肤移植手术,伴合并症或并发症",
     "adrgCode": "JD1",
     "conditions": [
       "WITH_CC"
@@ -3694,7 +3743,7 @@
   },
   {
     "drgCode": "JD1G",
-    "drgName": "皮肤移植手术，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "皮肤移植手术,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "JD1",
     "conditions": [
       "AGE_GE_70",
@@ -3703,7 +3752,7 @@
   },
   {
     "drgCode": "JD15",
-    "drgName": "皮肤移植手术，不伴合并症或并发症",
+    "drgName": "皮肤移植手术,不伴合并症或并发症",
     "adrgCode": "JD1",
     "conditions": [
       "NO_CC"
@@ -3711,7 +3760,7 @@
   },
   {
     "drgCode": "JD23",
-    "drgName": "皮肤清创手术，伴合并症或并发症",
+    "drgName": "皮肤清创手术,伴合并症或并发症",
     "adrgCode": "JD2",
     "conditions": [
       "WITH_CC"
@@ -3719,7 +3768,7 @@
   },
   {
     "drgCode": "JD2G",
-    "drgName": "皮肤清创手术，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "皮肤清创手术,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "JD2",
     "conditions": [
       "AGE_GE_70",
@@ -3728,7 +3777,7 @@
   },
   {
     "drgCode": "JD25",
-    "drgName": "皮肤清创手术，不伴合并症或并发症",
+    "drgName": "皮肤清创手术,不伴合并症或并发症",
     "adrgCode": "JD2",
     "conditions": [
       "NO_CC"
@@ -3736,10 +3785,10 @@
   },
   {
     "drgCode": "JJ1D",
-    "drgName": "皮肤、皮下组织的其他手术，小于 6 岁",
+    "drgName": "皮肤、皮下组织的其他手术,小于等于6岁",
     "adrgCode": "JJ1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -3768,7 +3817,7 @@
   },
   {
     "drgCode": "JS1F",
-    "drgName": "重大皮肤疾病，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "重大皮肤疾病,伴合并症或并发症,大于等于70岁",
     "adrgCode": "JS1",
     "conditions": [
       "AGE_GE_70",
@@ -3777,15 +3826,24 @@
   },
   {
     "drgCode": "JS13",
-    "drgName": "重大皮肤疾病，伴合并症或并发症",
+    "drgName": "重大皮肤疾病,伴合并症或并发症",
     "adrgCode": "JS1",
     "conditions": [
       "WITH_CC"
     ]
   },
   {
+    "drgCode": "JS1G",
+    "drgName": "重大皮肤疾病,不伴合并症或并发症,大于等于70岁",
+    "adrgCode": "JS1",
+    "conditions": [
+      "AGE_GE_70",
+      "NO_CC"
+    ]
+  },
+  {
     "drgCode": "JS15",
-    "drgName": "重大皮肤疾病，不伴合并症或并发症",
+    "drgName": "重大皮肤疾病,不伴合并症或并发症",
     "adrgCode": "JS1",
     "conditions": [
       "NO_CC"
@@ -3825,7 +3883,7 @@
   },
   {
     "drgCode": "JU13",
-    "drgName": "感染性皮肤病，伴合并症或并发症",
+    "drgName": "感染性皮肤病,伴合并症或并发症",
     "adrgCode": "JU1",
     "conditions": [
       "WITH_CC"
@@ -3833,7 +3891,7 @@
   },
   {
     "drgCode": "JU1G",
-    "drgName": "感染性皮肤病，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "感染性皮肤病,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "JU1",
     "conditions": [
       "AGE_GE_70",
@@ -3842,7 +3900,7 @@
   },
   {
     "drgCode": "JU15",
-    "drgName": "感染性皮肤病，不伴合并症或并发症",
+    "drgName": "感染性皮肤病,不伴合并症或并发症",
     "adrgCode": "JU1",
     "conditions": [
       "NO_CC"
@@ -3866,7 +3924,7 @@
   },
   {
     "drgCode": "JZ1F",
-    "drgName": "其他皮肤及乳腺疾病，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "其他皮肤及乳腺疾病,伴合并症或并发症,大于等于70岁",
     "adrgCode": "JZ1",
     "conditions": [
       "AGE_GE_70",
@@ -3875,7 +3933,7 @@
   },
   {
     "drgCode": "JZ13",
-    "drgName": "其他皮肤及乳腺疾病，伴合并症或并发症",
+    "drgName": "其他皮肤及乳腺疾病,伴合并症或并发症",
     "adrgCode": "JZ1",
     "conditions": [
       "WITH_CC"
@@ -3883,7 +3941,7 @@
   },
   {
     "drgCode": "JZ1G",
-    "drgName": "其他皮肤及乳腺疾病，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "其他皮肤及乳腺疾病,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "JZ1",
     "conditions": [
       "AGE_GE_70",
@@ -3892,7 +3950,7 @@
   },
   {
     "drgCode": "JZ15",
-    "drgName": "其他皮肤及乳腺疾病，不伴合并症或并发症",
+    "drgName": "其他皮肤及乳腺疾病,不伴合并症或并发症",
     "adrgCode": "JZ1",
     "conditions": [
       "NO_CC"
@@ -3948,7 +4006,7 @@
   },
   {
     "drgCode": "KJ11",
-    "drgName": "因内分泌、营养、代谢疾病的其他手术，伴严重合并症或并发症",
+    "drgName": "因内分泌、营养、代谢疾病的其他手术,伴严重合并症或并发症",
     "adrgCode": "KJ1",
     "conditions": [
       "WITH_MCC"
@@ -3956,7 +4014,7 @@
   },
   {
     "drgCode": "KJ13",
-    "drgName": "因内分泌、营养、代谢疾病的其他手术，伴一般合并症或并发症",
+    "drgName": "因内分泌、营养、代谢疾病的其他手术,伴一般合并症或并发症",
     "adrgCode": "KJ1",
     "conditions": [
       "WITH_CC"
@@ -3964,7 +4022,7 @@
   },
   {
     "drgCode": "KJ15",
-    "drgName": "因内分泌、营养、代谢疾病的其他手术，不伴合并症或并发症",
+    "drgName": "因内分泌、营养、代谢疾病的其他手术,不伴合并症或并发症",
     "adrgCode": "KJ1",
     "conditions": [
       "NO_CC"
@@ -3980,7 +4038,7 @@
   },
   {
     "drgCode": "KS11",
-    "drgName": "糖尿病合并急性并发症，伴严重合并症或并发症",
+    "drgName": "糖尿病合并急性并发症,伴严重合并症或并发症",
     "adrgCode": "KS1",
     "conditions": [
       "WITH_MCC"
@@ -3988,7 +4046,7 @@
   },
   {
     "drgCode": "KS15",
-    "drgName": "糖尿病合并急性并发症，不伴严重合并症或并发症",
+    "drgName": "糖尿病合并急性并发症,不伴严重合并症或并发症",
     "adrgCode": "KS1",
     "conditions": [
       "NO_CC"
@@ -3996,7 +4054,7 @@
   },
   {
     "drgCode": "KS23",
-    "drgName": "糖尿病性血管病变，伴合并症或并发症",
+    "drgName": "糖尿病性血管病变,伴合并症或并发症",
     "adrgCode": "KS2",
     "conditions": [
       "WITH_CC"
@@ -4004,7 +4062,7 @@
   },
   {
     "drgCode": "KS25",
-    "drgName": "糖尿病性血管病变，不伴合并症或并发症",
+    "drgName": "糖尿病性血管病变,不伴合并症或并发症",
     "adrgCode": "KS2",
     "conditions": [
       "NO_CC"
@@ -4019,24 +4077,24 @@
     ]
   },
   {
-    "drgCode": "KT13",
-    "drgName": "内分泌、营养、代谢疾病，伴合并症或并发症",
+    "drgCode": "KT19",
+    "drgName": "内分泌、营养、代谢疾病",
     "adrgCode": "KT1",
     "conditions": [
-      "WITH_CC"
+      "ADRG_ONLY"
     ]
   },
   {
-    "drgCode": "KT15",
-    "drgName": "内分泌、营养、代谢疾病，不伴合并症或并发症",
-    "adrgCode": "KT1",
+    "drgCode": "KU11",
+    "drgName": "营养失调,伴严重合并症或并发症",
+    "adrgCode": "KU1",
     "conditions": [
-      "NO_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "KU13",
-    "drgName": "营养失调，伴合并症或并发症",
+    "drgName": "营养失调,伴一般合并症或并发症",
     "adrgCode": "KU1",
     "conditions": [
       "WITH_CC"
@@ -4044,31 +4102,40 @@
   },
   {
     "drgCode": "KU15",
-    "drgName": "营养失调，不伴合并症或并发症",
+    "drgName": "营养失调,不伴合并症或并发症",
     "adrgCode": "KU1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "KV1H",
-    "drgName": "先天性代谢异常，大于等于 70 岁",
+    "drgCode": "KV1F",
+    "drgName": "先天性代谢异常,伴合并症或并发症,大于等于70岁",
     "adrgCode": "KV1",
     "conditions": [
-      "AGE_GE_70"
+      "AGE_GE_70",
+      "WITH_CC"
     ]
   },
   {
-    "drgCode": "KV19",
-    "drgName": "先天性代谢异常",
+    "drgCode": "KV13",
+    "drgName": "先天性代谢异常,伴合并症或并发症",
     "adrgCode": "KV1",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_CC"
+    ]
+  },
+  {
+    "drgCode": "KV15",
+    "drgName": "先天性代谢异常,不伴合并症或并发症",
+    "adrgCode": "KV1",
+    "conditions": [
+      "NO_CC"
     ]
   },
   {
     "drgCode": "KZ13",
-    "drgName": "其他代谢疾病，伴合并症或并发症",
+    "drgName": "其他代谢疾病,伴合并症或并发症",
     "adrgCode": "KZ1",
     "conditions": [
       "WITH_CC"
@@ -4076,7 +4143,7 @@
   },
   {
     "drgCode": "KZ15",
-    "drgName": "其他代谢疾病，不伴合并症或并发症",
+    "drgName": "其他代谢疾病,不伴合并症或并发症",
     "adrgCode": "KZ1",
     "conditions": [
       "NO_CC"
@@ -4092,10 +4159,10 @@
   },
   {
     "drgCode": "LA20",
-    "drgName": "肾脏大手术，机器人辅助手术",
+    "drgName": "肾脏大手术,机器人辅助手术",
     "adrgCode": "LA2",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -4147,16 +4214,16 @@
     ]
   },
   {
-    "drgCode": "LF13",
-    "drgName": "肾透析相关手术，伴合并症或并发症",
+    "drgCode": "LF11",
+    "drgName": "肾透析相关手术,伴严重合并症或并发症",
     "adrgCode": "LF1",
     "conditions": [
-      "WITH_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "LF15",
-    "drgName": "肾透析相关手术，不伴合并症或并发症",
+    "drgName": "肾透析相关手术,不伴严重合并症或并发症",
     "adrgCode": "LF1",
     "conditions": [
       "NO_CC"
@@ -4164,7 +4231,7 @@
   },
   {
     "drgCode": "LJ1F",
-    "drgName": "泌尿系统其他手术，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "泌尿系统其他手术,伴合并症或并发症,大于等于70岁",
     "adrgCode": "LJ1",
     "conditions": [
       "AGE_GE_70",
@@ -4173,7 +4240,7 @@
   },
   {
     "drgCode": "LJ13",
-    "drgName": "泌尿系统其他手术，伴合并症或并发症",
+    "drgName": "泌尿系统其他手术,伴合并症或并发症",
     "adrgCode": "LJ1",
     "conditions": [
       "WITH_CC"
@@ -4181,7 +4248,7 @@
   },
   {
     "drgCode": "LJ1G",
-    "drgName": "泌尿系统其他手术，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "泌尿系统其他手术,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "LJ1",
     "conditions": [
       "AGE_GE_70",
@@ -4190,7 +4257,7 @@
   },
   {
     "drgCode": "LJ15",
-    "drgName": "泌尿系统其他手术，不伴合并症或并发症",
+    "drgName": "泌尿系统其他手术,不伴合并症或并发症",
     "adrgCode": "LJ1",
     "conditions": [
       "NO_CC"
@@ -4198,7 +4265,7 @@
   },
   {
     "drgCode": "LL1E",
-    "drgName": "肾透析，伴严重合并症或并发症，大于等于 70 岁",
+    "drgName": "肾透析,伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "LL1",
     "conditions": [
       "AGE_GE_70",
@@ -4207,7 +4274,7 @@
   },
   {
     "drgCode": "LL11",
-    "drgName": "肾透析，伴严重合并症或并发症",
+    "drgName": "肾透析,伴严重合并症或并发症",
     "adrgCode": "LL1",
     "conditions": [
       "WITH_MCC"
@@ -4215,7 +4282,7 @@
   },
   {
     "drgCode": "LL1F",
-    "drgName": "肾透析，伴一般合并症或并发症，大于等于 70 岁",
+    "drgName": "肾透析,伴一般合并症或并发症,大于等于70岁",
     "adrgCode": "LL1",
     "conditions": [
       "AGE_GE_70",
@@ -4224,7 +4291,7 @@
   },
   {
     "drgCode": "LL13",
-    "drgName": "肾透析，伴一般合并症或并发症",
+    "drgName": "肾透析,伴一般合并症或并发症",
     "adrgCode": "LL1",
     "conditions": [
       "WITH_CC"
@@ -4232,7 +4299,7 @@
   },
   {
     "drgCode": "LL15",
-    "drgName": "肾透析，不伴合并症或并发症",
+    "drgName": "肾透析,不伴合并症或并发症",
     "adrgCode": "LL1",
     "conditions": [
       "NO_CC"
@@ -4240,7 +4307,7 @@
   },
   {
     "drgCode": "LR11",
-    "drgName": "肾功能不全，伴严重合并症或并发症",
+    "drgName": "肾功能不全,伴严重合并症或并发症",
     "adrgCode": "LR1",
     "conditions": [
       "WITH_MCC"
@@ -4248,7 +4315,7 @@
   },
   {
     "drgCode": "LR15",
-    "drgName": "肾功能不全，不伴严重合并症或并发症",
+    "drgName": "肾功能不全,不伴严重合并症或并发症",
     "adrgCode": "LR1",
     "conditions": [
       "NO_CC"
@@ -4256,7 +4323,7 @@
   },
   {
     "drgCode": "LS13",
-    "drgName": "重症肾炎及肾病，伴合并症或并发症",
+    "drgName": "重症肾炎及肾病,伴合并症或并发症",
     "adrgCode": "LS1",
     "conditions": [
       "WITH_CC"
@@ -4264,7 +4331,7 @@
   },
   {
     "drgCode": "LS15",
-    "drgName": "重症肾炎及肾病，不伴合并症或并发症",
+    "drgName": "重症肾炎及肾病,不伴合并症或并发症",
     "adrgCode": "LS1",
     "conditions": [
       "NO_CC"
@@ -4272,7 +4339,7 @@
   },
   {
     "drgCode": "LS23",
-    "drgName": "肾炎及肾病，伴合并症或并发症",
+    "drgName": "肾炎及肾病,伴合并症或并发症",
     "adrgCode": "LS2",
     "conditions": [
       "WITH_CC"
@@ -4280,7 +4347,7 @@
   },
   {
     "drgCode": "LS25",
-    "drgName": "肾炎及肾病，不伴合并症或并发症",
+    "drgName": "肾炎及肾病,不伴合并症或并发症",
     "adrgCode": "LS2",
     "conditions": [
       "NO_CC"
@@ -4288,7 +4355,7 @@
   },
   {
     "drgCode": "LT13",
-    "drgName": "肾及尿路肿瘤，伴合并症或并发症",
+    "drgName": "肾及尿路肿瘤,伴合并症或并发症",
     "adrgCode": "LT1",
     "conditions": [
       "WITH_CC"
@@ -4296,7 +4363,7 @@
   },
   {
     "drgCode": "LT15",
-    "drgName": "肾及尿路肿瘤，不伴合并症或并发症",
+    "drgName": "肾及尿路肿瘤,不伴合并症或并发症",
     "adrgCode": "LT1",
     "conditions": [
       "NO_CC"
@@ -4304,7 +4371,7 @@
   },
   {
     "drgCode": "LU1F",
-    "drgName": "肾及尿路感染，伴合并症或并发症，大于等于 70 岁",
+    "drgName": "肾及尿路感染,伴合并症或并发症,大于等于70岁",
     "adrgCode": "LU1",
     "conditions": [
       "AGE_GE_70",
@@ -4313,7 +4380,7 @@
   },
   {
     "drgCode": "LU13",
-    "drgName": "肾及尿路感染，伴合并症或并发症",
+    "drgName": "肾及尿路感染,伴合并症或并发症",
     "adrgCode": "LU1",
     "conditions": [
       "WITH_CC"
@@ -4321,7 +4388,7 @@
   },
   {
     "drgCode": "LU1G",
-    "drgName": "肾及尿路感染，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "肾及尿路感染,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "LU1",
     "conditions": [
       "AGE_GE_70",
@@ -4330,7 +4397,7 @@
   },
   {
     "drgCode": "LU15",
-    "drgName": "肾及尿路感染，不伴合并症或并发症",
+    "drgName": "肾及尿路感染,不伴合并症或并发症",
     "adrgCode": "LU1",
     "conditions": [
       "NO_CC"
@@ -4354,7 +4421,7 @@
   },
   {
     "drgCode": "LX13",
-    "drgName": "尿路结石、阻塞及尿道狭窄，伴合并症或并发症",
+    "drgName": "尿路结石、阻塞及尿道狭窄,伴合并症或并发症",
     "adrgCode": "LX1",
     "conditions": [
       "WITH_CC"
@@ -4362,7 +4429,7 @@
   },
   {
     "drgCode": "LX1G",
-    "drgName": "尿路结石、阻塞及尿道狭窄，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "尿路结石、阻塞及尿道狭窄,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "LX1",
     "conditions": [
       "AGE_GE_70",
@@ -4371,7 +4438,7 @@
   },
   {
     "drgCode": "LX15",
-    "drgName": "尿路结石、阻塞及尿道狭窄，不伴合并症或并发症",
+    "drgName": "尿路结石、阻塞及尿道狭窄,不伴合并症或并发症",
     "adrgCode": "LX1",
     "conditions": [
       "NO_CC"
@@ -4379,7 +4446,7 @@
   },
   {
     "drgCode": "LZ13",
-    "drgName": "肾及泌尿系统其他疾病，伴合并症或并发症",
+    "drgName": "肾及泌尿系统其他疾病,伴合并症或并发症",
     "adrgCode": "LZ1",
     "conditions": [
       "WITH_CC"
@@ -4387,7 +4454,7 @@
   },
   {
     "drgCode": "LZ15",
-    "drgName": "肾及泌尿系统其他疾病，不伴合并症或并发症",
+    "drgName": "肾及泌尿系统其他疾病,不伴合并症或并发症",
     "adrgCode": "LZ1",
     "conditions": [
       "NO_CC"
@@ -4395,10 +4462,10 @@
   },
   {
     "drgCode": "MB10",
-    "drgName": "前列腺大手术，机器人辅助手术",
+    "drgName": "前列腺大手术,机器人辅助手术",
     "adrgCode": "MB1",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -4419,10 +4486,10 @@
   },
   {
     "drgCode": "MC1D",
-    "drgName": "阴茎手术，小于 6 岁",
+    "drgName": "阴茎手术,小于等于6岁",
     "adrgCode": "MC1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
@@ -4443,15 +4510,15 @@
   },
   {
     "drgCode": "MJ1D",
-    "drgName": "其他男性生殖系统手术，小于 6 岁",
+    "drgName": "其他男性生殖系统手术,小于等于6岁",
     "adrgCode": "MJ1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
     "drgCode": "MJ1H",
-    "drgName": "其他男性生殖系统手术，大于等于 70 岁",
+    "drgName": "其他男性生殖系统手术,大于等于70岁",
     "adrgCode": "MJ1",
     "conditions": [
       "AGE_GE_70"
@@ -4467,7 +4534,7 @@
   },
   {
     "drgCode": "MR13",
-    "drgName": "男性生殖系统恶性肿瘤，伴合并症或并发症",
+    "drgName": "男性生殖系统恶性肿瘤,伴合并症或并发症",
     "adrgCode": "MR1",
     "conditions": [
       "WITH_CC"
@@ -4475,7 +4542,7 @@
   },
   {
     "drgCode": "MR15",
-    "drgName": "男性生殖系统恶性肿瘤，不伴合并症或并发症",
+    "drgName": "男性生殖系统恶性肿瘤,不伴合并症或并发症",
     "adrgCode": "MR1",
     "conditions": [
       "NO_CC"
@@ -4499,10 +4566,10 @@
   },
   {
     "drgCode": "NA10",
-    "drgName": "女性生殖器官恶性肿瘤的广泛切除手术，机器人辅助手术",
+    "drgName": "女性生殖器官恶性肿瘤的广泛切除手术,机器人辅助手术",
     "adrgCode": "NA1",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -4515,7 +4582,7 @@
   },
   {
     "drgCode": "NA23",
-    "drgName": "女性生殖器官恶性肿瘤除广泛切除术以外的手术，伴合并症或并发症",
+    "drgName": "女性生殖器官恶性肿瘤除广泛切除术以外的手术,伴合并症或并发症",
     "adrgCode": "NA2",
     "conditions": [
       "WITH_CC"
@@ -4523,7 +4590,7 @@
   },
   {
     "drgCode": "NA25",
-    "drgName": "女性生殖器官恶性肿瘤除广泛切除术以外的手术，不伴合并症或并发症",
+    "drgName": "女性生殖器官恶性肿瘤除广泛切除术以外的手术,不伴合并症或并发症",
     "adrgCode": "NA2",
     "conditions": [
       "NO_CC"
@@ -4539,7 +4606,7 @@
   },
   {
     "drgCode": "NB23",
-    "drgName": "女性生殖系统重建手术（无移植物植入），伴合并症或并发症",
+    "drgName": "女性生殖系统重建手术（无移植物植入）,伴合并症或并发症",
     "adrgCode": "NB2",
     "conditions": [
       "WITH_CC"
@@ -4547,7 +4614,7 @@
   },
   {
     "drgCode": "NB25",
-    "drgName": "女性生殖系统重建手术（无移植物植入），不伴合并症或并发症",
+    "drgName": "女性生殖系统重建手术（无移植物植入）,不伴合并症或并发症",
     "adrgCode": "NB2",
     "conditions": [
       "NO_CC"
@@ -4555,10 +4622,10 @@
   },
   {
     "drgCode": "NC10",
-    "drgName": "子宫联合附件手术，机器人辅助手术",
+    "drgName": "子宫联合附件手术,机器人辅助手术",
     "adrgCode": "NC1",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ROBOT_ASSISTED_SURGERY"
     ]
   },
   {
@@ -4595,7 +4662,7 @@
   },
   {
     "drgCode": "NF1H",
-    "drgName": "外阴、阴道、宫颈手术，大于等于 70 岁",
+    "drgName": "外阴、阴道、宫颈手术,大于等于70岁",
     "adrgCode": "NF1",
     "conditions": [
       "AGE_GE_70"
@@ -4619,7 +4686,7 @@
   },
   {
     "drgCode": "NJ13",
-    "drgName": "女性生殖系统其他手术，伴合并症或并发症",
+    "drgName": "女性生殖系统其他手术,伴合并症或并发症",
     "adrgCode": "NJ1",
     "conditions": [
       "WITH_CC"
@@ -4627,7 +4694,7 @@
   },
   {
     "drgCode": "NJ15",
-    "drgName": "女性生殖系统其他手术，不伴合并症或并发症",
+    "drgName": "女性生殖系统其他手术,不伴合并症或并发症",
     "adrgCode": "NJ1",
     "conditions": [
       "NO_CC"
@@ -4635,7 +4702,7 @@
   },
   {
     "drgCode": "NR13",
-    "drgName": "女性生殖系统恶性肿瘤，伴合并症或并发症",
+    "drgName": "女性生殖系统恶性肿瘤,伴合并症或并发症",
     "adrgCode": "NR1",
     "conditions": [
       "WITH_CC"
@@ -4643,7 +4710,7 @@
   },
   {
     "drgCode": "NR15",
-    "drgName": "女性生殖系统恶性肿瘤，不伴合并症或并发症",
+    "drgName": "女性生殖系统恶性肿瘤,不伴合并症或并发症",
     "adrgCode": "NR1",
     "conditions": [
       "NO_CC"
@@ -4666,57 +4733,65 @@
     ]
   },
   {
-    "drgCode": "OB19",
-    "drgName": "剖宫产术和子宫、附件手术",
+    "drgCode": "OB11",
+    "drgName": "剖宫产术和子宫、附件手术,伴严重合并症或并发症",
     "adrgCode": "OB1",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_MCC"
     ]
   },
   {
-    "drgCode": "OB29",
-    "drgName": "剖宫产术",
-    "adrgCode": "OB2",
-    "conditions": [
-      "ADRG_ONLY"
-    ]
-  },
-  {
-    "drgCode": "OC10",
-    "drgName": "阴道助产手术，椎管内镇痛",
-    "adrgCode": "OC1",
-    "conditions": [
-      "NEW_TECHNIQUE"
-    ]
-  },
-  {
-    "drgCode": "OC13",
-    "drgName": "阴道助产手术，伴合并症或并发症",
-    "adrgCode": "OC1",
-    "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "OC15",
-    "drgName": "阴道助产手术，不伴合并症或并发症",
-    "adrgCode": "OC1",
+    "drgCode": "OB15",
+    "drgName": "剖宫产术和子宫、附件手术,不伴严重合并症或并发症",
+    "adrgCode": "OB1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "OC20",
-    "drgName": "阴道分娩伴手术操作，椎管内镇痛",
-    "adrgCode": "OC2",
+    "drgCode": "OB21",
+    "drgName": "剖宫产术,伴严重合并症或并发症",
+    "adrgCode": "OB2",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "WITH_MCC"
+    ]
+  },
+  {
+    "drgCode": "OB25",
+    "drgName": "剖宫产术,不伴严重合并症或并发症",
+    "adrgCode": "OB2",
+    "conditions": [
+      "NO_CC"
+    ]
+  },
+  {
+    "drgCode": "OC19",
+    "drgName": "阴道助产手术,椎管内镇痛",
+    "adrgCode": "OC1",
+    "conditions": [
+      "ADRG_ONLY"
     ]
   },
   {
     "drgCode": "OC29",
-    "drgName": "阴道分娩伴手术操作",
+    "drgName": "阴道助产手术",
     "adrgCode": "OC2",
+    "conditions": [
+      "ADRG_ONLY"
+    ]
+  },
+  {
+    "drgCode": "OC39",
+    "drgName": "阴道分娩伴手术操作,椎管内镇痛",
+    "adrgCode": "OC3",
+    "conditions": [
+      "ADRG_ONLY"
+    ]
+  },
+  {
+    "drgCode": "OC49",
+    "drgName": "阴道分娩伴手术操作",
+    "adrgCode": "OC4",
     "conditions": [
       "ADRG_ONLY"
     ]
@@ -4731,7 +4806,7 @@
   },
   {
     "drgCode": "OD29",
-    "drgName": "与妊娠相关的的外阴、阴道及宫颈手术",
+    "drgName": "与妊娠相关的外阴、阴道及宫颈手术",
     "adrgCode": "OD2",
     "conditions": [
       "ADRG_ONLY"
@@ -4771,7 +4846,7 @@
   },
   {
     "drgCode": "OJ13",
-    "drgName": "与妊娠、分娩相关的其他手术操作，伴合并症或并发症",
+    "drgName": "与妊娠、分娩相关的其他手术操作,伴合并症或并发症",
     "adrgCode": "OJ1",
     "conditions": [
       "WITH_CC"
@@ -4779,18 +4854,18 @@
   },
   {
     "drgCode": "OJ15",
-    "drgName": "与妊娠、分娩相关的其他手术操作，不伴合并症或并发症",
+    "drgName": "与妊娠、分娩相关的其他手术操作,不伴合并症或并发症",
     "adrgCode": "OJ1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "OR10",
-    "drgName": "阴道分娩，椎管内镇痛",
-    "adrgCode": "OR1",
+    "drgCode": "OL19",
+    "drgName": "阴道分娩,椎管内镇痛",
+    "adrgCode": "OL1",
     "conditions": [
-      "NEW_TECHNIQUE"
+      "ADRG_ONLY"
     ]
   },
   {
@@ -4835,7 +4910,7 @@
   },
   {
     "drgCode": "PB19",
-    "drgName": "新生儿（出生年龄＜29 天）心血管手术",
+    "drgName": "新生儿（出生年龄＜29天）心血管手术",
     "adrgCode": "PB1",
     "conditions": [
       "ADRG_ONLY"
@@ -4843,7 +4918,7 @@
   },
   {
     "drgCode": "PC19",
-    "drgName": "新生儿（出生年龄＜29 天）除心血管外复杂手术",
+    "drgName": "新生儿（出生年龄＜29天）除心血管外复杂手术",
     "adrgCode": "PC1",
     "conditions": [
       "ADRG_ONLY"
@@ -4851,7 +4926,7 @@
   },
   {
     "drgCode": "PD13",
-    "drgName": "新生儿（出生年龄＜29 天）腹部手术，伴合并症或并发症",
+    "drgName": "新生儿（出生年龄＜29天）腹部手术,伴合并症或并发症",
     "adrgCode": "PD1",
     "conditions": [
       "WITH_CC"
@@ -4859,7 +4934,7 @@
   },
   {
     "drgCode": "PD15",
-    "drgName": "新生儿（出生年龄＜29 天）腹部手术，不伴合并症或并发症",
+    "drgName": "新生儿（出生年龄＜29天）腹部手术,不伴合并症或并发症",
     "adrgCode": "PD1",
     "conditions": [
       "NO_CC"
@@ -4867,7 +4942,7 @@
   },
   {
     "drgCode": "PJ19",
-    "drgName": "新生儿（出生年龄＜29 天）其他手术",
+    "drgName": "新生儿（出生年龄＜29天）其他手术",
     "adrgCode": "PJ1",
     "conditions": [
       "ADRG_ONLY"
@@ -4875,7 +4950,7 @@
   },
   {
     "drgCode": "PK11",
-    "drgName": "新生儿伴呼吸机支持，伴严重合并症或并发症",
+    "drgName": "新生儿伴呼吸机支持,伴严重合并症或并发症",
     "adrgCode": "PK1",
     "conditions": [
       "WITH_MCC"
@@ -4883,7 +4958,7 @@
   },
   {
     "drgCode": "PK13",
-    "drgName": "新生儿伴呼吸机支持，伴一般合并症或并发症",
+    "drgName": "新生儿伴呼吸机支持,伴一般合并症或并发症",
     "adrgCode": "PK1",
     "conditions": [
       "WITH_CC"
@@ -4891,7 +4966,7 @@
   },
   {
     "drgCode": "PK15",
-    "drgName": "新生儿伴呼吸机支持，不伴合并症或并发症",
+    "drgName": "新生儿伴呼吸机支持,不伴合并症或并发症",
     "adrgCode": "PK1",
     "conditions": [
       "NO_CC"
@@ -4899,7 +4974,7 @@
   },
   {
     "drgCode": "PR11",
-    "drgName": "新生儿呼吸窘迫综合征，伴严重合并症或并发症",
+    "drgName": "新生儿呼吸窘迫综合征,伴严重合并症或并发症",
     "adrgCode": "PR1",
     "conditions": [
       "WITH_MCC"
@@ -4907,7 +4982,7 @@
   },
   {
     "drgCode": "PR13",
-    "drgName": "新生儿呼吸窘迫综合征，伴一般合并症或并发症",
+    "drgName": "新生儿呼吸窘迫综合征,伴一般合并症或并发症",
     "adrgCode": "PR1",
     "conditions": [
       "WITH_CC"
@@ -4915,7 +4990,7 @@
   },
   {
     "drgCode": "PR15",
-    "drgName": "新生儿呼吸窘迫综合征，不伴合并症或并发症",
+    "drgName": "新生儿呼吸窘迫综合征,不伴合并症或并发症",
     "adrgCode": "PR1",
     "conditions": [
       "NO_CC"
@@ -4923,7 +4998,7 @@
   },
   {
     "drgCode": "PS19",
-    "drgName": "极度发育不全（出生体重＜1000g）",
+    "drgName": "极度发育不全（入院体重＜1000g）",
     "adrgCode": "PS1",
     "conditions": [
       "ADRG_ONLY"
@@ -4931,7 +5006,7 @@
   },
   {
     "drgCode": "PS29",
-    "drgName": "极度发育不全（出生体重 1000-1499g）",
+    "drgName": "极度发育不全（入院体重1000-1499g）",
     "adrgCode": "PS2",
     "conditions": [
       "ADRG_ONLY"
@@ -4939,7 +5014,7 @@
   },
   {
     "drgCode": "PS39",
-    "drgName": "早产儿（出生体重 1500-1999g）",
+    "drgName": "早产儿（入院体重1500-1999g）",
     "adrgCode": "PS3",
     "conditions": [
       "ADRG_ONLY"
@@ -4947,7 +5022,7 @@
   },
   {
     "drgCode": "PS41",
-    "drgName": "早产儿（出生体重 2000-2499g），伴严重合并症或并发症",
+    "drgName": "早产儿（入院体重2000-2499g）,伴严重合并症或并发症",
     "adrgCode": "PS4",
     "conditions": [
       "WITH_MCC"
@@ -4955,7 +5030,7 @@
   },
   {
     "drgCode": "PS43",
-    "drgName": "早产儿（出生体重 2000-2499g），伴一般合并症或并发症",
+    "drgName": "早产儿（入院体重2000-2499g）,伴一般合并症或并发症",
     "adrgCode": "PS4",
     "conditions": [
       "WITH_CC"
@@ -4963,7 +5038,7 @@
   },
   {
     "drgCode": "PS45",
-    "drgName": "早产儿（出生体重 2000-2499g），不伴合并症或并发症",
+    "drgName": "早产儿（入院体重2000-2499g）,不伴合并症或并发症",
     "adrgCode": "PS4",
     "conditions": [
       "NO_CC"
@@ -4971,7 +5046,7 @@
   },
   {
     "drgCode": "PS51",
-    "drgName": "早产儿（出生体重≥2500g），伴严重合并症或并发症",
+    "drgName": "早产儿（入院体重≥2500g）,伴严重合并症或并发症",
     "adrgCode": "PS5",
     "conditions": [
       "WITH_MCC"
@@ -4979,7 +5054,7 @@
   },
   {
     "drgCode": "PS53",
-    "drgName": "早产儿（出生体重≥2500g），伴一般合并症或并发症",
+    "drgName": "早产儿（入院体重≥2500g）,伴一般合并症或并发症",
     "adrgCode": "PS5",
     "conditions": [
       "WITH_CC"
@@ -4987,7 +5062,7 @@
   },
   {
     "drgCode": "PS55",
-    "drgName": "早产儿（出生体重≥2500g），不伴合并症或并发症",
+    "drgName": "早产儿（入院体重≥2500g）,不伴合并症或并发症",
     "adrgCode": "PS5",
     "conditions": [
       "NO_CC"
@@ -4995,7 +5070,7 @@
   },
   {
     "drgCode": "PU11",
-    "drgName": "足月儿重度疾病，伴严重合并症或并发症",
+    "drgName": "足月儿重度疾病,伴严重合并症或并发症",
     "adrgCode": "PU1",
     "conditions": [
       "WITH_MCC"
@@ -5003,7 +5078,7 @@
   },
   {
     "drgCode": "PU13",
-    "drgName": "足月儿重度疾病，伴一般合并症或并发症",
+    "drgName": "足月儿重度疾病,伴一般合并症或并发症",
     "adrgCode": "PU1",
     "conditions": [
       "WITH_CC"
@@ -5011,7 +5086,7 @@
   },
   {
     "drgCode": "PU15",
-    "drgName": "足月儿重度疾病，不伴合并症或并发症",
+    "drgName": "足月儿重度疾病,不伴合并症或并发症",
     "adrgCode": "PU1",
     "conditions": [
       "NO_CC"
@@ -5019,7 +5094,7 @@
   },
   {
     "drgCode": "PU21",
-    "drgName": "足月儿中度疾病，伴严重合并症或并发症",
+    "drgName": "足月儿中度疾病,伴严重合并症或并发症",
     "adrgCode": "PU2",
     "conditions": [
       "WITH_MCC"
@@ -5027,7 +5102,7 @@
   },
   {
     "drgCode": "PU25",
-    "drgName": "足月儿中度疾病，不伴严重合并症或并发症",
+    "drgName": "足月儿中度疾病,不伴严重合并症或并发症",
     "adrgCode": "PU2",
     "conditions": [
       "NO_CC"
@@ -5035,7 +5110,7 @@
   },
   {
     "drgCode": "PU33",
-    "drgName": "足月儿轻度疾病，伴合并症或并发症",
+    "drgName": "足月儿轻度疾病,伴合并症或并发症",
     "adrgCode": "PU3",
     "conditions": [
       "WITH_CC"
@@ -5043,15 +5118,23 @@
   },
   {
     "drgCode": "PU35",
-    "drgName": "足月儿轻度疾病，不伴合并症或并发症",
+    "drgName": "足月儿轻度疾病,不伴合并症或并发症",
     "adrgCode": "PU3",
     "conditions": [
       "NO_CC"
     ]
   },
   {
+    "drgCode": "PV11",
+    "drgName": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,伴严重合并症或并发症",
+    "adrgCode": "PV1",
+    "conditions": [
+      "WITH_MCC"
+    ]
+  },
+  {
     "drgCode": "PV13",
-    "drgName": "源于新生儿(29 天≤出生年龄＜1 周岁)诊断的婴儿疾病，伴合并症或并发症",
+    "drgName": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,伴一般合并症或并发症",
     "adrgCode": "PV1",
     "conditions": [
       "WITH_CC"
@@ -5059,7 +5142,7 @@
   },
   {
     "drgCode": "PV15",
-    "drgName": "源于新生儿(29 天≤出生年龄＜1 周岁)诊断的婴儿疾病，不伴合并症或并发症",
+    "drgName": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,不伴合并症或并发症",
     "adrgCode": "PV1",
     "conditions": [
       "NO_CC"
@@ -5075,7 +5158,7 @@
   },
   {
     "drgCode": "QJ13",
-    "drgName": "非特指部位、组织、器官的良性肿瘤手术，伴合并症或并发症",
+    "drgName": "非特指部位、组织、器官的良性肿瘤手术,伴合并症或并发症",
     "adrgCode": "QJ1",
     "conditions": [
       "WITH_CC"
@@ -5083,7 +5166,7 @@
   },
   {
     "drgCode": "QJ15",
-    "drgName": "非特指部位、组织、器官的良性肿瘤手术，不伴合并症或并发症",
+    "drgName": "非特指部位、组织、器官的良性肿瘤手术,不伴合并症或并发症",
     "adrgCode": "QJ1",
     "conditions": [
       "NO_CC"
@@ -5115,7 +5198,7 @@
   },
   {
     "drgCode": "QR33",
-    "drgName": "网状内皮及免疫性疾病，伴合并症或并发症",
+    "drgName": "网状内皮及免疫性疾病,伴合并症或并发症",
     "adrgCode": "QR3",
     "conditions": [
       "WITH_CC"
@@ -5123,7 +5206,7 @@
   },
   {
     "drgCode": "QR35",
-    "drgName": "网状内皮及免疫性疾病，不伴合并症或并发症",
+    "drgName": "网状内皮及免疫性疾病,不伴合并症或并发症",
     "adrgCode": "QR3",
     "conditions": [
       "NO_CC"
@@ -5131,7 +5214,7 @@
   },
   {
     "drgCode": "QS13",
-    "drgName": "红细胞病及营养性贫血，伴合并症或并发症",
+    "drgName": "红细胞病及营养性贫血,伴合并症或并发症",
     "adrgCode": "QS1",
     "conditions": [
       "WITH_CC"
@@ -5139,7 +5222,7 @@
   },
   {
     "drgCode": "QS15",
-    "drgName": "红细胞病及营养性贫血，不伴合并症或并发症",
+    "drgName": "红细胞病及营养性贫血,不伴合并症或并发症",
     "adrgCode": "QS1",
     "conditions": [
       "NO_CC"
@@ -5147,7 +5230,7 @@
   },
   {
     "drgCode": "QS23",
-    "drgName": "溶血性贫血，伴合并症或并发症",
+    "drgName": "溶血性贫血,伴合并症或并发症",
     "adrgCode": "QS2",
     "conditions": [
       "WITH_CC"
@@ -5155,7 +5238,7 @@
   },
   {
     "drgCode": "QS25",
-    "drgName": "溶血性贫血，不伴合并症或并发症",
+    "drgName": "溶血性贫血,不伴合并症或并发症",
     "adrgCode": "QS2",
     "conditions": [
       "NO_CC"
@@ -5163,7 +5246,7 @@
   },
   {
     "drgCode": "QS33",
-    "drgName": "重型再生障碍性贫血，伴合并症或并发症",
+    "drgName": "重型再生障碍性贫血,伴合并症或并发症",
     "adrgCode": "QS3",
     "conditions": [
       "WITH_CC"
@@ -5171,7 +5254,7 @@
   },
   {
     "drgCode": "QS35",
-    "drgName": "重型再生障碍性贫血，不伴合并症或并发症",
+    "drgName": "重型再生障碍性贫血,不伴合并症或并发症",
     "adrgCode": "QS3",
     "conditions": [
       "NO_CC"
@@ -5179,7 +5262,7 @@
   },
   {
     "drgCode": "QS43",
-    "drgName": "其他再生障碍性贫血，伴合并症或并发症",
+    "drgName": "其他再生障碍性贫血,伴合并症或并发症",
     "adrgCode": "QS4",
     "conditions": [
       "WITH_CC"
@@ -5187,7 +5270,7 @@
   },
   {
     "drgCode": "QS45",
-    "drgName": "其他再生障碍性贫血，不伴合并症或并发症",
+    "drgName": "其他再生障碍性贫血,不伴合并症或并发症",
     "adrgCode": "QS4",
     "conditions": [
       "NO_CC"
@@ -5195,7 +5278,7 @@
   },
   {
     "drgCode": "QS53",
-    "drgName": "其他贫血，伴合并症或并发症",
+    "drgName": "其他贫血,伴合并症或并发症",
     "adrgCode": "QS5",
     "conditions": [
       "WITH_CC"
@@ -5203,7 +5286,7 @@
   },
   {
     "drgCode": "QS55",
-    "drgName": "其他贫血，不伴合并症或并发症",
+    "drgName": "其他贫血,不伴合并症或并发症",
     "adrgCode": "QS5",
     "conditions": [
       "NO_CC"
@@ -5211,7 +5294,7 @@
   },
   {
     "drgCode": "QT13",
-    "drgName": "免疫性血小板减少，伴合并症或并发症",
+    "drgName": "免疫性血小板减少,伴合并症或并发症",
     "adrgCode": "QT1",
     "conditions": [
       "WITH_CC"
@@ -5219,7 +5302,7 @@
   },
   {
     "drgCode": "QT15",
-    "drgName": "免疫性血小板减少，不伴合并症或并发症",
+    "drgName": "免疫性血小板减少,不伴合并症或并发症",
     "adrgCode": "QT1",
     "conditions": [
       "NO_CC"
@@ -5227,7 +5310,7 @@
   },
   {
     "drgCode": "QT23",
-    "drgName": "非免疫性血小板减少，伴合并症或并发症",
+    "drgName": "非免疫性血小板减少,伴合并症或并发症",
     "adrgCode": "QT2",
     "conditions": [
       "WITH_CC"
@@ -5235,7 +5318,7 @@
   },
   {
     "drgCode": "QT25",
-    "drgName": "非免疫性血小板减少，不伴合并症或并发症",
+    "drgName": "非免疫性血小板减少,不伴合并症或并发症",
     "adrgCode": "QT2",
     "conditions": [
       "NO_CC"
@@ -5243,7 +5326,7 @@
   },
   {
     "drgCode": "QT33",
-    "drgName": "凝血因子缺乏，伴合并症或并发症",
+    "drgName": "凝血因子缺乏,伴合并症或并发症",
     "adrgCode": "QT3",
     "conditions": [
       "WITH_CC"
@@ -5251,7 +5334,7 @@
   },
   {
     "drgCode": "QT35",
-    "drgName": "凝血因子缺乏，不伴合并症或并发症",
+    "drgName": "凝血因子缺乏,不伴合并症或并发症",
     "adrgCode": "QT3",
     "conditions": [
       "NO_CC"
@@ -5267,7 +5350,7 @@
   },
   {
     "drgCode": "QT53",
-    "drgName": "其他血栓与止血，伴合并症或并发症",
+    "drgName": "其他血栓与止血,伴合并症或并发症",
     "adrgCode": "QT5",
     "conditions": [
       "WITH_CC"
@@ -5275,7 +5358,7 @@
   },
   {
     "drgCode": "QT55",
-    "drgName": "其他血栓与止血，不伴合并症或并发症",
+    "drgName": "其他血栓与止血,不伴合并症或并发症",
     "adrgCode": "QT5",
     "conditions": [
       "NO_CC"
@@ -5283,7 +5366,7 @@
   },
   {
     "drgCode": "RA13",
-    "drgName": "淋巴瘤、白血病等伴重大手术，伴合并症或并发症",
+    "drgName": "淋巴瘤、白血病等伴重大手术,伴合并症或并发症",
     "adrgCode": "RA1",
     "conditions": [
       "WITH_CC"
@@ -5291,7 +5374,7 @@
   },
   {
     "drgCode": "RA15",
-    "drgName": "淋巴瘤、白血病等伴重大手术，不伴合并症或并发症",
+    "drgName": "淋巴瘤、白血病等伴重大手术,不伴合并症或并发症",
     "adrgCode": "RA1",
     "conditions": [
       "NO_CC"
@@ -5323,7 +5406,7 @@
   },
   {
     "drgCode": "RK11",
-    "drgName": "急性白血病化学治疗和/或其他治疗，伴严重合并症或并发症",
+    "drgName": "急性白血病化学治疗和／或其他治疗,伴严重合并症或并发症",
     "adrgCode": "RK1",
     "conditions": [
       "WITH_MCC"
@@ -5331,7 +5414,7 @@
   },
   {
     "drgCode": "RK13",
-    "drgName": "急性白血病化学治疗和/或其他治疗，伴一般合并症或并发症",
+    "drgName": "急性白血病化学治疗和／或其他治疗,伴一般合并症或并发症",
     "adrgCode": "RK1",
     "conditions": [
       "WITH_CC"
@@ -5339,7 +5422,7 @@
   },
   {
     "drgCode": "RK15",
-    "drgName": "急性白血病化学治疗和/或其他治疗，不伴合并症或并发症",
+    "drgName": "急性白血病化学治疗和／或其他治疗,不伴合并症或并发症",
     "adrgCode": "RK1",
     "conditions": [
       "NO_CC"
@@ -5347,7 +5430,7 @@
   },
   {
     "drgCode": "RK23",
-    "drgName": "淋巴瘤、多发骨髓瘤化学治疗和/或其他治疗，伴合并症或并发症",
+    "drgName": "淋巴瘤、多发骨髓瘤化学治疗和／或其他治疗,伴合并症或并发症",
     "adrgCode": "RK2",
     "conditions": [
       "WITH_CC"
@@ -5355,7 +5438,7 @@
   },
   {
     "drgCode": "RK25",
-    "drgName": "淋巴瘤、多发骨髓瘤化学治疗和/或其他治疗，不伴合并症或并发症",
+    "drgName": "淋巴瘤、多发骨髓瘤化学治疗和／或其他治疗,不伴合并症或并发症",
     "adrgCode": "RK2",
     "conditions": [
       "NO_CC"
@@ -5363,7 +5446,7 @@
   },
   {
     "drgCode": "RL13",
-    "drgName": "恶性及增生性疾病放射联合化疗/靶向/免疫治疗，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病放射联合化疗／靶向／免疫治疗,伴合并症或并发症",
     "adrgCode": "RL1",
     "conditions": [
       "WITH_CC"
@@ -5371,7 +5454,7 @@
   },
   {
     "drgCode": "RL15",
-    "drgName": "恶性及增生性疾病放射联合化疗/靶向/免疫治疗，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病放射联合化疗／靶向／免疫治疗,不伴合并症或并发症",
     "adrgCode": "RL1",
     "conditions": [
       "NO_CC"
@@ -5379,7 +5462,7 @@
   },
   {
     "drgCode": "RL23",
-    "drgName": "恶性及增生性疾病 TOMO、SBRT 治疗，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病TOMO及放射外科治疗,伴合并症或并发症",
     "adrgCode": "RL2",
     "conditions": [
       "WITH_CC"
@@ -5387,7 +5470,7 @@
   },
   {
     "drgCode": "RL25",
-    "drgName": "恶性及增生性疾病 TOMO、SBRT 治疗，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病TOMO及放射外科治疗,不伴合并症或并发症",
     "adrgCode": "RL2",
     "conditions": [
       "NO_CC"
@@ -5395,7 +5478,7 @@
   },
   {
     "drgCode": "RL33",
-    "drgName": "恶性及增生性疾病其他体外照射，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他体外照射,伴合并症或并发症",
     "adrgCode": "RL3",
     "conditions": [
       "WITH_CC"
@@ -5403,7 +5486,7 @@
   },
   {
     "drgCode": "RL35",
-    "drgName": "恶性及增生性疾病其他体外照射，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他体外照射,不伴合并症或并发症",
     "adrgCode": "RL3",
     "conditions": [
       "NO_CC"
@@ -5419,7 +5502,7 @@
   },
   {
     "drgCode": "RL53",
-    "drgName": "恶性及增生性疾病其他近距离照射，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他近距离照射,伴合并症或并发症",
     "adrgCode": "RL5",
     "conditions": [
       "WITH_CC"
@@ -5427,7 +5510,7 @@
   },
   {
     "drgCode": "RL5G",
-    "drgName": "恶性及增生性疾病其他近距离照射，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "恶性及增生性疾病其他近距离照射,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "RL5",
     "conditions": [
       "AGE_GE_70",
@@ -5436,7 +5519,7 @@
   },
   {
     "drgCode": "RL55",
-    "drgName": "恶性及增生性疾病其他近距离照射，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他近距离照射,不伴合并症或并发症",
     "adrgCode": "RL5",
     "conditions": [
       "NO_CC"
@@ -5444,7 +5527,7 @@
   },
   {
     "drgCode": "RM19",
-    "drgName": "恶性及增生性疾病介入联合化疗/靶向/免疫治疗",
+    "drgName": "恶性及增生性疾病介入联合化疗／靶向／免疫治疗",
     "adrgCode": "RM1",
     "conditions": [
       "ADRG_ONLY"
@@ -5540,7 +5623,7 @@
   },
   {
     "drgCode": "RP73",
-    "drgName": "骨髓增殖性肿瘤及骨髓增生异常肿瘤常规化疗，伴合并症或并发症",
+    "drgName": "骨髓增殖性肿瘤及骨髓增生异常肿瘤常规化疗,伴合并症或并发症",
     "adrgCode": "RP7",
     "conditions": [
       "WITH_CC"
@@ -5548,31 +5631,23 @@
   },
   {
     "drgCode": "RP75",
-    "drgName": "骨髓增殖性肿瘤及骨髓增生异常肿瘤常规化疗，不伴合并症或并发症",
+    "drgName": "骨髓增殖性肿瘤及骨髓增生异常肿瘤常规化疗,不伴合并症或并发症",
     "adrgCode": "RP7",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "RP83",
-    "drgName": "其他恶性及增生性疾病常规化疗，伴合并症或并发症",
+    "drgCode": "RP89",
+    "drgName": "其他恶性及增生性疾病常规化疗",
     "adrgCode": "RP8",
     "conditions": [
-      "WITH_CC"
-    ]
-  },
-  {
-    "drgCode": "RP85",
-    "drgName": "其他恶性及增生性疾病常规化疗，不伴合并症或并发症",
-    "adrgCode": "RP8",
-    "conditions": [
-      "NO_CC"
+      "ADRG_ONLY"
     ]
   },
   {
     "drgCode": "RQ13",
-    "drgName": "恶性及增生性疾病的终末期治疗，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病的终末期治疗,伴合并症或并发症",
     "adrgCode": "RQ1",
     "conditions": [
       "WITH_CC"
@@ -5580,7 +5655,7 @@
   },
   {
     "drgCode": "RQ15",
-    "drgName": "恶性及增生性疾病的终末期治疗，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病的终末期治疗,不伴合并症或并发症",
     "adrgCode": "RQ1",
     "conditions": [
       "NO_CC"
@@ -5588,7 +5663,7 @@
   },
   {
     "drgCode": "RR11",
-    "drgName": "急性白血病，伴严重合并症或并发症",
+    "drgName": "急性白血病,伴严重合并症或并发症",
     "adrgCode": "RR1",
     "conditions": [
       "WITH_MCC"
@@ -5596,7 +5671,7 @@
   },
   {
     "drgCode": "RR13",
-    "drgName": "急性白血病，伴一般合并症或并发症",
+    "drgName": "急性白血病,伴一般合并症或并发症",
     "adrgCode": "RR1",
     "conditions": [
       "WITH_CC"
@@ -5604,7 +5679,7 @@
   },
   {
     "drgCode": "RR15",
-    "drgName": "急性白血病，不伴合并症或并发症",
+    "drgName": "急性白血病,不伴合并症或并发症",
     "adrgCode": "RR1",
     "conditions": [
       "NO_CC"
@@ -5612,7 +5687,7 @@
   },
   {
     "drgCode": "RS11",
-    "drgName": "淋巴瘤及其他类型白血病，伴严重合并症或并发症",
+    "drgName": "淋巴瘤及其他类型白血病,伴严重合并症或并发症",
     "adrgCode": "RS1",
     "conditions": [
       "WITH_MCC"
@@ -5620,7 +5695,7 @@
   },
   {
     "drgCode": "RS13",
-    "drgName": "淋巴瘤及其他类型白血病，伴一般合并症或并发症",
+    "drgName": "淋巴瘤及其他类型白血病,伴一般合并症或并发症",
     "adrgCode": "RS1",
     "conditions": [
       "WITH_CC"
@@ -5628,7 +5703,7 @@
   },
   {
     "drgCode": "RS15",
-    "drgName": "淋巴瘤及其他类型白血病，不伴合并症或并发症",
+    "drgName": "淋巴瘤及其他类型白血病,不伴合并症或并发症",
     "adrgCode": "RS1",
     "conditions": [
       "NO_CC"
@@ -5636,7 +5711,7 @@
   },
   {
     "drgCode": "RS21",
-    "drgName": "浆细胞病，伴严重合并症或并发症",
+    "drgName": "浆细胞病,伴严重合并症或并发症",
     "adrgCode": "RS2",
     "conditions": [
       "WITH_MCC"
@@ -5644,7 +5719,7 @@
   },
   {
     "drgCode": "RS23",
-    "drgName": "浆细胞病，伴一般合并症或并发症",
+    "drgName": "浆细胞病,伴一般合并症或并发症",
     "adrgCode": "RS2",
     "conditions": [
       "WITH_CC"
@@ -5652,7 +5727,7 @@
   },
   {
     "drgCode": "RS25",
-    "drgName": "浆细胞病，不伴合并症或并发症",
+    "drgName": "浆细胞病,不伴合并症或并发症",
     "adrgCode": "RS2",
     "conditions": [
       "NO_CC"
@@ -5660,7 +5735,7 @@
   },
   {
     "drgCode": "RT13",
-    "drgName": "非特指恶性肿瘤，伴合并症或并发症",
+    "drgName": "非特指恶性肿瘤,伴合并症或并发症",
     "adrgCode": "RT1",
     "conditions": [
       "WITH_CC"
@@ -5668,7 +5743,7 @@
   },
   {
     "drgCode": "RT15",
-    "drgName": "非特指恶性肿瘤，不伴合并症或并发症",
+    "drgName": "非特指恶性肿瘤,不伴合并症或并发症",
     "adrgCode": "RT1",
     "conditions": [
       "NO_CC"
@@ -5692,7 +5767,7 @@
   },
   {
     "drgCode": "RU23",
-    "drgName": "恶性及增生性疾病其他治疗，伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他治疗,伴合并症或并发症",
     "adrgCode": "RU2",
     "conditions": [
       "WITH_CC"
@@ -5700,7 +5775,7 @@
   },
   {
     "drgCode": "RU25",
-    "drgName": "恶性及增生性疾病其他治疗，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病其他治疗,不伴合并症或并发症",
     "adrgCode": "RU2",
     "conditions": [
       "NO_CC"
@@ -5716,7 +5791,7 @@
   },
   {
     "drgCode": "RW21",
-    "drgName": "恶性及增生性疾病维持性治疗，伴严重合并症或并发症",
+    "drgName": "恶性及增生性疾病维持性治疗,伴严重合并症或并发症",
     "adrgCode": "RW2",
     "conditions": [
       "WITH_MCC"
@@ -5724,7 +5799,7 @@
   },
   {
     "drgCode": "RW23",
-    "drgName": "恶性及增生性疾病维持性治疗，伴一般合并症或并发症",
+    "drgName": "恶性及增生性疾病维持性治疗,伴一般合并症或并发症",
     "adrgCode": "RW2",
     "conditions": [
       "WITH_CC"
@@ -5732,7 +5807,7 @@
   },
   {
     "drgCode": "RW25",
-    "drgName": "恶性及增生性疾病维持性治疗，不伴合并症或并发症",
+    "drgName": "恶性及增生性疾病维持性治疗,不伴合并症或并发症",
     "adrgCode": "RW2",
     "conditions": [
       "NO_CC"
@@ -5740,7 +5815,7 @@
   },
   {
     "drgCode": "SB11",
-    "drgName": "全身性感染疾病的手术，伴严重合并症或并发症",
+    "drgName": "全身性感染疾病的手术,伴严重合并症或并发症",
     "adrgCode": "SB1",
     "conditions": [
       "WITH_MCC"
@@ -5748,7 +5823,7 @@
   },
   {
     "drgCode": "SB13",
-    "drgName": "全身性感染疾病的手术，伴一般合并症或并发症",
+    "drgName": "全身性感染疾病的手术,伴一般合并症或并发症",
     "adrgCode": "SB1",
     "conditions": [
       "WITH_CC"
@@ -5756,7 +5831,7 @@
   },
   {
     "drgCode": "SB15",
-    "drgName": "全身性感染疾病的手术，不伴合并症或并发症",
+    "drgName": "全身性感染疾病的手术,不伴合并症或并发症",
     "adrgCode": "SB1",
     "conditions": [
       "NO_CC"
@@ -5764,7 +5839,7 @@
   },
   {
     "drgCode": "SR11",
-    "drgName": "脓毒症，伴严重合并症或并发症",
+    "drgName": "脓毒症,伴严重合并症或并发症",
     "adrgCode": "SR1",
     "conditions": [
       "WITH_MCC"
@@ -5772,7 +5847,7 @@
   },
   {
     "drgCode": "SR13",
-    "drgName": "脓毒症，伴一般合并症或并发症",
+    "drgName": "脓毒症,伴一般合并症或并发症",
     "adrgCode": "SR1",
     "conditions": [
       "WITH_CC"
@@ -5780,7 +5855,7 @@
   },
   {
     "drgCode": "SR1G",
-    "drgName": "脓毒症，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "脓毒症,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "SR1",
     "conditions": [
       "AGE_GE_70",
@@ -5789,7 +5864,7 @@
   },
   {
     "drgCode": "SR15",
-    "drgName": "脓毒症，不伴合并症或并发症",
+    "drgName": "脓毒症,不伴合并症或并发症",
     "adrgCode": "SR1",
     "conditions": [
       "NO_CC"
@@ -5797,7 +5872,7 @@
   },
   {
     "drgCode": "SS13",
-    "drgName": "手术后及创伤后感染，伴合并症或并发症",
+    "drgName": "手术后及创伤后感染,伴合并症或并发症",
     "adrgCode": "SS1",
     "conditions": [
       "WITH_CC"
@@ -5805,7 +5880,7 @@
   },
   {
     "drgCode": "SS15",
-    "drgName": "手术后及创伤后感染，不伴合并症或并发症",
+    "drgName": "手术后及创伤后感染,不伴合并症或并发症",
     "adrgCode": "SS1",
     "conditions": [
       "NO_CC"
@@ -5813,7 +5888,7 @@
   },
   {
     "drgCode": "ST13",
-    "drgName": "原因不明的发热，伴合并症或并发症",
+    "drgName": "原因不明的发热,伴合并症或并发症",
     "adrgCode": "ST1",
     "conditions": [
       "WITH_CC"
@@ -5821,7 +5896,7 @@
   },
   {
     "drgCode": "ST15",
-    "drgName": "原因不明的发热，不伴合并症或并发症",
+    "drgName": "原因不明的发热,不伴合并症或并发症",
     "adrgCode": "ST1",
     "conditions": [
       "NO_CC"
@@ -5829,7 +5904,7 @@
   },
   {
     "drgCode": "SU1H",
-    "drgName": "病毒性疾病，大于等于 70 岁",
+    "drgName": "病毒性疾病,大于等于70岁",
     "adrgCode": "SU1",
     "conditions": [
       "AGE_GE_70"
@@ -5844,25 +5919,8 @@
     ]
   },
   {
-    "drgCode": "SV1E",
-    "drgName": "细菌性疾病，伴严重合并症或并发症，大于等于 70 岁",
-    "adrgCode": "SV1",
-    "conditions": [
-      "AGE_GE_70",
-      "WITH_MCC"
-    ]
-  },
-  {
-    "drgCode": "SV11",
-    "drgName": "细菌性疾病，伴严重合并症或并发症",
-    "adrgCode": "SV1",
-    "conditions": [
-      "WITH_MCC"
-    ]
-  },
-  {
     "drgCode": "SV1F",
-    "drgName": "细菌性疾病，伴一般合并症或并发症，大于等于 70 岁",
+    "drgName": "细菌性疾病,伴合并症或并发症,大于等于70岁",
     "adrgCode": "SV1",
     "conditions": [
       "AGE_GE_70",
@@ -5871,7 +5929,7 @@
   },
   {
     "drgCode": "SV13",
-    "drgName": "细菌性疾病，伴一般合并症或并发症",
+    "drgName": "细菌性疾病,伴合并症或并发症",
     "adrgCode": "SV1",
     "conditions": [
       "WITH_CC"
@@ -5879,7 +5937,7 @@
   },
   {
     "drgCode": "SV1G",
-    "drgName": "细菌性疾病，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "细菌性疾病,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "SV1",
     "conditions": [
       "AGE_GE_70",
@@ -5888,7 +5946,7 @@
   },
   {
     "drgCode": "SV15",
-    "drgName": "细菌性疾病，不伴合并症或并发症",
+    "drgName": "细菌性疾病,不伴合并症或并发症",
     "adrgCode": "SV1",
     "conditions": [
       "NO_CC"
@@ -5912,7 +5970,7 @@
   },
   {
     "drgCode": "SY13",
-    "drgName": "非结核分枝杆菌感染，伴合并症或并发症",
+    "drgName": "非结核分枝杆菌感染,伴合并症或并发症",
     "adrgCode": "SY1",
     "conditions": [
       "WITH_CC"
@@ -5920,40 +5978,31 @@
   },
   {
     "drgCode": "SY15",
-    "drgName": "非结核分枝杆菌感染，不伴合并症或并发症",
+    "drgName": "非结核分枝杆菌感染,不伴合并症或并发症",
     "adrgCode": "SY1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "SZ13",
-    "drgName": "其他感染性或寄生虫性疾病，伴合并症或并发症",
+    "drgCode": "SZ1H",
+    "drgName": "其他感染性或寄生虫性疾病,大于等于70岁",
     "adrgCode": "SZ1",
     "conditions": [
-      "WITH_CC"
+      "AGE_GE_70"
     ]
   },
   {
-    "drgCode": "SZ1G",
-    "drgName": "其他感染性或寄生虫性疾病，不伴合并症或并发症，大于等于 70 岁",
+    "drgCode": "SZ19",
+    "drgName": "其他感染性或寄生虫性疾病",
     "adrgCode": "SZ1",
     "conditions": [
-      "AGE_GE_70",
-      "NO_CC"
-    ]
-  },
-  {
-    "drgCode": "SZ15",
-    "drgName": "其他感染性或寄生虫性疾病，不伴合并症或并发症",
-    "adrgCode": "SZ1",
-    "conditions": [
-      "NO_CC"
+      "ADRG_ONLY"
     ]
   },
   {
     "drgCode": "TB13",
-    "drgName": "精神病患者的手术，伴合并症或并发症",
+    "drgName": "精神病患者的手术,伴合并症或并发症",
     "adrgCode": "TB1",
     "conditions": [
       "WITH_CC"
@@ -5961,7 +6010,7 @@
   },
   {
     "drgCode": "TB15",
-    "drgName": "精神病患者的手术，不伴合并症或并发症",
+    "drgName": "精神病患者的手术,不伴合并症或并发症",
     "adrgCode": "TB1",
     "conditions": [
       "NO_CC"
@@ -6001,7 +6050,7 @@
   },
   {
     "drgCode": "TT19",
-    "drgName": "进食及睡眠障碍",
+    "drgName": "进食障碍",
     "adrgCode": "TT1",
     "conditions": [
       "ADRG_ONLY"
@@ -6009,8 +6058,16 @@
   },
   {
     "drgCode": "TT29",
-    "drgName": "人格障碍",
+    "drgName": "睡眠障碍",
     "adrgCode": "TT2",
+    "conditions": [
+      "ADRG_ONLY"
+    ]
+  },
+  {
+    "drgCode": "TT39",
+    "drgName": "人格障碍",
+    "adrgCode": "TT3",
     "conditions": [
       "ADRG_ONLY"
     ]
@@ -6033,7 +6090,7 @@
   },
   {
     "drgCode": "TW13",
-    "drgName": "器质性及症状性精神障碍，伴合并症或并发症",
+    "drgName": "器质性及症状性精神障碍,伴合并症或并发症",
     "adrgCode": "TW1",
     "conditions": [
       "WITH_CC"
@@ -6041,7 +6098,7 @@
   },
   {
     "drgCode": "TW15",
-    "drgName": "器质性及症状性精神障碍，不伴合并症或并发症",
+    "drgName": "器质性及症状性精神障碍,不伴合并症或并发症",
     "adrgCode": "TW1",
     "conditions": [
       "NO_CC"
@@ -6089,7 +6146,7 @@
   },
   {
     "drgCode": "VC13",
-    "drgName": "与损伤有关的清创术，伴合并症或并发症",
+    "drgName": "与损伤有关的清创术,伴合并症或并发症",
     "adrgCode": "VC1",
     "conditions": [
       "WITH_CC"
@@ -6097,7 +6154,7 @@
   },
   {
     "drgCode": "VC15",
-    "drgName": "与损伤有关的清创术，不伴合并症或并发症",
+    "drgName": "与损伤有关的清创术,不伴合并症或并发症",
     "adrgCode": "VC1",
     "conditions": [
       "NO_CC"
@@ -6105,7 +6162,7 @@
   },
   {
     "drgCode": "VJ13",
-    "drgName": "其他损伤的手术，伴合并症或并发症",
+    "drgName": "其他损伤的手术,伴合并症或并发症",
     "adrgCode": "VJ1",
     "conditions": [
       "WITH_CC"
@@ -6113,7 +6170,7 @@
   },
   {
     "drgCode": "VJ15",
-    "drgName": "其他损伤的手术，不伴合并症或并发症",
+    "drgName": "其他损伤的手术,不伴合并症或并发症",
     "adrgCode": "VJ1",
     "conditions": [
       "NO_CC"
@@ -6121,7 +6178,7 @@
   },
   {
     "drgCode": "VR13",
-    "drgName": "损伤，伴合并症或并发症",
+    "drgName": "损伤,伴合并症或并发症",
     "adrgCode": "VR1",
     "conditions": [
       "WITH_CC"
@@ -6129,7 +6186,7 @@
   },
   {
     "drgCode": "VR15",
-    "drgName": "损伤，不伴合并症或并发症",
+    "drgName": "损伤,不伴合并症或并发症",
     "adrgCode": "VR1",
     "conditions": [
       "NO_CC"
@@ -6145,7 +6202,7 @@
   },
   {
     "drgCode": "VS21",
-    "drgName": "药物中毒或毒性反应，伴严重合并症或并发症",
+    "drgName": "药物中毒或毒性反应,伴严重合并症或并发症",
     "adrgCode": "VS2",
     "conditions": [
       "WITH_MCC"
@@ -6153,7 +6210,7 @@
   },
   {
     "drgCode": "VS23",
-    "drgName": "药物中毒或毒性反应，伴一般合并症或并发症",
+    "drgName": "药物中毒或毒性反应,伴一般合并症或并发症",
     "adrgCode": "VS2",
     "conditions": [
       "WITH_CC"
@@ -6161,7 +6218,7 @@
   },
   {
     "drgCode": "VS2G",
-    "drgName": "药物中毒或毒性反应，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "药物中毒或毒性反应,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "VS2",
     "conditions": [
       "AGE_GE_70",
@@ -6170,7 +6227,7 @@
   },
   {
     "drgCode": "VS25",
-    "drgName": "药物中毒或毒性反应，不伴合并症或并发症",
+    "drgName": "药物中毒或毒性反应,不伴合并症或并发症",
     "adrgCode": "VS2",
     "conditions": [
       "NO_CC"
@@ -6178,7 +6235,7 @@
   },
   {
     "drgCode": "VT13",
-    "drgName": "医疗后遗症，伴合并症或并发症",
+    "drgName": "医疗后遗症,伴合并症或并发症",
     "adrgCode": "VT1",
     "conditions": [
       "WITH_CC"
@@ -6186,7 +6243,7 @@
   },
   {
     "drgCode": "VT1G",
-    "drgName": "医疗后遗症，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "医疗后遗症,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "VT1",
     "conditions": [
       "AGE_GE_70",
@@ -6195,31 +6252,31 @@
   },
   {
     "drgCode": "VT15",
-    "drgName": "医疗后遗症，不伴合并症或并发症",
+    "drgName": "医疗后遗症,不伴合并症或并发症",
     "adrgCode": "VT1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "VZ1H",
-    "drgName": "其他损伤、中毒及毒性反应疾病，大于等于 70 岁",
+    "drgCode": "VZ13",
+    "drgName": "其他损伤、中毒及毒性反应疾病,伴合并症或并发症",
     "adrgCode": "VZ1",
     "conditions": [
-      "AGE_GE_70"
+      "WITH_CC"
     ]
   },
   {
-    "drgCode": "VZ19",
-    "drgName": "其他损伤、中毒及毒性反应疾病",
+    "drgCode": "VZ15",
+    "drgName": "其他损伤、中毒及毒性反应疾病,不伴合并症或并发症",
     "adrgCode": "VZ1",
     "conditions": [
-      "ADRG_ONLY"
+      "NO_CC"
     ]
   },
   {
     "drgCode": "WB19",
-    "drgName": "烧伤面积≥50%，或三度面积≥20%的烧伤，伴有手术操作",
+    "drgName": "烧伤面积≥50%,或三度面积≥20%的烧伤,伴有手术操作",
     "adrgCode": "WB1",
     "conditions": [
       "ADRG_ONLY"
@@ -6227,7 +6284,7 @@
   },
   {
     "drgCode": "WB29",
-    "drgName": "烧伤面积≥30%，＜50%，或三度面积≥10%，＜20%的烧伤，伴有手术操作",
+    "drgName": "烧伤面积≥30%,＜50%,或三度面积≥10%,＜20%的烧伤,伴有手术操作",
     "adrgCode": "WB2",
     "conditions": [
       "ADRG_ONLY"
@@ -6235,7 +6292,7 @@
   },
   {
     "drgCode": "WB39",
-    "drgName": "烧伤面积＜30%或其他烧伤，伴有手术操作",
+    "drgName": "烧伤面积＜30%或其他烧伤,伴有手术操作",
     "adrgCode": "WB3",
     "conditions": [
       "ADRG_ONLY"
@@ -6259,7 +6316,7 @@
   },
   {
     "drgCode": "WR23",
-    "drgName": "烧伤面积＜30%的烧伤或其他烧伤，伴合并症或并发症",
+    "drgName": "烧伤面积＜30%的烧伤或其他烧伤,伴合并症或并发症",
     "adrgCode": "WR2",
     "conditions": [
       "WITH_CC"
@@ -6267,40 +6324,39 @@
   },
   {
     "drgCode": "WR25",
-    "drgName": "烧伤面积＜30%的烧伤或其他烧伤，不伴合并症或并发症",
+    "drgName": "烧伤面积＜30%的烧伤或其他烧伤,不伴合并症或并发症",
     "adrgCode": "WR2",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "XC19",
-    "drgName": "疼痛的手术治疗",
+    "drgCode": "XC13",
+    "drgName": "疼痛的手术治疗,伴合并症或并发症",
     "adrgCode": "XC1",
     "conditions": [
-      "ADRG_ONLY"
-    ]
-  },
-  {
-    "drgCode": "XJ1F",
-    "drgName": "其他接触健康服务的诊断伴手术操作，伴合并症或并发症，大于等于 70 岁",
-    "adrgCode": "XJ1",
-    "conditions": [
-      "AGE_GE_70",
       "WITH_CC"
     ]
   },
   {
-    "drgCode": "XJ13",
-    "drgName": "其他接触健康服务的诊断伴手术操作，伴合并症或并发症",
+    "drgCode": "XC15",
+    "drgName": "疼痛的手术治疗,不伴合并症或并发症",
+    "adrgCode": "XC1",
+    "conditions": [
+      "NO_CC"
+    ]
+  },
+  {
+    "drgCode": "XJ11",
+    "drgName": "其他接触健康服务的诊断伴手术操作,伴严重合并症或并发症",
     "adrgCode": "XJ1",
     "conditions": [
-      "WITH_CC"
+      "WITH_MCC"
     ]
   },
   {
     "drgCode": "XJ1G",
-    "drgName": "其他接触健康服务的诊断伴手术操作，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "其他接触健康服务的诊断伴手术操作,不伴严重合并症或并发症,大于等于70岁",
     "adrgCode": "XJ1",
     "conditions": [
       "AGE_GE_70",
@@ -6309,7 +6365,7 @@
   },
   {
     "drgCode": "XJ15",
-    "drgName": "其他接触健康服务的诊断伴手术操作，不伴合并症或并发症",
+    "drgName": "其他接触健康服务的诊断伴手术操作,不伴严重合并症或并发症",
     "adrgCode": "XJ1",
     "conditions": [
       "NO_CC"
@@ -6325,7 +6381,7 @@
   },
   {
     "drgCode": "XR21",
-    "drgName": "神经、骨骼及肌肉康复，伴严重合并症或并发症",
+    "drgName": "神经、骨骼及肌肉康复,伴严重合并症或并发症",
     "adrgCode": "XR2",
     "conditions": [
       "WITH_MCC"
@@ -6333,15 +6389,24 @@
   },
   {
     "drgCode": "XR23",
-    "drgName": "神经、骨骼及肌肉康复，伴一般合并症或并发症",
+    "drgName": "神经、骨骼及肌肉康复,伴一般合并症或并发症",
     "adrgCode": "XR2",
     "conditions": [
       "WITH_CC"
     ]
   },
   {
+    "drgCode": "XR2G",
+    "drgName": "神经、骨骼及肌肉康复,不伴合并症或并发症,大于等于70岁",
+    "adrgCode": "XR2",
+    "conditions": [
+      "AGE_GE_70",
+      "NO_CC"
+    ]
+  },
+  {
     "drgCode": "XR25",
-    "drgName": "神经、骨骼及肌肉康复，不伴合并症或并发症",
+    "drgName": "神经、骨骼及肌肉康复,不伴合并症或并发症",
     "adrgCode": "XR2",
     "conditions": [
       "NO_CC"
@@ -6349,7 +6414,7 @@
   },
   {
     "drgCode": "XR31",
-    "drgName": "功能障碍康复，伴严重合并症或并发症",
+    "drgName": "功能障碍康复,伴严重合并症或并发症",
     "adrgCode": "XR3",
     "conditions": [
       "WITH_MCC"
@@ -6357,24 +6422,24 @@
   },
   {
     "drgCode": "XR33",
-    "drgName": "功能障碍康复，伴一般合并症或并发症",
+    "drgName": "功能障碍康复,伴一般合并症或并发症",
     "adrgCode": "XR3",
     "conditions": [
       "WITH_CC"
     ]
   },
   {
-    "drgCode": "XR3C",
-    "drgName": "功能障碍康复，不伴合并症或并发症，小于 6 岁",
+    "drgCode": "XR3G",
+    "drgName": "功能障碍康复,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "XR3",
     "conditions": [
-      "AGE_LT_6",
+      "AGE_GE_70",
       "NO_CC"
     ]
   },
   {
     "drgCode": "XR35",
-    "drgName": "功能障碍康复，不伴合并症或并发症",
+    "drgName": "功能障碍康复,不伴合并症或并发症",
     "adrgCode": "XR3",
     "conditions": [
       "NO_CC"
@@ -6382,7 +6447,7 @@
   },
   {
     "drgCode": "XS11",
-    "drgName": "体征及症状，伴严重合并症或并发症",
+    "drgName": "体征及症状,伴严重合并症或并发症",
     "adrgCode": "XS1",
     "conditions": [
       "WITH_MCC"
@@ -6390,7 +6455,7 @@
   },
   {
     "drgCode": "XS13",
-    "drgName": "体征及症状，伴一般合并症或并发症",
+    "drgName": "体征及症状,伴一般合并症或并发症",
     "adrgCode": "XS1",
     "conditions": [
       "WITH_CC"
@@ -6398,39 +6463,57 @@
   },
   {
     "drgCode": "XS15",
-    "drgName": "体征及症状，不伴合并症或并发症",
+    "drgName": "体征及症状,不伴合并症或并发症",
     "adrgCode": "XS1",
     "conditions": [
       "NO_CC"
     ]
   },
   {
-    "drgCode": "XS2H",
-    "drgName": "非恶性肿瘤的随访，大于等于 70 岁",
+    "drgCode": "XS2F",
+    "drgName": "非恶性肿瘤的随访,伴合并症或并发症,大于等于70岁",
     "adrgCode": "XS2",
     "conditions": [
-      "AGE_GE_70"
+      "AGE_GE_70",
+      "WITH_CC"
     ]
   },
   {
-    "drgCode": "XS29",
-    "drgName": "非恶性肿瘤的随访",
+    "drgCode": "XS23",
+    "drgName": "非恶性肿瘤的随访,伴合并症或并发症",
     "adrgCode": "XS2",
     "conditions": [
-      "ADRG_ONLY"
+      "WITH_CC"
+    ]
+  },
+  {
+    "drgCode": "XS2G",
+    "drgName": "非恶性肿瘤的随访,不伴合并症或并发症,大于等于70岁",
+    "adrgCode": "XS2",
+    "conditions": [
+      "AGE_GE_70",
+      "NO_CC"
+    ]
+  },
+  {
+    "drgCode": "XS25",
+    "drgName": "非恶性肿瘤的随访,不伴合并症或并发症",
+    "adrgCode": "XS2",
+    "conditions": [
+      "NO_CC"
     ]
   },
   {
     "drgCode": "XT1D",
-    "drgName": "其他后期照护，小于 6 岁",
+    "drgName": "其他后期照护,小于等于6岁",
     "adrgCode": "XT1",
     "conditions": [
-      "AGE_LT_6"
+      "AGE_LE_6"
     ]
   },
   {
     "drgCode": "XT1H",
-    "drgName": "其他后期照护，大于等于 70 岁",
+    "drgName": "其他后期照护,大于等于70岁",
     "adrgCode": "XT1",
     "conditions": [
       "AGE_GE_70"
@@ -6454,7 +6537,7 @@
   },
   {
     "drgCode": "XT33",
-    "drgName": "其他影响健康状态的因素，伴合并症或并发症",
+    "drgName": "其他影响健康状态的因素,伴合并症或并发症",
     "adrgCode": "XT3",
     "conditions": [
       "WITH_CC"
@@ -6462,7 +6545,7 @@
   },
   {
     "drgCode": "XT3G",
-    "drgName": "其他影响健康状态的因素，不伴合并症或并发症，大于等于 70 岁",
+    "drgName": "其他影响健康状态的因素,不伴合并症或并发症,大于等于70岁",
     "adrgCode": "XT3",
     "conditions": [
       "AGE_GE_70",
@@ -6471,7 +6554,7 @@
   },
   {
     "drgCode": "XT35",
-    "drgName": "其他影响健康状态的因素，不伴合并症或并发症",
+    "drgName": "其他影响健康状态的因素,不伴合并症或并发症",
     "adrgCode": "XT3",
     "conditions": [
       "NO_CC"
@@ -6479,7 +6562,7 @@
   },
   {
     "drgCode": "YC19",
-    "drgName": "HIV 相关疾病的手术",
+    "drgName": "HIV相关疾病的手术",
     "adrgCode": "YC1",
     "conditions": [
       "ADRG_ONLY"
@@ -6487,7 +6570,7 @@
   },
   {
     "drgCode": "YR11",
-    "drgName": "HIV 相关疾病，伴严重合并症或并发症",
+    "drgName": "HIV相关疾病,伴严重合并症或并发症",
     "adrgCode": "YR1",
     "conditions": [
       "WITH_MCC"
@@ -6495,7 +6578,7 @@
   },
   {
     "drgCode": "YR13",
-    "drgName": "HIV 相关疾病，伴一般合并症或并发症",
+    "drgName": "HIV相关疾病,伴一般合并症或并发症",
     "adrgCode": "YR1",
     "conditions": [
       "WITH_CC"
@@ -6503,7 +6586,7 @@
   },
   {
     "drgCode": "YR15",
-    "drgName": "HIV 相关疾病，不伴合并症或并发症",
+    "drgName": "HIV相关疾病,不伴合并症或并发症",
     "adrgCode": "YR1",
     "conditions": [
       "NO_CC"
@@ -6519,7 +6602,7 @@
   },
   {
     "drgCode": "ZC11",
-    "drgName": "多发性严重创伤的脊柱、髋、股或肢体手术，伴严重合并症或并发症",
+    "drgName": "多发性严重创伤的脊柱、髋、股或肢体手术,伴严重合并症或并发症",
     "adrgCode": "ZC1",
     "conditions": [
       "WITH_MCC"
@@ -6527,7 +6610,7 @@
   },
   {
     "drgCode": "ZC15",
-    "drgName": "多发性严重创伤的脊柱、髋、股或肢体手术，不伴严重合并症或并发症",
+    "drgName": "多发性严重创伤的脊柱、髋、股或肢体手术,不伴严重合并症或并发症",
     "adrgCode": "ZC1",
     "conditions": [
       "NO_CC"
@@ -6543,7 +6626,7 @@
   },
   {
     "drgCode": "ZJ11",
-    "drgName": "与多发伤有关的其他手术操作，伴严重合并症或并发症",
+    "drgName": "与多发伤有关的其他手术操作,伴严重合并症或并发症",
     "adrgCode": "ZJ1",
     "conditions": [
       "WITH_MCC"
@@ -6551,7 +6634,7 @@
   },
   {
     "drgCode": "ZJ15",
-    "drgName": "与多发伤有关的其他手术操作，不伴严重合并症或并发症",
+    "drgName": "与多发伤有关的其他手术操作,不伴严重合并症或并发症",
     "adrgCode": "ZJ1",
     "conditions": [
       "NO_CC"
@@ -6559,7 +6642,7 @@
   },
   {
     "drgCode": "ZZ11",
-    "drgName": "多发性重要创伤无手术，伴严重合并症或并发症",
+    "drgName": "多发性重要创伤无手术,伴严重合并症或并发症",
     "adrgCode": "ZZ1",
     "conditions": [
       "WITH_MCC"
@@ -6567,7 +6650,7 @@
   },
   {
     "drgCode": "ZZ15",
-    "drgName": "多发性重要创伤无手术，不伴合并症或并发症",
+    "drgName": "多发性重要创伤无手术,不伴严重合并症或并发症",
     "adrgCode": "ZZ1",
     "conditions": [
       "NO_CC"

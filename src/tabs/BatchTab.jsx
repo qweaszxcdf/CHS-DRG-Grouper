@@ -151,9 +151,9 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     previewAgeKey,
     previewAgeDaysKey,
     previewBirthWeightKey,
+    previewAdmissionWeightKey,
     previewDischargeKey,
     previewNewTechniqueKey,
-    previewMultiSiteKey,
     previewIntensiveCareKey,
     previewIcuHoursKey,
     previewCrrtHoursKey,
@@ -196,9 +196,9 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
     handlePreviewAgeChange,
     handlePreviewAgeDaysChange,
     handlePreviewBirthWeightChange,
+    handlePreviewAdmissionWeightChange,
     handlePreviewDischargeChange,
     handlePreviewNewTechChange,
-    handlePreviewMultiSiteChange,
     handlePreviewIntensiveCareChange,
     handlePreviewIcuHoursChange,
     handlePreviewCrrtHoursChange,
@@ -662,6 +662,16 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
                           </label>
                         )}
 
+                        {isPatientInfoFieldVisible('admissionWeight') && (
+                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
+                            <span className="whitespace-nowrap">Admission wt</span>
+                            <select title={previewAdmissionWeightKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewAdmissionWeightKey} onChange={e => handlePreviewAdmissionWeightChange(e.target.value)}>
+                              <option title="(none)" value="">(none)</option>
+                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
+                            </select>
+                          </label>
+                        )}
+
                         {isPatientInfoFieldVisible('dischargeStatus') && (
                           <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
                             <span className="whitespace-nowrap">Discharge</span>
@@ -676,16 +686,6 @@ function BatchTab({ batchUi, batchActions, ruleVersion, ruleVersions, onRuleVers
                           <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
                             <span className="whitespace-nowrap">New Technique</span>
                             <select title={previewNewTechniqueKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewNewTechniqueKey} onChange={e => handlePreviewNewTechChange(e.target.value)}>
-                              <option title="(none)" value="">(none)</option>
-                              {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
-                            </select>
-                          </label>
-                        )}
-
-                        {isPatientInfoFieldVisible('multiSite') && (
-                          <label className="text-xs flex flex-col md:flex-row md:items-center w-full md:w-auto">
-                            <span className="whitespace-nowrap">Multi-site</span>
-                            <select title={previewMultiSiteKey || '(none)'} className="mt-1 md:mt-0 md:ml-1 p-1 border rounded w-full md:w-auto" value={previewMultiSiteKey} onChange={e => handlePreviewMultiSiteChange(e.target.value)}>
                               <option title="(none)" value="">(none)</option>
                               {parsedPreview.headerKeys.map(k => <option title={k} key={k} value={k}>{k}</option>)}
                             </select>

@@ -12,7 +12,6 @@
     "invalidPrincipalProcedureAction": "null-slot",
     "allowedInvalidPrincipalProcedures": [],
     "allowedGrayPrincipalProcedures": ["99.1000"],
-    "mdcyPrincipalDiagnosisOnly": true,
-    "allowSecondarySectionPrimaryFallback": false
+    "mdcyPrincipalDiagnosisOnly": true
   }
 }

@@ -1,32 +1,25 @@
-import { convertDiagnosesArray, convertProceduresArray } from './CodeConversion';
-import { preloadGLData } from './glDataLoader.js';
-import { groupPatientByVersion } from './versionedGrouper.ts';
+import { groupPatient } from './groupingGateway.ts';
+
+const MAX_COMBOS = 720;
 
 const PATIENT_INFO_FIELDS = Object.freeze([
   'gender',
   'age',
   'ageInDays',
   'birthWeight',
+  'admissionWeight',
   'icuHours',
   'crrtHours',
   'lengthOfStay',
   'dischargeStatus',
   'newTechnique',
-  'multiSite',
   'intensiveCare',
   'daySurgery',
 ]);
 const toCodeList = (codes) => (Array.isArray(codes) ? codes : []).filter(Boolean);
 
-function createCodeMapper(codes, converter, version) {
-  const converted = converter(codes, version);
-  const map = new Map();
-  for (let i = 0; i < codes.length; i++) map.set(codes[i], converted[i]);
-  return (items) => items.map((code) => (map.has(code) ? map.get(code) : code));
-}
-
 // Build a patientInfo object from UI-supplied fields (pure helper)
-export function buildPatientInfo({ gender, age, ageInDays, birthWeight, dischargeStatus, newTechnique, multiSite, intensiveCare, icuHours, crrtHours, lengthOfStay, daySurgery }) {
+export function buildPatientInfo({ gender, age, ageInDays, birthWeight, admissionWeight, dischargeStatus, newTechnique, intensiveCare, icuHours, crrtHours, lengthOfStay, daySurgery }) {
   const patientInfo = {};
 
   // Preserve supplied values so the shared grouper owns normalization and validation.
@@ -35,22 +28,20 @@ export function buildPatientInfo({ gender, age, ageInDays, birthWeight, discharg
     patientInfo[field] = value;
   };
 
-  const inputs = { gender, age, ageInDays, birthWeight, icuHours, crrtHours, lengthOfStay, dischargeStatus, newTechnique, multiSite, intensiveCare, daySurgery };
+  const inputs = { gender, age, ageInDays, birthWeight, admissionWeight, icuHours, crrtHours, lengthOfStay, dischargeStatus, newTechnique, intensiveCare, daySurgery };
   for (const field of PATIENT_INFO_FIELDS) preserveInput(field, inputs[field]);
   return patientInfo;
 }
 
 // Group a single entry. Returns an object that mirrors previous App logic but is pure.
 export async function groupSingle(diagnoses, procedures, patientInfo, searchSource, version) {
-  if (searchSource === 'GL') await preloadGLData(version);
   const filteredDiagnoses = toCodeList(diagnoses);
   const filteredProcedures = toCodeList(procedures);
 
   const conversionApplied = searchSource === 'GL';
-  const convertedDiagnoses = conversionApplied ? convertDiagnosesArray(filteredDiagnoses, version) : filteredDiagnoses;
-  const convertedProcedures = conversionApplied ? convertProceduresArray(filteredProcedures, version) : filteredProcedures;
-
-  const finalRes = await groupPatientByVersion(convertedDiagnoses, convertedProcedures, patientInfo, version) || {};
+  const finalRes = await groupPatient(filteredDiagnoses, filteredProcedures, patientInfo, version, searchSource) || {};
+  const convertedDiagnoses = Array.isArray(finalRes.diagnosesConverted) ? finalRes.diagnosesConverted : filteredDiagnoses;
+  const convertedProcedures = Array.isArray(finalRes.proceduresConverted) ? finalRes.proceduresConverted : filteredProcedures;
 
   return {
     finalRes,
@@ -64,8 +55,7 @@ export async function groupSingle(diagnoses, procedures, patientInfo, searchSour
 }
 
 // Compute permutation results across diagnoses/procedures (pure function)
-export async function groupAllOrders(diagnoses, procedures, patientInfo, searchSource, maxCombos = 720, version) {
-  if (searchSource === 'GL') await preloadGLData(version);
+export async function groupAllOrders(diagnoses, procedures, patientInfo, searchSource, version) {
   const filteredDiagnoses = toCodeList(diagnoses);
   const filteredProcedures = toCodeList(procedures);
 
@@ -93,14 +83,6 @@ export async function groupAllOrders(diagnoses, procedures, patientInfo, searchS
 
   const diagPerms = generatePerms(filteredDiagnoses);
   const procPerms = generatePerms(filteredProcedures);
-  const conversionApplied = searchSource === 'GL';
-  const convertDiagnoses = conversionApplied
-    ? createCodeMapper(filteredDiagnoses, convertDiagnosesArray, version)
-    : (items) => items;
-  const convertProcedures = conversionApplied
-    ? createCodeMapper(filteredProcedures, convertProceduresArray, version)
-    : (items) => items;
-
   const totalCombos = diagPerms.length * procPerms.length;
   const results = [];
   const seen = new Map(); // map resultKey -> index in results
@@ -108,14 +90,11 @@ export async function groupAllOrders(diagnoses, procedures, patientInfo, searchS
 
   outer: for (let i = 0; i < diagPerms.length; i++) {
     for (let j = 0; j < procPerms.length; j++) {
-      if (processed >= maxCombos) break outer;
+      if (processed >= MAX_COMBOS) break outer;
       const diagOrder = diagPerms[i];
       const procOrder = procPerms[j];
 
-      const convertedDiagnoses = convertDiagnoses(diagOrder);
-      const convertedProcedures = convertProcedures(procOrder);
-
-      const res = await groupPatientByVersion(convertedDiagnoses, convertedProcedures, patientInfo, version) || {};
+      const res = await groupPatient(diagOrder, procOrder, patientInfo, version, searchSource) || {};
       if (res.error) {
         return {
           totalCombos,

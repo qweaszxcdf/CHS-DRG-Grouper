@@ -2,10 +2,12 @@
 type GlDataLoader = () => Promise<Record<string, unknown>>;
 
 const clinicalLoaders: Readonly<Record<string, GlDataLoader>> = Object.freeze({
-  "gl-2022": () => import('./packages/clinical/gl-2022.ts').then(({ clinicalData }) => clinicalData),
+  "gl-3.0": () => import('./packages/clinical/gl-3.0.ts').then(({ clinicalData }) => clinicalData),
+  "gl-3.0-2026": () => import('./packages/clinical/gl-3.0-2026.ts').then(({ clinicalData }) => clinicalData),
 });
 const crosswalkLoaders: Readonly<Record<string, GlDataLoader>> = Object.freeze({
-  "gl-2022__yb-2.0": () => import('./packages/crosswalks/gl-2022__yb-2.0.ts').then(({ crosswalkData }) => crosswalkData),
+  "gl-3.0__yb-2.0": () => import('./packages/crosswalks/gl-3.0__yb-2.0.ts').then(({ crosswalkData }) => crosswalkData),
+  "gl-3.0-2026__yb-2.0-2026": () => import('./packages/crosswalks/gl-3.0-2026__yb-2.0-2026.ts').then(({ crosswalkData }) => crosswalkData),
 });
 
 export async function loadGlData(packages?: { clinicalIcd?: string; insuranceIcd?: string } | null): Promise<Record<string, unknown>> {

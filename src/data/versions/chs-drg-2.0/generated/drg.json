@@ -740,12 +740,12 @@
     "weightTier2": null
   },
   "EK23": {
-    "description": "伴肺水肿和呼吸衰竭的无创呼吸支持技术，伴合并症或并发症",
+    "description": "伴肺水肿或呼吸衰竭的无创呼吸支持技术，伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK25": {
-    "description": "伴肺水肿和呼吸衰竭的无创呼吸支持技术，不伴合并症或并发症",
+    "description": "伴肺水肿或呼吸衰竭的无创呼吸支持技术，不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -2260,7 +2260,7 @@
     "weightTier2": null
   },
   "NR15": {
-    "description": "女性生殖系统恶性肿瘤，不伴严重合并症或并发症",
+    "description": "女性生殖系统恶性肿瘤，不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -2675,7 +2675,7 @@
     "weightTier2": null
   },
   "RS13": {
-    "description": "淋巴瘤及其他类型白血病，伴一般合并症或并发症",
+    "description": "淋巴瘤及其他类型白血病，伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },

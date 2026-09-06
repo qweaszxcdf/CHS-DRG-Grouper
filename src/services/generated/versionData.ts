@@ -22,7 +22,7 @@ const versionLoaders: Readonly<Record<string, VersionLoader>> = Object.freeze({
     const [{ commonData }, { versionData }, { insuranceData }] = await Promise.all([
       import('./common/chs-3.0.ts'),
       import('./versions/chs-drg-3.0.ts'),
-      import('./packages/insurance/yb-2.0.ts'),
+      import('./packages/insurance/yb-2.0-2026.ts'),
     ]);
 
     return Object.freeze({

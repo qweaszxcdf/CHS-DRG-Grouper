@@ -18,7 +18,6 @@ export function useBatchHandlers({
   searchSource,
   version = DEFAULT_RULE_VERSION,
   uploadedBatchFile,
-  parsedPreview,
   parsedRows,
   batchData,
   batchResults,
@@ -46,9 +45,9 @@ export function useBatchHandlers({
   setPreviewAgeKey,
   setPreviewAgeDaysKey,
   setPreviewBirthWeightKey,
+  setPreviewAdmissionWeightKey,
   setPreviewDischargeKey,
   setPreviewNewTechniqueKey,
-  setPreviewMultiSiteKey,
   setPreviewIntensiveCareKey,
   setPreviewIcuHoursKey,
   setPreviewCrrtHoursKey,
@@ -173,9 +172,9 @@ export function useBatchHandlers({
                 ageKey: guessedAge,
                 ageDaysKey: guessedAgeDays,
                 bwKey: guessedBirthWeight,
+                admissionWeightKey: guessedAdmissionWeight,
                 dischargeKey: guessedDischarge,
                 newTechKey: guessedNewTechnique,
-                multiSiteKey: guessedMultiSite,
                 intensiveCareKey: guessedIntensiveCare,
                 icuHoursKey: guessedIcuHours,
                 crrtHoursKey: guessedCrrtHours,
@@ -190,9 +189,9 @@ export function useBatchHandlers({
               setPreviewAgeKey(prev => (prev && prev.length) ? prev : guessedAge);
               setPreviewAgeDaysKey(prev => (prev && prev.length) ? prev : guessedAgeDays);
               setPreviewBirthWeightKey(prev => (prev && prev.length) ? prev : guessedBirthWeight);
+              setPreviewAdmissionWeightKey(prev => (prev && prev.length) ? prev : guessedAdmissionWeight);
               setPreviewDischargeKey(prev => (prev && prev.length) ? prev : guessedDischarge);
               setPreviewNewTechniqueKey(prev => (prev && prev.length) ? prev : guessedNewTechnique);
-              setPreviewMultiSiteKey(prev => (prev && prev.length) ? prev : guessedMultiSite);
               setPreviewIntensiveCareKey(prev => (prev && prev.length) ? prev : guessedIntensiveCare);
               setPreviewIcuHoursKey(prev => (prev && prev.length) ? prev : guessedIcuHours);
               setPreviewCrrtHoursKey(prev => (prev && prev.length) ? prev : guessedCrrtHours);
@@ -283,9 +282,9 @@ export function useBatchHandlers({
     setPreviewAgeKey,
     setPreviewAgeDaysKey,
     setPreviewBirthWeightKey,
+    setPreviewAdmissionWeightKey,
     setPreviewDischargeKey,
     setPreviewNewTechniqueKey,
-    setPreviewMultiSiteKey,
     setPreviewIntensiveCareKey,
     setPreviewIcuHoursKey,
     setPreviewCrrtHoursKey,
@@ -429,7 +428,7 @@ export function useBatchHandlers({
   const handleDownload = useCallback(() => {
     const conversionApplied = (searchSource === 'GL');
     try {
-      if (parsedPreview && parsedRows && Array.isArray(parsedRows) && batchResults && batchResults.length) {
+      if (Array.isArray(parsedRows) && batchResults && batchResults.length) {
         const resMap = new Map();
         for (const r of batchResults) resMap.set(String(r.id), r);
 
@@ -520,7 +519,7 @@ export function useBatchHandlers({
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }, [searchSource, parsedPreview, parsedRows, batchResults, uploadedBatchFile, batchData]);
+  }, [searchSource, parsedRows, batchResults, uploadedBatchFile, batchData]);
 
   return {
     handleFileUpload,

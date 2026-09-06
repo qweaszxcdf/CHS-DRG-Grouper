@@ -46,14 +46,16 @@ function isAdrgRule(value: unknown): value is AdrgRule {
   if (!isRecord(value)) return false;
   if (value.logic !== undefined && typeof value.logic !== 'string') return false;
   if (value.sections !== undefined && !isStringArrayRecord(value.sections)) return false;
+  if (value.sectionAliases !== undefined && !isStringRecord(value.sectionAliases)) return false;
   if (value.sectionMinimumMatches !== undefined && !isPositiveIntegerRecord(value.sectionMinimumMatches)) return false;
+  if (value.sectionMinimumOccurrences !== undefined && !isPositiveIntegerRecord(value.sectionMinimumOccurrences)) return false;
   if (value._logicRPN !== undefined && (!Array.isArray(value._logicRPN) || !value._logicRPN.every(isRpnToken))) return false;
   if (value._logicCompileError !== undefined && value._logicCompileError !== null && typeof value._logicCompileError !== 'string') return false;
   for (const field of ['referencedADRGs', 'requiredReferencedADRGs']) {
     if (value[field] !== undefined && !isStringArray(value[field])) return false;
   }
   if (value.requiredProcedureGroups !== undefined && (!Array.isArray(value.requiredProcedureGroups) || !value.requiredProcedureGroups.every(isStringArray))) return false;
-  for (const field of ['anyProcedureRequired', 'zeroProceduresRequired', 'multiSite', 'intensiveCare']) {
+  for (const field of ['anyProcedureRequired', 'zeroProceduresRequired', 'intensiveCare']) {
     if (value[field] !== undefined && typeof value[field] !== 'boolean') return false;
   }
   return true;
@@ -123,6 +125,8 @@ function isRuleData(value: unknown): value is RuleData {
   if (!Array.isArray(value.adrgRules) || !value.adrgRules.every(isAdrgDefinition)) return false;
   if (!Array.isArray(value.mdcRules) || !value.mdcRules.every(isMdcRule)) return false;
   if (!isStringRecord(value.ccCodes) || !isStringRecord(value.mccCodes) || !isStringRecord(value.cceCodes)) return false;
+  if (value.allProcedureCodes !== undefined && !isBooleanRecord(value.allProcedureCodes)) return false;
+  if (value.qyDiffCodes !== undefined && !isBooleanRecord(value.qyDiffCodes)) return false;
   if (!isBooleanRecord(value.zdInvalid) || !isBooleanRecord(value.ssInvalid)) return false;
   if (!isRecord(value.icd10GrayJson) || !isRecord(value.icd9GrayJson)) return false;
   if (!Array.isArray(value.drgSubgroupRules) || !value.drgSubgroupRules.every(isDrgSubgroupRule)) return false;

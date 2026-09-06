@@ -17,7 +17,9 @@ export type RpnToken = string | { type: 'SECTION'; name: string };
 export interface AdrgRule {
   logic?: string;
   sections?: Record<string, string[]>;
+  sectionAliases?: Record<string, string>;
   sectionMinimumMatches?: Record<string, number>;
+  sectionMinimumOccurrences?: Record<string, number>;
   _logicRPN?: RpnToken[];
   _logicCompileError?: string | null;
   referencedADRGs?: string[];
@@ -25,7 +27,6 @@ export interface AdrgRule {
   requiredProcedureGroups?: string[][];
   anyProcedureRequired?: boolean;
   zeroProceduresRequired?: boolean;
-  multiSite?: boolean;
   intensiveCare?: boolean;
   [key: string]: unknown;
 }
@@ -77,8 +78,8 @@ export type KnownSubgroupCondition =
   | 'WITH_MCC'
   | 'WITH_CC'
   | 'NO_CC'
+  | 'ROBOT_ASSISTED_SURGERY'
   | 'NEW_TECHNIQUE'
-  | 'MULTI_SITE'
   | 'ADRG_ONLY';
 
 // Keep runtime input open to future/unknown tokens; the evaluator fails closed.
@@ -115,6 +116,8 @@ export interface RuleData {
   ccCodes: Record<string, string>;
   mccCodes: Record<string, string>;
   cceCodes: Record<string, string>;
+  allProcedureCodes?: Record<string, boolean>;
+  qyDiffCodes?: Record<string, boolean>;
   zdInvalid: Record<string, boolean>;
   ssInvalid: Record<string, boolean>;
   icd10GrayJson: Record<string, unknown>;
@@ -133,6 +136,9 @@ export interface RuleSet {
   loadCCCodes(): Record<string, string>;
   loadMCCCodes(): Record<string, string>;
   loadCCECodes(): Record<string, string>;
+  loadAllProcedureCodes(): Record<string, boolean>;
+  /** Small derived exclusion set used by QY/anyProcedureRequired matching. */
+  loadQyDiffCodes?(): Record<string, boolean>;
   isInvalidDiagnosis(code: string | null | undefined): boolean;
   isInvalidProcedure(code: string | null | undefined): boolean;
   isGrayDiag(code: string | null | undefined): boolean;

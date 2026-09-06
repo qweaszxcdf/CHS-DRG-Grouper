@@ -20,15 +20,25 @@ let IS_LITE = import.meta.env?.VITE_LITE === 'true';
 // helper for tests to override behavior
 export function _setLite(val: unknown): void { IS_LITE = !!val; }
 
+const DEFAULT_VERSION_STRATEGY = {
+  daySurgeryAsNoCC: false,
+  robotAssistedSurgery: { adrgCodes: [], procedureCodes: [] },
+  highRiskPregnancyAsMcc: { adrgCodes: [], diagnosisCodes: [] },
+};
+
 // Moved helpers (see `src/services/grouper/*`)
 import { createMdcAdrgSelection } from './grouper/mdcAdrgSelection.ts';
 import { createSubgroupEvaluator } from './grouper/subgroupEval.ts';
 
-export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy = { daySurgeryAsNoCC: false } }: CreateGrouperEngineOptions): GrouperEngine {
+export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy = DEFAULT_VERSION_STRATEGY }: CreateGrouperEngineOptions): GrouperEngine {
 const { isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
 const drgMap = loadDRGMap();
 const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, commonStrategy);
-const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule, versionStrategy);
+  const { evaluateADRGSubgroups } = createSubgroupEvaluator(
+    ruleSet,
+    matchesRule,
+    versionStrategy,
+  );
 
 // Public re-exports (kept for compatibility; prefer importing from `src/services/grouper/*` directly)
 
@@ -133,9 +143,9 @@ const PATIENT_INFO_FIELDS = [
     'age',
     'ageInDays',
     'birthWeight',
+    'admissionWeight',
     'dischargeStatus',
     'newTechnique',
-    'multiSite',
     'intensiveCare',
     'icuHours',
     'crrtHours',
@@ -144,7 +154,6 @@ const PATIENT_INFO_FIELDS = [
 ] as const;
 const PATIENT_BOOLEAN_FIELDS = [
     'newTechnique',
-    'multiSite',
     'intensiveCare',
     'daySurgery',
 ] as const;
@@ -172,6 +181,7 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
         ['age', 0],
         ['ageInDays', 0],
         ['birthWeight', 1],
+        ['admissionWeight', 1],
         ['icuHours', 0],
         ['crrtHours', 0],
         ['lengthOfStay', 0],
@@ -360,18 +370,18 @@ function groupPatient(
 
     // Fallback: other MDCs by principal diagnosis (use helper)
     if (!matchedMDC) {
-        matchedMDC = findMDCByPrincipal(principalDiagnosis, normalizedPatientInfo, matchTrace);
+        matchedMDC = findMDCByPrincipal(principalDiagnosis, normalizedPatientInfo.gender, matchTrace);
     }
     // 3. Try to match ADRGs in the MDC (extracted helper)
     if (!matchedADRG && matchedMDC) {
-        const adrgRes = findADRGInMDC(matchedMDC, diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
+        const adrgRes = findADRGInMDC(matchedMDC.code, diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
         matchedADRG = adrgRes.matchedADRG;
         ruleMatchDetail = adrgRes.ruleMatchDetail;
     }
     // 4. Check if matched ADRG should be redirected to QY group
-    // Rule: If ADRG second letter > 'Q' (medical groups R-Z) AND principal procedure exists
-    // Then redirect to QY (surgical procedure unrelated to diagnosis)
-    const qyRedirect = checkQYRedirect(matchedADRG, matchedMDC, principalProcedure, matchTrace);
+    // Rule: If ADRG second letter > 'Q' (medical groups R-Z) AND the principal
+    // procedure satisfies the 3.0 all-procedure/QY condition, redirect to QY.
+    const qyRedirect = checkQYRedirect(matchedADRG?.code ?? null, matchedMDC?.code ?? null, principalProcedure, matchTrace);
     if (qyRedirect) return qyRedirect;
 
     if (!matchedADRG) {
@@ -381,8 +391,7 @@ function groupPatient(
     // --- Step 4: Find DRG within ADRG ---
     // DRGs are evaluated once, in their DRG.dat order. A raw/subgroup_rules source
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
-    const originalPrincipalProcedure = procedureList.length > 0 ? procedureList[0] ?? null : null;
-    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG, diagnosisList, procedureList, normalizedPatientInfo, principalDiagnosis, originalPrincipalProcedure, matchTrace);
+    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG?.code ?? null, diagnosisList, procedureList, normalizedPatientInfo, matchTrace);
 
     const out: GroupingResult = {
         drg: matchedDRG ? matchedDRG.code : "0000",
@@ -429,18 +438,17 @@ function groupPatient(
  * Groups a batch of patient records.
  * @returns {Array} Array of result objects for each record.
  */
-function groupBatch(...args: unknown[]): BatchGroupingResult[] {
+function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
     // Expect an array of row objects: { id?, diagnoses?, procedures?, patientInfo? }
-    const rows = args.length > 0 ? args[0] : [];
     if (!Array.isArray(rows)) return [];
 
     const out: BatchGroupingResult[] = [];
     for (let i = 0; i < rows.length; i++) {
-        const row = (rows[i] || {}) as BatchGroupingRow;
+        const row = rows[i] || {};
         try {
-            // Normalize diagnoses/procedures input: accept arrays or delimited strings.
-            const diagnoses = normalizeCodeList(row.diagnoses);
-            const procedures = normalizeCodeList(row.procedures);
+            // groupPatient owns code normalization; keep the batch input unchanged here.
+            const diagnoses = row.diagnoses ?? [];
+            const procedures = row.procedures ?? [];
 
             // Keep input diagnosis/procedure token boundaries (do NOT auto-split delimited strings).
             // This preserves CSV cell contents like 'M35.002+J99.1*' as a single diagnosis token.
@@ -451,8 +459,8 @@ function groupBatch(...args: unknown[]): BatchGroupingResult[] {
             // Preserve id and original arrays for downstream UI
             const result = {
                 id: row.id || null,
-                diagnoses: diagnoses,
-                procedures: procedures,
+                diagnoses: typeof diagnoses === 'string' ? [diagnoses] : [...diagnoses],
+                procedures: typeof procedures === 'string' ? [procedures] : [...procedures],
                 ...res
             };
             out.push(result);

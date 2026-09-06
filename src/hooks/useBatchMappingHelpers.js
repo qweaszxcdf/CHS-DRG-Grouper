@@ -11,9 +11,9 @@ export function useBatchMappingHelpers({
   previewAgeRef,
   previewAgeDaysRef,
   previewBirthWeightRef,
+  previewAdmissionWeightRef,
   previewDischargeRef,
   previewNewTechniqueRef,
-  previewMultiSiteRef,
   previewIntensiveCareRef,
   previewIcuHoursRef,
   previewCrrtHoursRef,
@@ -216,9 +216,9 @@ export function useBatchMappingHelpers({
     const ageCandidates = ['age', 'age_years', 'age_year', 'patient_age', 'patient_age_years', '年龄', '年龄岁', '岁'];
     const ageDaysCandidates = ['ageindays', 'age_in_days', 'age_days', 'patient_age_in_days', 'patient_age_days', '年龄天数', '出生年龄天数', '出生年龄(天)'];
     const birthWeightCandidates = ['birthweight', 'birth_weight', '出生体重', 'birth_weight_g', '体重'];
+    const admissionWeightCandidates = ['admissionweight', 'admission_weight', 'admission-weight', '入院体重', 'admission_weight_g'];
     const dischargeCandidates = ['discharge', 'discharge_status', 'dischargeStatus', '出院状态', 'discharge_status'];
     const newTechniqueCandidates = ['new_technique', 'newtechnique', 'new-technique', '新技术', 'new technique', 'is_new_tech', 'newtech'];
-    const multiSiteCandidates = ['multi_site', 'multisite', 'multi-site', '多部位', '多部位手术', '多部位关节置换'];
     const intensiveCareCandidates = ['intensivecare', 'intensive_care', 'intensive-care', 'icu_flag', 'icu_status', '重症监护', '重症监护标志', '是否重症监护'];
     const icuHoursCandidates = ['icu_hours', 'icuhours', 'icu-hours', 'icu hour', 'icu hours', '重症监护小时', 'icu时长', 'icu小时'];
     const crrtHoursCandidates = ['crrt_hours', 'crrthours', 'crrt-hours', 'crrt hour', 'crrt hours', '连续性肾脏替代治疗时长', 'crrt时长', 'crrt小时'];
@@ -262,10 +262,13 @@ export function useBatchMappingHelpers({
       if (dayAliases.has(norm(ageKey))) ageKey = '';
       else ageDaysKey = '';
     }
-    const bwKey = (previewBirthWeightRef.current || '') || findFieldNameFuzzy(sample, birthWeightCandidates) || findFieldName(sample, birthWeightCandidates) || '';
+    const autoBirthWeightKey = findFieldNameFuzzy(sample, birthWeightCandidates) || findFieldName(sample, birthWeightCandidates) || '';
+    const isAdmissionWeightKey = (key) => /入院.*体重|admission[\s_.():，\u200B\uFEFF-]*weight/i.test(String(key || ''));
+    const bwKey = (previewBirthWeightRef.current || '')
+      || (isAdmissionWeightKey(autoBirthWeightKey) ? '' : autoBirthWeightKey);
+    const admissionWeightKey = (previewAdmissionWeightRef.current || '') || findFieldNameFuzzy(sample, admissionWeightCandidates) || findFieldName(sample, admissionWeightCandidates) || '';
     const dischargeKey = (previewDischargeRef.current || '') || findFieldNameFuzzy(sample, dischargeCandidates) || findFieldName(sample, dischargeCandidates) || '';
     const newTechKey = (previewNewTechniqueRef.current || '') || findFieldNameFuzzy(sample, newTechniqueCandidates) || findFieldName(sample, newTechniqueCandidates) || '';
-    const multiSiteKey = (previewMultiSiteRef.current || '') || findFieldNameFuzzy(sample, multiSiteCandidates) || findFieldName(sample, multiSiteCandidates) || '';
     const intensiveCareKey = (previewIntensiveCareRef.current || '') || findFieldNameByNormalizedAlias(sample, intensiveCareCandidates) || '';
     const icuHoursKey = (previewIcuHoursRef.current || '') || findFieldNameFuzzy(sample, icuHoursCandidates) || findFieldName(sample, icuHoursCandidates) || '';
     const crrtHoursKey = (previewCrrtHoursRef.current || '') || findFieldNameFuzzy(sample, crrtHoursCandidates) || findFieldName(sample, crrtHoursCandidates) || '';
@@ -273,7 +276,7 @@ export function useBatchMappingHelpers({
     const daySurgeryKey = (previewDaySurgeryRef.current || '') || findFieldNameFuzzy(sample, daySurgeryCandidates) || findFieldName(sample, daySurgeryCandidates) || '';
     const genderKey = (previewGenderRef.current || '') || findFieldNameFuzzy(sample, genderCandidates) || findFieldName(sample, genderCandidates) || '';
 
-    return { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, dischargeKey, newTechKey, multiSiteKey, intensiveCareKey, icuHoursKey, crrtHoursKey, lengthOfStayKey, daySurgeryKey, genderKey };
+    return { idKey, diagsKey, procsKey, ageKey, ageDaysKey, bwKey, admissionWeightKey, dischargeKey, newTechKey, intensiveCareKey, icuHoursKey, crrtHoursKey, lengthOfStayKey, daySurgeryKey, genderKey };
   }, [
     previewIdRef,
     previewDiagsRef,
@@ -281,9 +284,9 @@ export function useBatchMappingHelpers({
     previewAgeRef,
     previewAgeDaysRef,
     previewBirthWeightRef,
+    previewAdmissionWeightRef,
     previewDischargeRef,
     previewNewTechniqueRef,
-    previewMultiSiteRef,
     previewIntensiveCareRef,
     previewIcuHoursRef,
     previewCrrtHoursRef,

@@ -6,5 +6,6 @@ import mccCodes from "../../../data/drg-common/chs-3.0/generated/mcc_codes.json"
 import cceCodes from "../../../data/drg-common/chs-3.0/generated/cce_codes.json" with { type: 'json' };
 import zdInvalid from "../../../data/drg-common/chs-3.0/generated/zd_invalid.json" with { type: 'json' };
 import ssInvalid from "../../../data/drg-common/chs-3.0/generated/ss_invalid.json" with { type: 'json' };
+import qyDiffCodes from "../../../data/drg-common/chs-3.0/generated/qy_diff_codes.json" with { type: 'json' };
 
-export const commonData = Object.freeze({ adrgRules, mdcRules, ccCodes, mccCodes, cceCodes, zdInvalid, ssInvalid });
+export const commonData = Object.freeze({ adrgRules, mdcRules, ccCodes, mccCodes, cceCodes, zdInvalid, ssInvalid, qyDiffCodes });

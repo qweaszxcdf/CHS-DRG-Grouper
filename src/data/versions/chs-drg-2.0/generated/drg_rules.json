@@ -1185,7 +1185,7 @@
   },
   {
     "drgCode": "EK23",
-    "drgName": "伴肺水肿和呼吸衰竭的无创呼吸支持技术，伴合并症或并发症",
+    "drgName": "伴肺水肿或呼吸衰竭的无创呼吸支持技术，伴合并症或并发症",
     "adrgCode": "EK2",
     "conditions": [
       "WITH_CC"
@@ -1193,7 +1193,7 @@
   },
   {
     "drgCode": "EK25",
-    "drgName": "伴肺水肿和呼吸衰竭的无创呼吸支持技术，不伴合并症或并发症",
+    "drgName": "伴肺水肿或呼吸衰竭的无创呼吸支持技术，不伴合并症或并发症",
     "adrgCode": "EK2",
     "conditions": [
       "NO_CC"
@@ -3617,7 +3617,7 @@
   },
   {
     "drgCode": "NR15",
-    "drgName": "女性生殖系统恶性肿瘤，不伴严重合并症或并发症",
+    "drgName": "女性生殖系统恶性肿瘤，不伴合并症或并发症",
     "adrgCode": "NR1",
     "conditions": [
       "NO_CC"
@@ -4281,7 +4281,7 @@
   },
   {
     "drgCode": "RS13",
-    "drgName": "淋巴瘤及其他类型白血病，伴一般合并症或并发症",
+    "drgName": "淋巴瘤及其他类型白血病，伴合并症或并发症",
     "adrgCode": "RS1",
     "conditions": [
       "WITH_CC"

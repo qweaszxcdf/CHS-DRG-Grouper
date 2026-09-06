@@ -10,7 +10,9 @@ const CODE_EXTRACT_PATTERN = /^([^\s：:]+)/gm;
 
 // --- Helper functions used by parseRule ---
 function detectSpecialCases(text, rules) {
-  if (text.match(/包含.*全部手术或操作/)) rules.anyProcedureRequired = true;
+  if (text.match(/包含(?:全部|所有)手术或操作/) || text.match(/包含除[^\n。]*之外的所有手术或操作/)) {
+    rules.anyProcedureRequired = true;
+  }
   if (text.includes('无手术或操作')) rules.zeroProceduresRequired = true;
   const includeMatch = text.match(INCLUDE_PATTERN);
   if (includeMatch) rules.referencedADRGs = includeMatch[1].split('、');
@@ -49,8 +51,221 @@ function normalizeSectionHeader(raw) {
   return header;
 }
 
+function parseMinimumOccurrenceSectionHeader(line) {
+  const header = String(line || '')
+    .replace(/[：:]$/u, '')
+    .replace(/\s+/gu, '')
+    .trim();
+  const match = header.match(
+    /^(?:包含以下)?((?:主要|其他)?(?:诊断|手术或操作))且(?:全部)?(诊断|手术或操作)中(?:至少)?有?([0-9零〇一二两三四五六七八九十百]+)个(?:及以上|以上)$/u,
+  );
+  if (!match) return null;
+
+  const requiredSection = match[1];
+  const countedSection = match[2];
+  const requiredCategory = requiredSection.replace(/^(?:主要|其他)/u, '');
+  const rawMinimum = match[3];
+  let minimum;
+  if (/^\d+$/.test(rawMinimum)) {
+    minimum = Number(rawMinimum);
+  } else {
+    const digits = new Map([
+      ['零', 0], ['〇', 0], ['一', 1], ['二', 2], ['两', 2], ['三', 3],
+      ['四', 4], ['五', 5], ['六', 6], ['七', 7], ['八', 8], ['九', 9],
+    ]);
+    const units = new Map([['十', 10], ['百', 100]]);
+    let total = 0;
+    let current = 0;
+    let valid = true;
+    for (const char of rawMinimum) {
+      if (digits.has(char)) {
+        current = digits.get(char);
+        continue;
+      }
+      const unit = units.get(char);
+      if (!unit) {
+        valid = false;
+        break;
+      }
+      total += (current || 1) * unit;
+      current = 0;
+    }
+    const result = total + current;
+    minimum = valid && Number.isInteger(result) && result > 0 ? result : null;
+  }
+  if (requiredCategory !== countedSection || minimum === null) return null;
+  return { requiredSection, countedSection, minimum };
+}
+
 function formatRegionalRuleSection(section, index = '') {
   return `${section}${index ? ` ${index}` : ''}`;
+}
+
+const PRIMARY_PROCEDURE_QUALIFIER_PATTERN = /至\s*少\s*有\s*一个\s*是\s*主要\s*手术\s*(?:或\s*)?操作/u;
+const EVERY_CONDITION_PRIMARY_PROCEDURE_QUALIFIER_PATTERN = /每种条件中?\s*至\s*少\s*有\s*一个\s*是\s*主要\s*手术\s*(?:或\s*)?操作/u;
+const PROCEDURE_SECTION_REFERENCE_PATTERN = /((?:主要|其他|全部)?\s*手术\s*(?:或\s*)?操作)\s*(\d+)/gu;
+
+function extractProcedureSectionReferences(text) {
+  const references = [];
+  for (const match of String(text || '').matchAll(PROCEDURE_SECTION_REFERENCE_PATTERN)) {
+    const prefix = String(match[1] || '').replace(/\s+/gu, '');
+    const index = match[2];
+    const section = prefix.startsWith('主要')
+      ? '主要手术或操作'
+      : prefix.startsWith('其他')
+        ? '其他手术或操作'
+        : '手术或操作';
+    const reference = `${section} ${index}`;
+    if (!references.includes(reference)) references.push(reference);
+  }
+  return references;
+}
+
+function appendPrincipalProcedureRequirement(line, references) {
+  const principalReferences = references.map(reference => reference.startsWith('主要')
+    ? reference
+    : `主要${reference}`);
+  if (principalReferences.length === 0) return line;
+  const expression = principalReferences.join(' 或 ');
+  const normalizedLine = line.trim();
+  const leadingOrMatch = normalizedLine.match(/^或\s*/u);
+  const leadingOr = leadingOrMatch ? leadingOrMatch[0] : '';
+  const conditionLine = leadingOr ? normalizedLine.slice(leadingOr.length).trimStart() : normalizedLine;
+  const firstProcedureIndex = conditionLine.search(/(?:(?:主要|其他|全部)\s*)?手术\s*(?:或\s*)?操作\s*\d+/u);
+  if (firstProcedureIndex >= 0 && /诊断/u.test(conditionLine.slice(0, firstProcedureIndex))) {
+    const diagnosisPart = conditionLine.slice(0, firstProcedureIndex)
+      .replace(/[+＋]\s*$/u, '')
+      .trimEnd();
+    const procedurePart = conditionLine.slice(firstProcedureIndex).trimStart();
+    const result = `${diagnosisPart} + (${expression}) + ${procedurePart}`;
+    return `${leadingOr}${result}`;
+  }
+  return `${leadingOr}(${expression}) + ${conditionLine}`;
+}
+
+function expandPrimaryProcedureQualifier(normalizedLine) {
+  const qualifierReferences = [];
+  let hasQualifier = false;
+  let appliesToEveryCondition = false;
+  const withoutQualifiers = normalizedLine.replace(/[（(]([^（）()]*)[）)]/gu, (whole, content) => {
+    const qualifierText = String(content || '').replace(/\s+/gu, ' ').trim();
+    if (!PRIMARY_PROCEDURE_QUALIFIER_PATTERN.test(qualifierText)) return whole;
+    hasQualifier = true;
+    if (EVERY_CONDITION_PRIMARY_PROCEDURE_QUALIFIER_PATTERN.test(qualifierText)) {
+      appliesToEveryCondition = true;
+    }
+    qualifierReferences.push(...extractProcedureSectionReferences(qualifierText));
+    return '';
+  }).replace(/\s+/gu, ' ').trim();
+
+  if (!hasQualifier) return { line: normalizedLine, hasQualifier: false, appliesToEveryCondition: false };
+
+  const conditionReferences = extractProcedureSectionReferences(withoutQualifiers);
+  const references = [...new Set(qualifierReferences.length > 0 ? qualifierReferences : conditionReferences)];
+  return {
+    line: appliesToEveryCondition
+      ? withoutQualifiers
+      : appendPrincipalProcedureRequirement(withoutQualifiers, references),
+    hasQualifier,
+    appliesToEveryCondition,
+  };
+}
+
+function expandPrimaryProcedureQualifiers(lines) {
+  // Lines have already passed through normalizeRegionalRuleLine once.
+  const appliesToEveryCondition = lines.some(line => (
+    EVERY_CONDITION_PRIMARY_PROCEDURE_QUALIFIER_PATTERN.test(line)
+  ));
+
+  return lines.map(line => {
+    if (!line.includes('入组条件')) return line;
+    const expanded = expandPrimaryProcedureQualifier(line);
+    if (!appliesToEveryCondition || (expanded.hasQualifier && !expanded.appliesToEveryCondition)) {
+      return expanded.line;
+    }
+    return appendPrincipalProcedureRequirement(
+      expanded.line,
+      extractProcedureSectionReferences(expanded.line),
+    );
+  });
+}
+
+function normalizeQualifiedRuleReferences(line) {
+  return String(line || '')
+    // PDF text extraction can split the two characters in “手术” across a
+    // line, which otherwise changes the section label before tokenization.
+    .replace(/手\s+术/gu, '手术')
+    // “手术操作” and “手术或操作” are the same section label in the
+    // source tables; use the canonical spelling used by the rule model.
+    .replace(/手术\s*操作/gu, '手术或操作')
+    // In the new table, position is written in parentheses after a generic
+    // section label, e.g. “诊断 1（主要）”. The section header itself is
+    // generic, so retain that base label and discard only the annotation.
+    .replace(/(?:(主要|其他|全部)\s*)?(手术\s*(?:或\s*)?操作|诊断)\s*(\d+)\s*[（(]\s*(主要|其他|全部)\s*[）)]/gu, (_match, prefix, section, index, qualifier) => {
+      const position = qualifier === '主要' || qualifier === '其他'
+        ? qualifier
+        : (prefix === '主要' || prefix === '其他' ? prefix : '');
+      const normalizedSection = String(section || '').replace(/\s+/gu, ' ').trim();
+      return `${position}${normalizedSection} ${index}`;
+    })
+    .replace(/全部\s*(?=手术\s*或\s*操作)/gu, '')
+    .replace(/((?:主要|其他)\s*)?(手术\s*(?:或\s*)?操作|诊断)\s*(\d+)/gu, (_match, position = '', section, index) => {
+      const normalizedPosition = String(position || '').replace(/\s+/gu, '').trim();
+      const normalizedSection = String(section || '').replace(/\s+/gu, ' ').trim();
+      return `${normalizedPosition}${normalizedSection} ${index}`;
+    })
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
+// Keep PDF-layout whitespace out of condition expressions.  PDF text layers
+// may emit spaces before/after operators, around qualifiers, or between a
+// section name and its position number.  These spaces are presentation only;
+// canonicalizing them here keeps extracted source and generated `logic`
+// stable across equivalent PDFs without changing the referenced sections.
+function normalizeRuleConditionWhitespace(rawLine) {
+  const line = String(rawLine || '').trim();
+  if (!/^(?:\+|＋|&&?|\|\||(?:或)?入组条件)/u.test(line)) return line;
+
+  let normalized = line.replace(/\s+/gu, ' ');
+  normalized = normalized
+    .replace(/^((?:或)?入组条件(?:\s*\d+)?[：:])\s*/u, '$1')
+    // Keep one space on both sides of infix `+`; a leading `+` is the
+    // continuation marker used by the source table, so it only gets a
+    // trailing space after trimming the line boundary.
+    .replace(/\s*([+＋])\s*/gu, ' + ')
+    .replace(/^\s+\+/u, '+')
+    .replace(/\s+([（(])/gu, '$1')
+    .replace(/([（(])\s+/gu, '$1')
+    .replace(/\s+([）)])/gu, '$1');
+
+  return normalized.replace(
+    /((?:(?:主要|其他|全部)\s*)?(?:诊断|手术\s*(?:或\s*)?操作|手术操作))\s*(\d+)/gu,
+    (_match, section, index) => `${String(section).replace(/\s+/gu, ' ').trim()} ${index}`,
+  );
+}
+
+function mergeRuleConditionContinuationLines(text) {
+  const merged = [];
+  const mergedInput = String(text || '').replace(
+    /((?:诊断|手术\s*(?:或\s*)?操作)中(?:至少)?有?[0-9零〇一二两三四五六七八九十百]+)\s*\n\s*(个(?:及以上|以上)[：:])/gu,
+    '$1$2',
+  );
+  for (const rawLine of mergedInput.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const previous = merged.at(-1) || '';
+    const isNewCondition = /^(?:或\s*)?入组条件\s*\d*/u.test(line);
+    const isSectionHeader = /^(?:主要|其他|全部)?\s*(?:诊断|手术\s*(?:或\s*)?操作)\s*\d*\s*[：:]/u.test(line);
+    const isCodeLine = isRegionalRuleCodeLine(line);
+    const continuesCondition = /^(?:或\s*)?入组条件\s*\d*/u.test(previous)
+      && !isNewCondition
+      && !isSectionHeader
+      && !isCodeLine;
+    if (continuesCondition) merged[merged.length - 1] = `${previous} ${line}`;
+    else merged.push(line);
+  }
+  return merged;
 }
 
 function findRegionalRuleTableReferences(line) {
@@ -86,11 +301,17 @@ function findRegionalRuleTableReferences(line) {
 }
 
 function normalizeRegionalRuleLine(rawLine) {
-  const line = String(rawLine || '')
+  let line = String(rawLine || '')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/\s+([：:])\s*/g, '$1');
   if (!line) return line;
+
+  line = normalizeRuleConditionWhitespace(line);
+  if (line.includes('入组条件')) {
+    line = normalizeQualifiedRuleReferences(line);
+    line = normalizeRuleConditionWhitespace(line);
+  }
 
   const references = findRegionalRuleTableReferences(line);
   if (references.length > 1) {
@@ -100,7 +321,7 @@ function normalizeRegionalRuleLine(rawLine) {
       const operator = /或/.test(between) ? ' 或 ' : ' + ';
       return `${result}${operator}${reference.section}`;
     }, references[0].section);
-    return `入组条件：${expression}`;
+    return normalizeRuleConditionWhitespace(`入组条件：${expression}`);
   }
   if (references.length === 1) return `${references[0].section}:`;
 
@@ -124,10 +345,10 @@ function normalizeRegionalRuleLine(rawLine) {
 }
 
 function normalizeRegionalRuleLines(text) {
-  return String(text || '')
-    .split(/\r?\n/)
+  const normalizedLines = mergeRuleConditionContinuationLines(text)
     .map(normalizeRegionalRuleLine)
     .filter(Boolean);
+  return expandPrimaryProcedureQualifiers(normalizedLines);
 }
 
 function inferRegionalSectionMinimumMatches(text) {
@@ -176,6 +397,27 @@ function postParseCleanup(rules) {
   }
 }
 
+function addReferencedSectionAliases(rules) {
+  const referencedSections = new Set(
+    (String(rules.logic || '').match(/(?:主要诊断|其他诊断|主要手术或操作|其他手术或操作|手术或操作)\s+\d+/g) || []),
+  );
+  for (const sectionName of referencedSections) {
+    if (rules.sections[sectionName]) continue;
+
+    // The 3.0 table uses generic source sections such as “诊断 1”, while
+    // the condition line qualifies each reference as principal/other. Keep
+    // the same codes under a position-specific alias so the runtime matcher
+    // can enforce that qualification without changing the source grouping.
+    const genericName = sectionName.replace(/^(?:主要|其他)(?=(?:诊断|手术或操作)(?:\s|$))/u, '');
+    if (Array.isArray(rules.sections[genericName])) {
+      rules.sectionAliases = rules.sectionAliases || {};
+      rules.sectionAliases[sectionName] = genericName;
+    } else {
+      rules.sections[sectionName] = [];
+    }
+  }
+}
+
 function prepareExplicitSubgroupRuleContent(content) {
   const cleaned = String(content || '').replace(/\+重症监护(?:信息)?/g, '');
   return addImplicitRegionalRuleSections(normalizeRegionalRuleLines(cleaned)).join('\n');
@@ -205,12 +447,15 @@ function descriptorLineToLogic(line) {
   return '';
 }
 
-function parseRule(text) {
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+function parseRule(text, { alreadyNormalized = false } = {}) {
+  const normalizedText = alreadyNormalized
+    ? String(text || '')
+    : normalizeRegionalRuleLines(text).join('\n');
+  const lines = normalizedText.split('\n').map(l => l.trim()).filter(Boolean);
   const rules = { logic: '', sections: {} };
-  detectSpecialCases(text, rules);
-  parseSimultaneousProcedureGroups(text, rules);
-  let currentSection = null;
+  detectSpecialCases(normalizedText, rules);
+  parseSimultaneousProcedureGroups(normalizedText, rules);
+  let currentSections = [];
   let skippingProcedureGroupBlock = false;
   for (const line of lines) {
     if (isSimultaneousProcedureGroupLine(line)) {
@@ -237,19 +482,34 @@ function parseRule(text) {
       continue;
     }
     if (line.endsWith('：') || line.endsWith(':')) {
-      currentSection = normalizeSectionHeader(line);
-      if (!rules.sections[currentSection]) rules.sections[currentSection] = [];
+      const minimumOccurrenceHeader = parseMinimumOccurrenceSectionHeader(line);
+      if (minimumOccurrenceHeader) {
+        const { requiredSection, countedSection, minimum } = minimumOccurrenceHeader;
+        currentSections = [...new Set([requiredSection, countedSection])];
+        for (const section of currentSections) {
+          if (!rules.sections[section]) rules.sections[section] = [];
+        }
+        const expression = `${requiredSection} + ${countedSection}`;
+        rules.logic += (rules.logic ? ' + ' : '') + expression;
+        rules.sectionMinimumOccurrences = {
+          ...(rules.sectionMinimumOccurrences || {}),
+          [countedSection]: minimum,
+        };
+      } else {
+        const currentSection = normalizeSectionHeader(line);
+        currentSections = [currentSection];
+        if (!rules.sections[currentSection]) rules.sections[currentSection] = [];
+      }
       continue;
     }
     // skip non-code descriptive lines such as "包含全部手术或操作"
     if (!/^[A-Za-z0-9]/.test(line)) continue;
-    rules.sections[currentSection].push(line.match(CODE_PATTERN)[1]);
+    const codeMatch = line.match(CODE_PATTERN);
+    if (!codeMatch || currentSections.length === 0) continue;
+    for (const section of currentSections) rules.sections[section].push(codeMatch[1]);
   }
   postParseCleanup(rules);
-  const referencedSections = new Set((String(rules.logic || '').match(/(?:主要诊断|其他诊断|主要手术或操作|其他手术或操作|手术或操作)\s+\d+/g) || []));
-  for (const sec of referencedSections) {
-    if (!rules.sections[sec]) rules.sections[sec] = [];
-  }
+  addReferencedSectionAliases(rules);
   try { compileLogicToRPN(rules); } catch { /* compileLogicToRPN records errors on rule */ }
   return rules;
 }
@@ -307,7 +567,10 @@ function tokenizeLogic(expr, sortedSections) {
 }
 
 function buildCompileSectionNames(rule) {
-  return Object.keys(rule.sections || {});
+  return [...new Set([
+    ...Object.keys(rule.sections || {}),
+    ...Object.keys(rule.sectionAliases || {}),
+  ])];
 }
 
 function shuntingYard(tokens) {
@@ -440,6 +703,7 @@ export {
   isRegionalRuleCodeLine,
   normalizeRegionalRuleLine,
   normalizeRegionalRuleLines,
+  normalizeRuleConditionWhitespace,
   parseRule,
   prepareExplicitSubgroupRuleContent,
 };

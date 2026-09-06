@@ -2,22 +2,25 @@
 const fs = require('fs');
 const path = require('path');
 const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
+const { parseIcdPackageDatLine, resolvePackageChain } = require('./lib/icd_package.cjs');
+const { writeFileIfChanged } = require('./lib/write_if_changed.cjs');
+
+function readDatLines(filePath) {
+  if (!fs.existsSync(filePath)) throw new Error(`Missing required DAT file: ${filePath}`);
+  try {
+    return fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
+  } catch (error) {
+    throw new Error(`Unable to read required DAT file ${filePath}: ${error.message}`, { cause: error });
+  }
+}
 
 // Generic DAT loader: supports 'index' (code->value), and 'simple'/'gray' (code->true)
 function loadDat(filePath, type) {
   const isIndex = type === 'index';
   const isCodeOnly = type === 'simple' || type === 'gray';
   if (!isIndex && !isCodeOnly) throw new Error(`Unsupported DAT type '${type}' for ${filePath}`);
-  if (!fs.existsSync(filePath)) throw new Error(`Missing required DAT file: ${filePath}`);
-
   const index = {};
-  let lines;
-  try {
-    lines = fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
-  } catch (error) {
-    throw new Error(`Unable to read required DAT file ${filePath}: ${error.message}`, { cause: error });
-  }
-  for (const raw of lines) {
+  for (const raw of readDatLines(filePath)) {
     const s = raw.trim();
     if (!s) continue;
 
@@ -38,11 +41,89 @@ function loadDat(filePath, type) {
   return index;
 }
 
+// Resolve an ICD package's effective data from its raw source chain. A dated
+// insurance package is a delta over its parent, so additions are merged and
+// inline "- CODE" entries are applied after all package layers are read.
+function loadEffectivePackageData(packageRoot, packageId, filename, type) {
+  const chain = resolvePackageChain(packageRoot, packageId);
+  const data = {};
+  const removedCodes = new Set();
+
+  for (const [index, packageInfo] of chain.entries()) {
+    const sourcePath = path.join(packageInfo.dir, 'raw', filename);
+    if (fs.existsSync(sourcePath)) {
+      const additions = {};
+      for (const line of readDatLines(sourcePath)) {
+        const entry = parseIcdPackageDatLine(line);
+        if (!entry) continue;
+        if (entry.removed) {
+          removedCodes.add(entry.code);
+          continue;
+        }
+        if (type === 'index') {
+          if (entry.value) additions[entry.code] = entry.value;
+        } else {
+          additions[entry.code] = true;
+        }
+      }
+      Object.assign(data, additions);
+    } else if (index === 0) {
+      throw new Error(`Missing required ICD package source: ${sourcePath}`);
+    }
+  }
+
+  for (const code of removedCodes) delete data[code];
+  return data;
+}
+
+function deriveQyDiffEntries(insurancePackageId, allProcedureCodes, ssInvalid) {
+  if (!allProcedureCodes || Object.keys(allProcedureCodes).length === 0) {
+    return undefined;
+  }
+
+  const ybProcedureNames = loadEffectivePackageData(
+    insurancePackagesDir,
+    insurancePackageId,
+    'ICD9YB.dat',
+    'index',
+  );
+  const grayProcedureCodes = loadEffectivePackageData(
+    insurancePackagesDir,
+    insurancePackageId,
+    'ICD9YB-灰码.dat',
+    'simple',
+  );
+  const entries = [];
+
+  for (const code of Object.keys(ybProcedureNames).sort((left, right) => (
+    left.localeCompare(right, 'en', { numeric: true })
+  ))) {
+    if (
+      !Object.hasOwn(grayProcedureCodes, code)
+      && !Object.hasOwn(ssInvalid, code)
+      && !Object.hasOwn(allProcedureCodes, code)
+    ) {
+      const name = String(ybProcedureNames[code] || '').trim();
+      if (!name) {
+        throw new Error(`Missing YB procedure name for QY diff code: ${code}`);
+      }
+      entries.push({ code, name });
+    }
+  }
+
+  return entries;
+}
+
+function renderCodeNameDat(entries) {
+  return `${entries.map(({ code, name }) => `${code} ${name}`).join('\n')}\n`;
+}
+
 const projectRoot = path.resolve(__dirname, '..');
 const configResolver = createDrgConfigResolver(projectRoot);
 const dataDir = path.join(projectRoot, 'src/data');
 const versionsDir = path.join(dataDir, 'versions');
 const commonPackagesDir = path.join(dataDir, 'drg-common');
+const insurancePackagesDir = path.join(dataDir, 'icd-datasets/insurance');
 
 let version;
 let versionConfig;
@@ -54,13 +135,15 @@ let commonOutputDir;
 let buildScope;
 let inferRegionalSectionMinimumMatches;
 let subgroupOrderOverrides;
+let allProcedureCodes;
+let qyDiffEntries;
+let qyDiffCodes;
 
 // Module-level regex constants — compiled once, reused across all calls
-const _hanRe = /[\p{Script=Han}]/u;
-const _icdLikeRe = /^[A-Za-z0-9][A-Za-z0-9.+\-*xX/†]*$/;
-const _firstTokenRe = /^\S+/;
 const _codeStartRe = /^[A-Za-z]\d|^\d/;
 const _codeExtractRe = /^([A-Za-z0-9.+\-*xX/†]+)/;
+const _mdcCodeStartRe = /^[A-Za-z]\d{2}/;
+const _mdcCodeTokenRe = /^[A-Za-z]\d{2}[A-Za-z0-9.+\-*xX/†]*$/;
 const _suffixRe = /_([nab])$/;   // DRG variant suffix: n=new-technique, a=alternate, b=backup
 const _upperStartRe = /^[A-Z]/;  // diagnosis prefix cluster (ICD alpha)
 const _digitStartRe = /^[0-9]/;  // procedure prefix cluster (ICD-9-CM-3 numeric)
@@ -276,6 +359,19 @@ function removeRedundantPrimaryPrefix(rule, { condition, prefixesField, category
   rule[prefixesField] = [];
 }
 
+function getDrgSpecificName(drgName, adrgName) {
+  const normalizedDrgName = String(drgName || '').replace(/\s+/g, ' ').trim();
+  const normalizedAdrgName = String(adrgName || '').replace(/\s+/g, ' ').trim();
+  if (!normalizedAdrgName) return normalizedDrgName;
+
+  const adrgStart = normalizedDrgName.indexOf(normalizedAdrgName);
+  if (adrgStart < 0) return normalizedDrgName;
+
+  return `${normalizedDrgName.slice(0, adrgStart)} ${normalizedDrgName.slice(adrgStart + normalizedAdrgName.length)}`
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 // Derive subgroup rule logic (same as before)
 function deriveSubgroupRule(drgCode, drgName, adrgData) {
   const adrgCodeInput = adrgData.code;
@@ -289,22 +385,22 @@ function deriveSubgroupRule(drgCode, drgName, adrgData) {
     diagnosisPrefixes: [],
     procedurePrefixes: []
   };
-  const normalizedDrgName = String(drgName || '').replace(/\s+/g, ' ').trim();
+  const drgSpecificName = getDrgSpecificName(drgName, adrgData.name);
   const nameConditions = [];
 
-  const ageCondition = inferNumericCondition(normalizedDrgName, AGE_NAME_CONDITION_PATTERNS);
+  const ageCondition = inferNumericCondition(drgSpecificName, AGE_NAME_CONDITION_PATTERNS);
   if (ageCondition) nameConditions.push(ageCondition);
   const complicationPair = '(?:合并症[或与]并发症|并发症[或与]合并症)';
-  if (new RegExp(`不伴(?:严重|一般)?${complicationPair}`).test(normalizedDrgName)) nameConditions.push('NO_CC');
-  else if (new RegExp(`伴严重${complicationPair}`).test(normalizedDrgName)) nameConditions.push('WITH_MCC');
-  else if (new RegExp(`伴(?:严重或一般|一般)?${complicationPair}`).test(normalizedDrgName)) nameConditions.push('WITH_CC');
-  const crrtHoursCondition = inferNumericCondition(normalizedDrgName, CRRT_HOURS_NAME_CONDITION_PATTERNS);
+  if (new RegExp(`不伴(?:严重|一般)?${complicationPair}`).test(drgSpecificName)) nameConditions.push('NO_CC');
+  else if (new RegExp(`伴严重${complicationPair}`).test(drgSpecificName)) nameConditions.push('WITH_MCC');
+  else if (new RegExp(`伴(?:严重或一般|一般)?${complicationPair}`).test(drgSpecificName)) nameConditions.push('WITH_CC');
+  const crrtHoursCondition = inferNumericCondition(drgSpecificName, CRRT_HOURS_NAME_CONDITION_PATTERNS);
   if (crrtHoursCondition) nameConditions.push(crrtHoursCondition);
-  if (/死亡转归/.test(normalizedDrgName)) nameConditions.push('DEATH');
-  const icuHoursCondition = inferNumericCondition(normalizedDrgName, ICU_HOURS_NAME_CONDITION_PATTERNS);
+  if (/死亡转归/.test(drgSpecificName)) nameConditions.push('DEATH');
+  const icuHoursCondition = inferNumericCondition(drgSpecificName, ICU_HOURS_NAME_CONDITION_PATTERNS);
   if (icuHoursCondition) nameConditions.push(icuHoursCondition);
-  else if (/伴重症监护/.test(normalizedDrgName)) nameConditions.push('INTENSIVE_CARE');
-  if (DAY_SURGERY_NAME_PATTERN.test(normalizedDrgName)) nameConditions.push('DAY_SURGERY');
+  else if (/伴重症监护/.test(drgSpecificName)) nameConditions.push('INTENSIVE_CARE');
+  if (DAY_SURGERY_NAME_PATTERN.test(drgSpecificName)) nameConditions.push('DAY_SURGERY');
 
   const nameComplicationConditions = nameConditions.filter(condition => ['WITH_MCC', 'WITH_CC', 'NO_CC'].includes(condition));
   const nameAgeConditions = nameConditions.filter(condition => condition.startsWith('AGE_'));
@@ -329,8 +425,8 @@ function deriveSubgroupRule(drgCode, drgName, adrgData) {
     } else if (clusterPart === '9') {
       rule.conditions.push('ADRG_ONLY');
     }
-  } else if (/机器人辅助手术$/.test(normalizedDrgName) || /椎管内镇痛$/.test(normalizedDrgName)) {
-    rule.conditions.push('NEW_TECHNIQUE');
+  } else if (/机器人辅助手术$/.test(drgSpecificName)) {
+    rule.conditions.push('ROBOT_ASSISTED_SURGERY');
   }
 
   const suffixMatch = drgCode.match(_suffixRe);
@@ -352,32 +448,44 @@ function deriveSubgroupRule(drgCode, drgName, adrgData) {
 }
 
 /**
- * parseMDCCodes — readable, regex-based parser for MDC token lists.
- * - Splits on newlines or commas, trims each segment,
- *   extracts the first whitespace-delimited token and validates it.
- * - Returns a deduplicated array of ICD-like tokens (preserves token case).
+ * parseMDCCodes — extract the leading ICD code from each MDC source row.
+ * MDC source rows are `code name` records, and names may contain commas
+ * (for example, `Q98.000 ... 47,XXY`). Splitting a row on commas would
+ * therefore turn text from a name into false diagnosis codes.
+ * - Extracts only a valid ICD-like token at the beginning of each row.
+ * - Also accepts a comma-delimited row only when every segment is code-only.
+ * - Returns a deduplicated array of code tokens (preserves token case).
  */
 function parseMDCCodes(text) {
   if (!text) return [];
 
   const seen = new Set();
   const out = [];
-
-  // Split into human-friendly segments and validate each token declaratively.
-  const parts = String(text).split(/[\n,]/);
-  for (let i = 0; i < parts.length; i++) {
-    const part = String(parts[i] || '').trim();
-    if (!part) continue;
-    const m = _firstTokenRe.exec(part);
-    if (!m) continue;
-    const token = m[0];
-    // skip non-code tokens (Chinese headers, descriptions)
-    if (_hanRe.test(token)) continue;
-    // require entire token to match ICD-like shape
-    if (!_icdLikeRe.test(token)) continue;
+  const addCode = (token) => {
     if (!seen.has(token)) {
       seen.add(token);
       out.push(token);
+    }
+  };
+
+  const lines = String(text).split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    const leadingMatch = line.match(_codeExtractRe);
+    if (leadingMatch && _mdcCodeStartRe.test(leadingMatch[1])) {
+      addCode(leadingMatch[1]);
+      continue;
+    }
+
+    // Preserve support for a pure comma-delimited code list without ever
+    // treating comma-separated text in a descriptive row as code.
+    const codeOnlyParts = line.split(',').map(part => part.trim()).filter(Boolean);
+    if (codeOnlyParts.length > 1 && codeOnlyParts.every(part => _mdcCodeTokenRe.test(part))) {
+      for (const token of codeOnlyParts) {
+        addCode(token);
+      }
     }
   }
 
@@ -416,11 +524,11 @@ function parseMDCZRule(text) {
 }
 
 // Helpers: small, focused functions used by main
-async function writeJsonFiles(writeJobs) {
-  const pfs = fs.promises;
+function writeJsonFiles(writeJobs) {
   try {
-    await pfs.mkdir(path.dirname(writeJobs[0][0]), { recursive: true });
-    await Promise.all(writeJobs.map(([fp, content]) => pfs.writeFile(fp, content)));
+    for (const [filePath, content] of writeJobs) {
+      writeFileIfChanged(filePath, content);
+    }
   } catch (err) {
     console.error('Error writing JSON files:', err && err.message ? err.message : err);
     process.exitCode = 1;
@@ -457,9 +565,6 @@ async function buildAdrgRules(adrgRulesRaw, parseRule, ruleKind = 'ADRG') {
     try {
       if (copy.type === 'ADRG') {
         copy.rule = parseRule(copy.content);
-        // The official ADRG name is the source of this explicit rule flag.
-        const isMultiSiteAdrg = String(copy.name || '').includes('多部位');
-        if (isMultiSiteAdrg) copy.rule.multiSite = true;
         if (copy.rule && copy.rule._logicCompileError) {
           adrgValidationErrors.push({ code: copy.code, filename: copy.filename, error: copy.rule._logicCompileError });
         }
@@ -556,6 +661,7 @@ function orderSubgroupRules(rules) {
     } else if (
       extraConditions.has('SPECIFIC_PROCEDURE_PREFIX')
       || hasProcedureRule
+      || extraConditions.has('ROBOT_ASSISTED_SURGERY')
       || extraConditions.has('NEW_TECHNIQUE')
     ) {
       extraLogicalPriority = 3;
@@ -689,7 +795,8 @@ async function buildExplicitSubgroupRules(parseRule, prepareExplicitSubgroupRule
     };
   });
 
-  const parsedRules = await buildAdrgRules(subgroupSourceEntries, parseRule, 'explicit subgroup');
+  const parsePreparedRule = content => parseRule(content, { alreadyNormalized: true });
+  const parsedRules = await buildAdrgRules(subgroupSourceEntries, parsePreparedRule, 'explicit subgroup');
   return parsedRules.map(item => ({
     drgCode: item.code,
     drgName: item.name,
@@ -741,6 +848,20 @@ function configureBuildContext(scope, config, commonPackage) {
   cceCodes = loadDat(path.join(commonRulesDir, 'CCE.dat'), 'index');
   zdInvalid = loadDat(path.join(commonRulesDir, 'ZD_INVALID.dat'), 'gray');
   ssInvalid = loadDat(path.join(commonRulesDir, 'SS_INVALID.dat'), 'gray');
+  const allProcedurePath = path.join(commonRulesDir, 'ALL_PROCEDURE.dat');
+  allProcedureCodes = fs.existsSync(allProcedurePath)
+    ? loadDat(allProcedurePath, 'simple')
+    : undefined;
+  const commonConfig = configResolver.resolveCommonConfig(commonPackage);
+  qyDiffEntries = deriveQyDiffEntries(
+    commonConfig.insuranceIcd,
+    allProcedureCodes,
+    ssInvalid,
+  );
+  const qyDiffRawPath = path.join(commonRulesDir, 'QY_DIFF.dat');
+  qyDiffCodes = qyDiffEntries && fs.existsSync(qyDiffRawPath)
+    ? loadDat(qyDiffRawPath, 'simple')
+    : undefined;
   drgMap = readDrgDat(path.join(rulesDir, 'DRG.dat'));
 }
 
@@ -803,12 +924,33 @@ async function buildPackage(scope, config, commonPackage) {
   const mdcRulesForWrite = keepContent ? mdcRules : mdcRules.map(({ content, ...rest }) => rest);
 
   if (buildCommon) {
+    const qyDiffRawPath = path.join(commonRulesDir, 'QY_DIFF.dat');
+    const qyDiffOutputPath = path.join(commonOutputDir, 'qy_diff_codes.json');
+    if (qyDiffEntries && qyDiffEntries.length > 0) {
+      // Keep one auditable code/name copy in raw; the generated JSON below is
+      // the compact code-only representation consumed by the runtime.
+      writeFileIfChanged(qyDiffRawPath, renderCodeNameDat(qyDiffEntries), 'utf8');
+      qyDiffCodes = loadDat(qyDiffRawPath, 'simple');
+    } else {
+      qyDiffCodes = undefined;
+      if (fs.existsSync(qyDiffRawPath)) fs.unlinkSync(qyDiffRawPath);
+    }
+    if ((!qyDiffCodes || Object.keys(qyDiffCodes).length === 0)
+      && fs.existsSync(qyDiffOutputPath)) {
+      fs.unlinkSync(qyDiffOutputPath);
+    }
     await writeJsonFiles([
       [path.join(commonOutputDir, 'cc_codes.json'), JSON.stringify(ccCodes, null, 2)],
       [path.join(commonOutputDir, 'mcc_codes.json'), JSON.stringify(mccCodes, null, 2)],
       [path.join(commonOutputDir, 'cce_codes.json'), JSON.stringify(cceCodes, null, 2)],
       [path.join(commonOutputDir, 'zd_invalid.json'), JSON.stringify(zdInvalid, null, 2)],
       [path.join(commonOutputDir, 'ss_invalid.json'), JSON.stringify(ssInvalid, null, 2)],
+      ...(allProcedureCodes && Object.keys(allProcedureCodes).length > 0
+        ? [[path.join(commonOutputDir, 'all_procedure_codes.json'), JSON.stringify(allProcedureCodes, null, 2)]]
+        : []),
+      ...(qyDiffCodes && Object.keys(qyDiffCodes).length > 0
+        ? [[path.join(commonOutputDir, 'qy_diff_codes.json'), JSON.stringify(qyDiffCodes, null, 2)]]
+        : []),
       [path.join(commonOutputDir, 'adrg_rules.json'), JSON.stringify(adrgRulesForWrite, null, 2)],
       [path.join(commonOutputDir, 'mdc_rules.json'), JSON.stringify(mdcRulesForWrite, null, 2)],
     ]);

@@ -29,10 +29,12 @@ const SELECTION_TYPES = Object.freeze({
 });
 
 const ALL_ADRG_CHANGED = '__ALL__';
-// ICD-10 codes may use either a numeric extension (`.001`) or the
-// insurance-code form with an `x` placeholder (`.x01`, `.001x002`).
-const ICD_TOKEN_PREFIX_RE = /^(?:(?:[A-Za-z][0-9]{2}|[0-9]{2})(?:\.(?:(?:[0-9]{1,4}(?:x[0-9]+)?)|x[0-9]+)?)?\*?)(?:\+(?:(?:[A-Za-z][0-9]{2}|[0-9]{2})(?:\.(?:(?:[0-9]{1,4}(?:x[0-9]+)?)|x[0-9]+)?)?\*?))*$/i;
-const CODE_QUERY_TOKEN_RE = /^(?:[A-Za-z][0-9]{2}|[0-9]{2})(?:\.(?:(?:[0-9]{1,4}(?:x[0-9]+)?)|x[0-9]+)?)?\*?$/i;
+// Support repeated `x` extensions (75.2x00x001), five-digit numeric extensions
+// (17.98330), and letter extensions (17.912A0, including the prefix 17.912A).
+// Reserve `x` for placeholder extensions, which require following digits.
+const ICD_CODE_TOKEN_PATTERN = String.raw`(?:[a-z][0-9]{2}|[0-9]{2})(?:\.(?:[0-9]{3}[a-wyz][0-9]?|[0-9]{1,5}|x[0-9]+)(?:x[0-9]+)*|\.)?\*?`;
+const ICD_TOKEN_PREFIX_RE = new RegExp(`^${ICD_CODE_TOKEN_PATTERN}(?:\\+${ICD_CODE_TOKEN_PATTERN})*$`, 'i');
+const CODE_QUERY_TOKEN_RE = new RegExp(`^${ICD_CODE_TOKEN_PATTERN}$`, 'i');
 const EMPTY_LIST = Object.freeze([]);
 const CODE_PART_SPLIT_RE = /[^0-9a-z.x*]+/i;
 const QUERY_PART_SPLIT_RE = /[\s+]+/;

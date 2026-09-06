@@ -74,9 +74,9 @@ function App() {
   const [previewAgeKey, setPreviewAgeKey] = useState('');
   const [previewAgeDaysKey, setPreviewAgeDaysKey] = useState('');
   const [previewBirthWeightKey, setPreviewBirthWeightKey] = useState('');
+  const [previewAdmissionWeightKey, setPreviewAdmissionWeightKey] = useState('');
   const [previewDischargeKey, setPreviewDischargeKey] = useState('');
   const [previewNewTechniqueKey, setPreviewNewTechniqueKey] = useState('');
-  const [previewMultiSiteKey, setPreviewMultiSiteKey] = useState('');
   const [previewIntensiveCareKey, setPreviewIntensiveCareKey] = useState('');
   const [previewIcuHoursKey, setPreviewIcuHoursKey] = useState('');
   const [previewCrrtHoursKey, setPreviewCrrtHoursKey] = useState('');
@@ -116,9 +116,9 @@ function App() {
   const previewAgeRef = useRef(previewAgeKey);
   const previewAgeDaysRef = useRef(previewAgeDaysKey);
   const previewBirthWeightRef = useRef(previewBirthWeightKey);
+  const previewAdmissionWeightRef = useRef(previewAdmissionWeightKey);
   const previewDischargeRef = useRef(previewDischargeKey);
   const previewNewTechniqueRef = useRef(previewNewTechniqueKey);
-  const previewMultiSiteRef = useRef(previewMultiSiteKey);
   const previewIntensiveCareRef = useRef(previewIntensiveCareKey);
   const previewIcuHoursRef = useRef(previewIcuHoursKey);
   const previewCrrtHoursRef = useRef(previewCrrtHoursKey);
@@ -141,9 +141,9 @@ function App() {
     previewAgeRef.current = '';
     previewAgeDaysRef.current = '';
     previewBirthWeightRef.current = '';
+    previewAdmissionWeightRef.current = '';
     previewDischargeRef.current = '';
     previewNewTechniqueRef.current = '';
-    previewMultiSiteRef.current = '';
     previewIntensiveCareRef.current = '';
     previewIcuHoursRef.current = '';
     previewCrrtHoursRef.current = '';
@@ -156,9 +156,9 @@ function App() {
     setPreviewAgeKey('');
     setPreviewAgeDaysKey('');
     setPreviewBirthWeightKey('');
+    setPreviewAdmissionWeightKey('');
     setPreviewDischargeKey('');
     setPreviewNewTechniqueKey('');
-    setPreviewMultiSiteKey('');
     setPreviewIntensiveCareKey('');
     setPreviewIcuHoursKey('');
     setPreviewCrrtHoursKey('');
@@ -195,9 +195,9 @@ function App() {
     previewAgeRef.current = previewAgeKey;
     previewAgeDaysRef.current = previewAgeDaysKey;
     previewBirthWeightRef.current = previewBirthWeightKey;
+    previewAdmissionWeightRef.current = previewAdmissionWeightKey;
     previewDischargeRef.current = previewDischargeKey;
     previewNewTechniqueRef.current = previewNewTechniqueKey;
-    previewMultiSiteRef.current = previewMultiSiteKey;
     previewIntensiveCareRef.current = previewIntensiveCareKey;
     previewIcuHoursRef.current = previewIcuHoursKey;
     previewCrrtHoursRef.current = previewCrrtHoursKey;
@@ -211,9 +211,9 @@ function App() {
     previewAgeKey,
     previewAgeDaysKey,
     previewBirthWeightKey,
+    previewAdmissionWeightKey,
     previewDischargeKey,
     previewNewTechniqueKey,
-    previewMultiSiteKey,
     previewIntensiveCareKey,
     previewIcuHoursKey,
     previewCrrtHoursKey,
@@ -295,10 +295,10 @@ function App() {
   // Default: collapsed. If any mapping key is present, auto-expand so users see mapped fields.
   const [previewPatientInfoExpanded, setPreviewPatientInfoExpanded] = useState(false);
   useEffect(() => {
-    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewDischargeKey || previewNewTechniqueKey || previewMultiSiteKey || previewIntensiveCareKey || previewIcuHoursKey || previewCrrtHoursKey || previewLengthOfStayKey || previewDaySurgeryKey || previewGenderKey) {
+    if (previewAgeKey || previewAgeDaysKey || previewBirthWeightKey || previewAdmissionWeightKey || previewDischargeKey || previewNewTechniqueKey || previewIntensiveCareKey || previewIcuHoursKey || previewCrrtHoursKey || previewLengthOfStayKey || previewDaySurgeryKey || previewGenderKey) {
       setPreviewPatientInfoExpanded(true);
     }
-  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewDischargeKey, previewNewTechniqueKey, previewMultiSiteKey, previewIntensiveCareKey, previewIcuHoursKey, previewCrrtHoursKey, previewLengthOfStayKey, previewDaySurgeryKey, previewGenderKey]);
+  }, [previewAgeKey, previewAgeDaysKey, previewBirthWeightKey, previewAdmissionWeightKey, previewDischargeKey, previewNewTechniqueKey, previewIntensiveCareKey, previewIcuHoursKey, previewCrrtHoursKey, previewLengthOfStayKey, previewDaySurgeryKey, previewGenderKey]);
 
   // Handlers that update both state and immediate ref to avoid races in async handlers
   const handlePreviewIdChange = (val) => { invalidateBatchState(); previewIdRef.current = val; setPreviewIdKey(val); };
@@ -323,9 +323,9 @@ function App() {
     }
   };
   const handlePreviewBirthWeightChange = (val) => { invalidateBatchState(); previewBirthWeightRef.current = val; setPreviewBirthWeightKey(val); };
+  const handlePreviewAdmissionWeightChange = (val) => { invalidateBatchState(); previewAdmissionWeightRef.current = val; setPreviewAdmissionWeightKey(val); };
   const handlePreviewDischargeChange = (val) => { invalidateBatchState(); previewDischargeRef.current = val; setPreviewDischargeKey(val); };
   const handlePreviewNewTechChange = (val) => { invalidateBatchState(); previewNewTechniqueRef.current = val; setPreviewNewTechniqueKey(val); };
-  const handlePreviewMultiSiteChange = (val) => { invalidateBatchState(); previewMultiSiteRef.current = val; setPreviewMultiSiteKey(val); };
   const handlePreviewIntensiveCareChange = (val) => { invalidateBatchState(); previewIntensiveCareRef.current = val; setPreviewIntensiveCareKey(val); };
   const handlePreviewIcuHoursChange = (val) => { invalidateBatchState(); previewIcuHoursRef.current = val; setPreviewIcuHoursKey(val); };
   const handlePreviewCrrtHoursChange = (val) => { invalidateBatchState(); previewCrrtHoursRef.current = val; setPreviewCrrtHoursKey(val); };
@@ -364,9 +364,9 @@ function App() {
     previewAgeRef,
     previewAgeDaysRef,
     previewBirthWeightRef,
+    previewAdmissionWeightRef,
     previewDischargeRef,
     previewNewTechniqueRef,
-    previewMultiSiteRef,
     previewIntensiveCareRef,
     previewIcuHoursRef,
     previewCrrtHoursRef,
@@ -386,7 +386,6 @@ function App() {
     searchSource,
     version: ruleVersion,
     uploadedBatchFile,
-    parsedPreview,
     parsedRows,
     batchData,
     batchResults,
@@ -414,9 +413,9 @@ function App() {
     setPreviewAgeKey,
     setPreviewAgeDaysKey,
     setPreviewBirthWeightKey,
+    setPreviewAdmissionWeightKey,
     setPreviewDischargeKey,
     setPreviewNewTechniqueKey,
-    setPreviewMultiSiteKey,
     setPreviewIntensiveCareKey,
     setPreviewIcuHoursKey,
     setPreviewCrrtHoursKey,
@@ -475,9 +474,9 @@ function App() {
       previewAgeKey,
       previewAgeDaysKey,
       previewBirthWeightKey,
+      previewAdmissionWeightKey,
       previewDischargeKey,
       previewNewTechniqueKey,
-      previewMultiSiteKey,
       previewIntensiveCareKey,
       previewIcuHoursKey,
       previewCrrtHoursKey,
@@ -516,9 +515,9 @@ function App() {
       handlePreviewAgeChange,
       handlePreviewAgeDaysChange,
       handlePreviewBirthWeightChange,
+      handlePreviewAdmissionWeightChange,
       handlePreviewDischargeChange,
       handlePreviewNewTechChange,
-      handlePreviewMultiSiteChange,
       handlePreviewIntensiveCareChange,
       handlePreviewIcuHoursChange,
       handlePreviewCrrtHoursChange,

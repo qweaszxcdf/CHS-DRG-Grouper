@@ -10,12 +10,27 @@
   "strategy": {
     // When true, a day-surgery case uses the NO_CC severity branch even if
     // secondary diagnoses would otherwise calculate as CC or MCC.
-    "daySurgeryAsNoCC": false
+    "daySurgeryAsNoCC": false,
+    // Optional edition-only special lists. The corresponding raw DAT files
+    // belong under this version's raw directory, not under drg-common.
+    "robotAssistedSurgery": {
+      "adrgCodes": [],
+      "procedureCodes": []
+    },
+    "highRiskPregnancyAsMcc": {
+      "adrgCodes": [],
+      "diagnosisCodes": []
+    }
   },
   // Optional subgroup digit semantics that differ by DRG edition.
   // Example: Shanghai 2.0 uses 0 for age <18 and 7 for death.
   "subgroupConditions": {
     "0": "AGE_LT_18",
     "7": "DEATH"
+  },
+  // Optional per-ADRG DRG order overrides. Listed DRGs are ordered first in
+  // the given sequence; omitted DRGs retain the normal semantic order.
+  "subgroupOrderOverrides": {
+    "DT1": ["DT1L", "DT13", "DT1M", "DT15"]
   }
 }

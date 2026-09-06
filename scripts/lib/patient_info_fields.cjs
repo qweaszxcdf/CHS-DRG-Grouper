@@ -6,12 +6,17 @@ const REQUIRED_PATIENT_INFO_FIELDS = Object.freeze([
   'age',
   'ageInDays',
   'birthWeight',
+  'admissionWeight',
+]);
+
+const WEIGHT_PATIENT_INFO_FIELDS = Object.freeze([
+  ['出生体重', 'birthWeight'],
+  ['入院体重', 'admissionWeight'],
 ]);
 
 const ADVANCED_PATIENT_INFO_FIELDS = Object.freeze([
   'dischargeStatus',
   'newTechnique',
-  'multiSite',
   'intensiveCare',
   'icuHours',
   'crrtHours',
@@ -22,7 +27,6 @@ const ADVANCED_PATIENT_INFO_FIELDS = Object.freeze([
 const CONDITION_FIELD_PATTERNS = Object.freeze([
   { pattern: /^DEATH$/, field: 'dischargeStatus' },
   { pattern: /^NEW_TECHNIQUE$/, field: 'newTechnique' },
-  { pattern: /^MULTI_SITE$/, field: 'multiSite' },
   { pattern: /^INTENSIVE_CARE$/, field: 'intensiveCare' },
   { pattern: /^ICU_HOURS_/, field: 'icuHours' },
   { pattern: /^CRRT_HOURS_/, field: 'crrtHours' },
@@ -50,9 +54,21 @@ function collectRuleFields(rules, fields) {
       if (match) fields.add(match.field);
     }
     const ruleDetails = rule.adrgRule || rule.rule;
-    if (ruleDetails?.multiSite === true) fields.add('multiSite');
     if (ruleDetails?.intensiveCare === true) fields.add('intensiveCare');
   }
+}
+
+function inferWeightPatientInfoFields(rules) {
+  const fields = new Set();
+  for (const rule of rules) {
+    const text = [rule.name, rule.description, rule.filename]
+      .filter(Boolean)
+      .join(' ');
+    for (const [marker, field] of WEIGHT_PATIENT_INFO_FIELDS) {
+      if (text.includes(marker)) fields.add(field);
+    }
+  }
+  return fields;
 }
 
 function buildPatientInfoConfig(advanced) {
@@ -64,6 +80,15 @@ function buildPatientInfoConfig(advanced) {
   });
 }
 
+function filterBasicPatientInfoFields(weightFields) {
+  return Object.freeze(
+    REQUIRED_PATIENT_INFO_FIELDS.filter(
+      field => !WEIGHT_PATIENT_INFO_FIELDS.some(([, weightField]) => weightField === field)
+        || weightFields.has(field),
+    ),
+  );
+}
+
 function inferCommonPatientInfoFields({ commonDir, commonPackageId }) {
   const adrgRules = readJson(
     path.join(commonDir, commonPackageId, 'generated/adrg_rules.json'),
@@ -71,9 +96,10 @@ function inferCommonPatientInfoFields({ commonDir, commonPackageId }) {
   );
   const advanced = new Set();
   collectRuleFields(adrgRules, advanced);
+  const weightFields = inferWeightPatientInfoFields(adrgRules);
 
   return Object.freeze({
-    basic: REQUIRED_PATIENT_INFO_FIELDS,
+    basic: filterBasicPatientInfoFields(weightFields),
     advanced: buildPatientInfoConfig(advanced).advanced,
   });
 }
