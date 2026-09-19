@@ -1,38 +1,35 @@
 const fs = require('fs');
 const path = require('path');
+require('tsx/cjs');
 
-const REQUIRED_PATIENT_INFO_FIELDS = Object.freeze([
-  'gender',
-  'age',
-  'ageInDays',
-  'birthWeight',
-  'admissionWeight',
-]);
+const PATIENT_INFO_FIELD_DEFINITIONS = Object.freeze(
+  require('../../src/types/patient_info_fields.ts').PATIENT_INFO_FIELD_DEFINITIONS
+    .map(field => Object.freeze(field)),
+);
 
-const WEIGHT_PATIENT_INFO_FIELDS = Object.freeze([
-  ['出生体重', 'birthWeight'],
-  ['入院体重', 'admissionWeight'],
-]);
+const REQUIRED_PATIENT_INFO_FIELDS = Object.freeze(
+  PATIENT_INFO_FIELD_DEFINITIONS
+    .filter(({ displayGroup }) => displayGroup === 'basic')
+    .map(({ key }) => key),
+);
 
-const ADVANCED_PATIENT_INFO_FIELDS = Object.freeze([
-  'dischargeStatus',
-  'newTechnique',
-  'intensiveCare',
-  'icuHours',
-  'crrtHours',
-  'lengthOfStay',
-  'daySurgery',
-]);
+const WEIGHT_PATIENT_INFO_FIELDS = Object.freeze(
+  PATIENT_INFO_FIELD_DEFINITIONS
+    .filter(({ weightMarker }) => weightMarker)
+    .map(({ weightMarker, key }) => [weightMarker, key]),
+);
 
-const CONDITION_FIELD_PATTERNS = Object.freeze([
-  { pattern: /^DEATH$/, field: 'dischargeStatus' },
-  { pattern: /^NEW_TECHNIQUE$/, field: 'newTechnique' },
-  { pattern: /^INTENSIVE_CARE$/, field: 'intensiveCare' },
-  { pattern: /^ICU_HOURS_/, field: 'icuHours' },
-  { pattern: /^CRRT_HOURS_/, field: 'crrtHours' },
-  { pattern: /^LOS_/, field: 'lengthOfStay' },
-  { pattern: /^DAY_SURGERY$/, field: 'daySurgery' },
-]);
+const ADVANCED_PATIENT_INFO_FIELDS = Object.freeze(
+  PATIENT_INFO_FIELD_DEFINITIONS
+    .filter(({ displayGroup }) => displayGroup === 'advanced')
+    .map(({ key }) => key),
+);
+
+const CONDITION_FIELD_PATTERNS = Object.freeze(
+  PATIENT_INFO_FIELD_DEFINITIONS
+    .filter(({ conditionPattern }) => conditionPattern)
+    .map(({ conditionPattern, key }) => ({ pattern: new RegExp(conditionPattern), field: key })),
+);
 
 function readJson(filePath, description) {
   let value;
@@ -117,6 +114,7 @@ function inferVersionPatientInfoFields({ versionsDir, versionId }) {
 
 module.exports = {
   ADVANCED_PATIENT_INFO_FIELDS,
+  PATIENT_INFO_FIELD_DEFINITIONS,
   REQUIRED_PATIENT_INFO_FIELDS,
   inferCommonPatientInfoFields,
   inferVersionPatientInfoFields,

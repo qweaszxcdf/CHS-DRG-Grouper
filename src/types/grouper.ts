@@ -1,15 +1,17 @@
 import type {
-  AdrgRule,
   DrgSubgroupRule,
   RuleData,
   RuleMatchResult,
-  RulePatient,
   RuleSet,
 } from './rules.js';
-
 export type CodeListInput = string | readonly string[];
 export type VersionId = string;
-export type MaybePromise<T> = T | Promise<T>;
+
+/** Convert a scalar or array code input to a new array; callers own empty-slot policy. */
+export function toCodeList(input: CodeListInput | null | undefined): string[] {
+  if (typeof input === 'string') return input ? [input] : [];
+  return Array.isArray(input) ? [...input] : [];
+}
 
 export type PatientScalarInput = string | number | null | undefined;
 export type PatientBooleanInput = boolean | number | string | null | undefined;
@@ -53,7 +55,7 @@ export interface PatientInfoDisplayConfig {
 }
 
 export interface NormalizedPatientDemographics {
-  gender?: number | string;
+  gender?: 1 | 2;
   age?: number;
   ageInDays?: number;
   birthWeight?: number;
@@ -83,16 +85,35 @@ export interface NormalizedPatientInfo extends
   NormalizedPatientDurations {
 }
 
+export type MatchTraceEvent =
+  | 'validation' | 'mdcz-category-check' | 'pre-mdc-match' | 'mdc-match'
+  | 'adrg-match' | 'adrg-no-match' | 'qy-redirect' | 'cc-status'
+  | 'subgroup-match' | 'subgroup-no-match' | 'transport';
+
+export interface MatchTraceDetail {
+  reasonCode?: 'category-threshold-met' | 'category-threshold-not-met';
+  ruleMatch?: RuleMatchResult;
+  adrgRule?: RuleMatchResult;
+  conditions?: RuleMatchResult | { matched: boolean; reason: string };
+}
+
 export interface MatchTraceEntry {
-  stage: string;
+  event: MatchTraceEvent;
   matched?: boolean;
   error?: boolean;
   warning?: boolean;
   code?: string | null;
   status?: string;
   description?: string;
-  detail?: unknown;
-  [key: string]: unknown;
+  detail?: MatchTraceDetail;
+  calculatedStatus?: string;
+  overridden?: boolean;
+  strategy?: string;
+  candidates?: Array<{ code: string; name?: string }>;
+  candidateCount?: number;
+  mdczDiagnosisMatches?: Array<{ code: string; categories: string[] }>;
+  requiredCategoryCount?: number;
+  actualCategoryCount?: number;
 }
 
 export type Weight = number | string | null;
@@ -127,10 +148,9 @@ export interface BatchGroupingResult extends GroupingResult {
 }
 
 export interface CommonStrategy {
-  invalidPrincipalProcedureAction: 'shift' | 'null-slot' | 'keep';
   allowedInvalidPrincipalProcedures: string[];
   allowedGrayPrincipalProcedures: string[];
-  mdcyPrincipalDiagnosisOnly: boolean;
+  preMdc: readonly string[];
   [key: string]: unknown;
 }
 
@@ -184,18 +204,10 @@ export interface GrouperEngine {
     patientInfo?: PatientInfoInput | null,
   ): GroupingResult;
   groupBatch(rows?: BatchGroupingRow[]): BatchGroupingResult[];
-  matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult;
-  evaluateADRGSubgroups(
-    adrgCode: string | null,
-    diagnoses: string[],
-    procedures: Array<string | null>,
-    patientInfo: NormalizedPatientInfo,
-    matchTrace: MatchTraceEntry[],
-  ): SubgroupEvaluation;
 }
 
 export type CreateGrouperEngineOptions = {
   ruleSet: RuleSet;
   commonStrategy: CommonStrategy;
-  versionStrategy?: VersionStrategy;
+  versionStrategy: VersionStrategy;
 };

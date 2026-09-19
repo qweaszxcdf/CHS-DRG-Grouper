@@ -23685,9 +23685,9 @@
   },
   {
     "code": "MDCS",
-    "name": "感染及寄生虫病（全身性或不明确部位的）",
+    "name": "感染及寄生虫病(全身性或不明确部位的)",
     "type": "MDC",
-    "filename": "MDCS_感染及寄生虫病（全身性或不明确部位的）.dat",
+    "filename": "MDCS_感染及寄生虫病(全身性或不明确部位的).dat",
     "identifyingDiagnoses": [
       "A01.000",
       "A01.000x004",

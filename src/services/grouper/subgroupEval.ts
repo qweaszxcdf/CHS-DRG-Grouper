@@ -6,6 +6,7 @@ import type {
 } from '../../types/grouper.js';
 import type {
   AdrgRule,
+  ComparisonOperator,
   DrgSubgroupRule,
   MatchedSubgroup,
   RuleMatchResult,
@@ -15,17 +16,20 @@ import type {
 
 type CCStatus = 'none' | 'cc' | 'mcc';
 
-const DEFAULT_VERSION_STRATEGY: VersionStrategy = {
-  daySurgeryAsNoCC: false,
-  robotAssistedSurgery: { adrgCodes: [], procedureCodes: [] },
-  highRiskPregnancyAsMcc: { adrgCodes: [], diagnosisCodes: [] },
-};
+function compareNumeric(value: number, limit: number, operator: ComparisonOperator): boolean {
+  switch (operator) {
+    case 'LT': return value < limit;
+    case 'LE': return value <= limit;
+    case 'GT': return value > limit;
+    case 'GE': return value >= limit;
+  }
+}
 
 interface SubgroupPatientData {
   primaryDiagnosis: string | null;
   primaryProcedure: string | null;
   age?: number;
-  dischargeStatus?: string | number;
+  dischargeStatus?: string;
   robotAssistedSurgery: boolean;
   newTechnique: boolean;
   intensiveCare: boolean;
@@ -35,10 +39,26 @@ interface SubgroupPatientData {
   daySurgery: boolean;
 }
 
+type NumericDimension = 'AGE' | 'ICU_HOURS' | 'CRRT_HOURS' | 'LOS';
+const NUMERIC_DIMENSIONS: Record<NumericDimension, {
+  field: 'age' | 'icuHours' | 'crrtHours' | 'lengthOfStay';
+  label: string;
+}> = {
+  AGE: { field: 'age', label: 'Age' },
+  ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
+  CRRT_HOURS: { field: 'crrtHours', label: 'CRRT hours' },
+  LOS: { field: 'lengthOfStay', label: 'Length of stay' },
+};
+
+type SubgroupRuleSet = Pick<
+  RuleSet,
+  'loadDRGSubgroupRulesForADRG' | 'loadCCCodes' | 'loadMCCCodes' | 'loadCCECodes'
+>;
+
 export function createSubgroupEvaluator(
-  ruleSet: RuleSet,
-  matchesAdrgRule: ((rule: AdrgRule, patient: RulePatient) => RuleMatchResult) | undefined,
-  versionStrategy: VersionStrategy = DEFAULT_VERSION_STRATEGY,
+  ruleSet: SubgroupRuleSet,
+  matchesAdrgRule: (rule: AdrgRule, patient: RulePatient) => RuleMatchResult,
+  versionStrategy: VersionStrategy,
 ) {
   const {
     loadDRGSubgroupRulesForADRG,
@@ -58,23 +78,24 @@ const _ccList = loadCCCodes();
 const _mccList = loadMCCCodes();
 const _cceList = loadCCECodes();
 const _robotAssistedSurgeryProcedures = new Set(
-  versionStrategy.robotAssistedSurgery?.procedureCodes || [],
+  versionStrategy.robotAssistedSurgery.procedureCodes,
 );
 const _highRiskPregnancyDiagnoses = new Set(
-  versionStrategy.highRiskPregnancyAsMcc?.diagnosisCodes || [],
+  versionStrategy.highRiskPregnancyAsMcc.diagnosisCodes,
 );
 const _ruleNeedsCCCache = new WeakMap<DrgSubgroupRule, boolean>();
 
 function ruleNeedsCC(rule: DrgSubgroupRule) {
-  if (_ruleNeedsCCCache.has(rule)) return _ruleNeedsCCCache.get(rule);
-  const conditions = Array.isArray(rule?.conditions) ? rule.conditions : [];
+  const cached = _ruleNeedsCCCache.get(rule);
+  if (cached !== undefined) return cached;
+  const conditions = rule.conditions;
   const needs = conditions.includes('WITH_MCC') || conditions.includes('WITH_CC') || conditions.includes('NO_CC');
   _ruleNeedsCCCache.set(rule, needs);
   return needs;
 }
 
 function calculateCCStatus(diagnoses: string[]): CCStatus {
-  if (!Array.isArray(diagnoses) || diagnoses.length <= 1) return 'none';
+  if (diagnoses.length <= 1) return 'none';
   const principalDiagnosis = diagnoses[0] ?? null;
   const exclusionId = principalDiagnosis && Object.hasOwn(_cceList, principalDiagnosis)
     ? _cceList[principalDiagnosis] || null
@@ -100,7 +121,7 @@ function calculateCCStatus(diagnoses: string[]): CCStatus {
  */
 function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData, ccStatus: CCStatus) {
   const {
-    conditions = [],
+    conditions,
     diagnosisCodes = [],
     procedureCodes = [],
     diagnosisPrefixes = [],
@@ -108,10 +129,6 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
   } = rule;
 
   for (const condition of conditions) {
-    if (typeof condition !== 'string') {
-      return { matched: false, reason: `Condition must be a string, received ${condition === null ? 'null' : typeof condition}` };
-    }
-
     // --- 1. 诊断校验 (Diagnosis Checks)
     if (condition === 'SPECIFIC_DIAGNOSIS') {
       const primaryDiagnosis = patientData.primaryDiagnosis;
@@ -149,37 +166,29 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
     // --- 3. Numeric patient attributes
     const numericMatch = condition.match(/^(AGE|ICU_HOURS|CRRT_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
     if (numericMatch) {
-      const [, dimension, operator, rawLimit] = numericMatch;
-      const dimensions: Record<string, { field: 'age' | 'icuHours' | 'crrtHours' | 'lengthOfStay'; label: string }> = {
-        AGE: { field: 'age', label: 'Age' },
-        ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
-        CRRT_HOURS: { field: 'crrtHours', label: 'CRRT hours' },
-        LOS: { field: 'lengthOfStay', label: 'Length of stay' },
-      };
-      const dimensionInfo = dimensions[dimension ?? ''];
-      if (!dimensionInfo) return { matched: false, reason: `Unknown numeric condition '${condition}'` };
-      const { field, label } = dimensionInfo;
+      const [, dimension, operator, rawLimit] = numericMatch as [
+        string,
+        NumericDimension,
+        ComparisonOperator,
+        string,
+      ];
+      const { field, label } = NUMERIC_DIMENSIONS[dimension];
       const value = patientData[field];
-      if (value === undefined || value === null) return { matched: false, reason: `${label} not provided` };
+      if (value === undefined) return { matched: false, reason: `${label} not provided` };
 
-      const limit = parseInt(rawLimit ?? '', 10);
-      const comparisonOperator = operator as 'LT' | 'LE' | 'GT' | 'GE';
-      const isMatched =
-        comparisonOperator === 'LT' ? value < limit :
-          comparisonOperator === 'LE' ? value <= limit :
-            comparisonOperator === 'GT' ? value > limit :
-              comparisonOperator === 'GE' ? value >= limit : false;
+      const limit = parseInt(rawLimit, 10);
+      const isMatched = compareNumeric(value, limit, operator);
 
       if (!isMatched) {
         const opSymbols: Record<'LT' | 'LE' | 'GT' | 'GE', string> = { LT: '<', LE: '<=', GT: '>', GE: '>=' };
-        return { matched: false, reason: `${label} ${value} is not ${opSymbols[comparisonOperator]} ${limit}` };
+        return { matched: false, reason: `${label} ${value} is not ${opSymbols[operator]} ${limit}` };
       }
       continue;
     }
 
     // --- 4. 离院结局校验 (Outcome Checks)
     if (condition === 'DEATH') {
-      if (patientData.dischargeStatus !== 'death' && patientData.dischargeStatus !== 5 && patientData.dischargeStatus !== '5') {
+      if (patientData.dischargeStatus !== 'death') {
         return { matched: false, reason: 'Outcome is not Death' };
       }
       continue;
@@ -238,51 +247,46 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
    * - Returns { matchedDRG, matchedSubgroup } where matchedSubgroup contains the matching rule and matchResult.
    */
 function evaluateADRGSubgroups(
-  adrgCode: string | null,
+  adrgCode: string,
   diagnoses: string[],
   procedures: Array<string | null>,
   patientInfo: NormalizedPatientInfo,
   matchTrace: MatchTraceEntry[],
 ): SubgroupEvaluation {
-    const candidateRules = adrgCode !== null ? loadDRGSubgroupRulesForADRG(adrgCode) : [];
-    if (!candidateRules || candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
+    const candidateRules = loadDRGSubgroupRulesForADRG(adrgCode);
+    if (candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
 
     const principalDiagnosis = diagnoses[0] ?? null;
     const principalProcedure = procedures[0] ?? null;
 
-    matchTrace.push({ stage: 'Subgroup', description: `Evaluating ${candidateRules.length} detailed rules (${candidateRules.map(r => r.drgCode).join(', ')})` });
-
+    const subgroupCandidates = candidateRules.map(rule => ({ code: rule.drgCode, name: rule.drgName }));
     let ccStatus: CCStatus = 'none';
     const hasAnyCCRule = candidateRules.some(ruleNeedsCC);
 
     if (hasAnyCCRule) {
-      const calculatedStatus: CCStatus = Array.isArray(diagnoses) && diagnoses.length > 1
-        ? calculateCCStatus(diagnoses)
-        : 'none';
-      const configuredAdrgCodes = versionStrategy.highRiskPregnancyAsMcc?.adrgCodes;
+      const calculatedStatus = calculateCCStatus(diagnoses);
+      const configuredAdrgCodes = versionStrategy.highRiskPregnancyAsMcc.adrgCodes;
       const highRiskPregnancyAsMcc = Boolean(
-        adrgCode !== null
-        && Array.isArray(configuredAdrgCodes)
-        && configuredAdrgCodes.includes(adrgCode)
+        configuredAdrgCodes.includes(adrgCode)
         && principalDiagnosis
         && _highRiskPregnancyDiagnoses.has(principalDiagnosis),
       );
       ccStatus = highRiskPregnancyAsMcc ? 'mcc' : calculatedStatus;
 
-      if (versionStrategy.daySurgeryAsNoCC === true && patientInfo?.daySurgery === true) {
+      if (versionStrategy.daySurgeryAsNoCC === true && patientInfo.daySurgery === true) {
         const statusBeforeOverride = ccStatus;
         ccStatus = 'none';
         matchTrace.push({
-          stage: 'CC/MCC',
+          event: 'cc-status',
           status: ccStatus,
           calculatedStatus,
           overridden: true,
           strategy: 'daySurgeryAsNoCC',
           description: `Edition strategy treats day surgery as NO_CC (before override: ${statusBeforeOverride}, calculated: ${calculatedStatus})`,
         });
-      } else if (highRiskPregnancyAsMcc || (Array.isArray(diagnoses) && diagnoses.length > 1)) {
+      } else if (highRiskPregnancyAsMcc || diagnoses.length > 1) {
         matchTrace.push({
-          stage: 'CC/MCC',
+          event: 'cc-status',
           status: ccStatus,
           calculatedStatus,
           ...(highRiskPregnancyAsMcc ? { strategy: 'highRiskPregnancyAsMcc' } : {}),
@@ -293,25 +297,23 @@ function evaluateADRGSubgroups(
       }
     }
 
-    const configuredRobotAdrgCodes = versionStrategy.robotAssistedSurgery?.adrgCodes;
+    const configuredRobotAdrgCodes = versionStrategy.robotAssistedSurgery.adrgCodes;
     const robotAssistedSurgery = Boolean(
-      adrgCode !== null
-      && Array.isArray(configuredRobotAdrgCodes)
-      && configuredRobotAdrgCodes.includes(adrgCode)
+      configuredRobotAdrgCodes.includes(adrgCode)
       && procedures.some(code => code && _robotAssistedSurgeryProcedures.has(code)),
     );
     const patientData = {
       primaryDiagnosis: principalDiagnosis,
       primaryProcedure: principalProcedure,
-      age: patientInfo?.age,
-      dischargeStatus: patientInfo?.dischargeStatus,
+      age: patientInfo.age,
+      dischargeStatus: patientInfo.dischargeStatus,
       robotAssistedSurgery,
-      newTechnique: !!patientInfo?.newTechnique,
-      intensiveCare: !!patientInfo?.intensiveCare,
-      icuHours: patientInfo?.icuHours,
-      crrtHours: patientInfo?.crrtHours,
-      lengthOfStay: patientInfo?.lengthOfStay,
-      daySurgery: !!patientInfo?.daySurgery
+      newTechnique: !!patientInfo.newTechnique,
+      intensiveCare: !!patientInfo.intensiveCare,
+      icuHours: patientInfo.icuHours,
+      crrtHours: patientInfo.crrtHours,
+      lengthOfStay: patientInfo.lengthOfStay,
+      daySurgery: !!patientInfo.daySurgery
     };
     const patient: RulePatient = { diagnoses, procedures, patientInfo };
 
@@ -320,7 +322,6 @@ function evaluateADRGSubgroups(
     for (const rule of candidateRules) {
       let adrgMatchResult = null;
       if (rule.adrgRule) {
-        if (typeof matchesAdrgRule !== 'function') continue;
         adrgMatchResult = matchesAdrgRule(rule.adrgRule, patient);
         if (!adrgMatchResult.matched) continue;
       }
@@ -328,17 +329,29 @@ function evaluateADRGSubgroups(
       if (matchResult.matched) {
         matchedSubgroup = { ...rule, matchResult, adrgMatchResult };
         matchTrace.push({
-          stage: 'Subgroup',
+          event: 'subgroup-match',
           matched: true,
           code: matchedSubgroup.drgCode,
           description: matchedSubgroup.drgName,
-          detail: adrgMatchResult ? { adrgRule: adrgMatchResult, conditions: matchResult } : matchResult,
+          candidateCount: candidateRules.length,
+          candidates: subgroupCandidates,
+          detail: adrgMatchResult
+            ? { adrgRule: adrgMatchResult, conditions: matchResult }
+            : { conditions: matchResult },
         });
         break;
       }
     }
 
-    if (!matchedSubgroup) matchTrace.push({ stage: 'Subgroup', matched: false, description: 'No detailed rules matched' });
+    if (!matchedSubgroup) {
+      matchTrace.push({
+        event: 'subgroup-no-match',
+        matched: false,
+        description: 'No detailed rules matched',
+        candidateCount: candidateRules.length,
+        candidates: subgroupCandidates,
+      });
+    }
 
     const matchedDRG = matchedSubgroup ? { code: matchedSubgroup.drgCode, description: matchedSubgroup.drgName } : null;
     return { matchedDRG, matchedSubgroup };

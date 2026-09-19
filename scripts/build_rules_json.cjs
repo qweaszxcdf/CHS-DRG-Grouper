@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
-const { parseIcdPackageDatLine, resolvePackageChain } = require('./lib/icd_package.cjs');
+const { forEachPackageDatEntry } = require('./lib/icd_package.cjs');
 const { writeFileIfChanged } = require('./lib/write_if_changed.cjs');
 
 function readDatLines(filePath) {
@@ -41,57 +41,33 @@ function loadDat(filePath, type) {
   return index;
 }
 
-// Resolve an ICD package's effective data from its raw source chain. A dated
-// insurance package is a delta over its parent, so additions are merged and
-// inline "- CODE" entries are applied after all package layers are read.
-function loadEffectivePackageData(packageRoot, packageId, filename, type) {
-  const chain = resolvePackageChain(packageRoot, packageId);
-  const data = {};
-  const removedCodes = new Set();
-
-  for (const [index, packageInfo] of chain.entries()) {
-    const sourcePath = path.join(packageInfo.dir, 'raw', filename);
-    if (fs.existsSync(sourcePath)) {
-      const additions = {};
-      for (const line of readDatLines(sourcePath)) {
-        const entry = parseIcdPackageDatLine(line);
-        if (!entry) continue;
-        if (entry.removed) {
-          removedCodes.add(entry.code);
-          continue;
-        }
-        if (type === 'index') {
-          if (entry.value) additions[entry.code] = entry.value;
-        } else {
-          additions[entry.code] = true;
-        }
-      }
-      Object.assign(data, additions);
-    } else if (index === 0) {
-      throw new Error(`Missing required ICD package source: ${sourcePath}`);
-    }
-  }
-
-  for (const code of removedCodes) delete data[code];
-  return data;
-}
-
 function deriveQyDiffEntries(insurancePackageId, allProcedureCodes, ssInvalid) {
-  if (!allProcedureCodes || Object.keys(allProcedureCodes).length === 0) {
+  if (allProcedureCodes === undefined) {
     return undefined;
   }
+  if (Object.keys(allProcedureCodes).length === 0) {
+    throw new Error('ALL_PROCEDURE code list is present but empty');
+  }
 
-  const ybProcedureNames = loadEffectivePackageData(
+  const ybProcedureNames = {};
+  forEachPackageDatEntry(
     insurancePackagesDir,
     insurancePackageId,
     'ICD9YB.dat',
-    'index',
+    entry => {
+      if (entry.removed) delete ybProcedureNames[entry.code];
+      else if (entry.value) ybProcedureNames[entry.code] = entry.value;
+    },
   );
-  const grayProcedureCodes = loadEffectivePackageData(
+  const grayProcedureCodes = {};
+  forEachPackageDatEntry(
     insurancePackagesDir,
     insurancePackageId,
     'ICD9YB-灰码.dat',
-    'simple',
+    entry => {
+      if (entry.removed) delete grayProcedureCodes[entry.code];
+      else grayProcedureCodes[entry.code] = true;
+    },
   );
   const entries = [];
 
@@ -849,9 +825,14 @@ function configureBuildContext(scope, config, commonPackage) {
   zdInvalid = loadDat(path.join(commonRulesDir, 'ZD_INVALID.dat'), 'gray');
   ssInvalid = loadDat(path.join(commonRulesDir, 'SS_INVALID.dat'), 'gray');
   const allProcedurePath = path.join(commonRulesDir, 'ALL_PROCEDURE.dat');
-  allProcedureCodes = fs.existsSync(allProcedurePath)
-    ? loadDat(allProcedurePath, 'simple')
-    : undefined;
+  if (fs.existsSync(allProcedurePath)) {
+    allProcedureCodes = loadDat(allProcedurePath, 'simple');
+    if (Object.keys(allProcedureCodes).length === 0) {
+      throw new Error(`ALL_PROCEDURE.dat exists but contains no entries: ${allProcedurePath}`);
+    }
+  } else {
+    allProcedureCodes = undefined;
+  }
   const commonConfig = configResolver.resolveCommonConfig(commonPackage);
   qyDiffEntries = deriveQyDiffEntries(
     commonConfig.insuranceIcd,
@@ -884,7 +865,7 @@ async function buildPackage(scope, config, commonPackage) {
   const hasSubgroupRulesSource = fs.existsSync(subgroupRulesSourceDir)
     && fs.readdirSync(subgroupRulesSourceDir).some(filename => filename.endsWith('.dat'));
   if (buildCommon || buildVersion) {
-    const ruleParserPath = pathToFileUrl(path.resolve(__dirname, '../src/lib/ruleParserCore.js'));
+    const ruleParserPath = pathToFileUrl(path.resolve(__dirname, '../src/lib/ruleParserCore.ts'));
     try {
       const rp = await import(ruleParserPath);
       parseRule = rp.parseRule;
@@ -920,12 +901,16 @@ async function buildPackage(scope, config, commonPackage) {
   }
 
   const keepContent = process.env.KEEP_CONTENT === '1';
-  const adrgRulesForWrite = keepContent ? adrgRules : adrgRules.map(({ content, ...rest }) => rest);
-  const mdcRulesForWrite = keepContent ? mdcRules : mdcRules.map(({ content, ...rest }) => rest);
+  const stripContent = rule => Object.fromEntries(
+    Object.entries(rule).filter(([key]) => key !== 'content'),
+  );
+  const adrgRulesForWrite = keepContent ? adrgRules : adrgRules.map(stripContent);
+  const mdcRulesForWrite = keepContent ? mdcRules : mdcRules.map(stripContent);
 
   if (buildCommon) {
     const qyDiffRawPath = path.join(commonRulesDir, 'QY_DIFF.dat');
     const qyDiffOutputPath = path.join(commonOutputDir, 'qy_diff_codes.json');
+    const allProcedureOutputPath = path.join(commonOutputDir, 'all_procedure_codes.json');
     if (qyDiffEntries && qyDiffEntries.length > 0) {
       // Keep one auditable code/name copy in raw; the generated JSON below is
       // the compact code-only representation consumed by the runtime.
@@ -939,6 +924,9 @@ async function buildPackage(scope, config, commonPackage) {
       && fs.existsSync(qyDiffOutputPath)) {
       fs.unlinkSync(qyDiffOutputPath);
     }
+    if (!allProcedureCodes && fs.existsSync(allProcedureOutputPath)) {
+      fs.unlinkSync(allProcedureOutputPath);
+    }
     await writeJsonFiles([
       [path.join(commonOutputDir, 'cc_codes.json'), JSON.stringify(ccCodes, null, 2)],
       [path.join(commonOutputDir, 'mcc_codes.json'), JSON.stringify(mccCodes, null, 2)],
@@ -946,7 +934,7 @@ async function buildPackage(scope, config, commonPackage) {
       [path.join(commonOutputDir, 'zd_invalid.json'), JSON.stringify(zdInvalid, null, 2)],
       [path.join(commonOutputDir, 'ss_invalid.json'), JSON.stringify(ssInvalid, null, 2)],
       ...(allProcedureCodes && Object.keys(allProcedureCodes).length > 0
-        ? [[path.join(commonOutputDir, 'all_procedure_codes.json'), JSON.stringify(allProcedureCodes, null, 2)]]
+        ? [[allProcedureOutputPath, JSON.stringify(allProcedureCodes, null, 2)]]
         : []),
       ...(qyDiffCodes && Object.keys(qyDiffCodes).length > 0
         ? [[path.join(commonOutputDir, 'qy_diff_codes.json'), JSON.stringify(qyDiffCodes, null, 2)]]
@@ -1000,16 +988,14 @@ async function buildPackage(scope, config, commonPackage) {
     [path.join(outputDir, 'drg.json'), JSON.stringify(drgMap, null, 2)],
     [path.join(outputDir, 'drg_rules.json'), JSON.stringify(subgroupRules, null, 2)],
   ];
-  try {
-    await writeJsonFiles(writeJobs);
-  } catch (err) {
-    throw err;
-  }
+  await writeJsonFiles(writeJobs);
 
   try {
     const skippedPath = path.join(dataDir, 'skipped_drgs.json');
     if (fs.existsSync(skippedPath)) fs.unlinkSync(skippedPath);
-  } catch (e) { }
+  } catch {
+    // Skipped-DRG cleanup is best effort and should not hide generated output.
+  }
 
   console.log('Build complete: JSON files generated for browser use.');
 }

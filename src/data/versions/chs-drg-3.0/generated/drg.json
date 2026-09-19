@@ -25,7 +25,7 @@
     "weightTier2": null
   },
   "AC19": {
-    "description": "胰／肾联合移植",
+    "description": "胰/肾联合移植",
     "weight": null,
     "weightTier2": null
   },
@@ -50,7 +50,7 @@
     "weightTier2": null
   },
   "AG39": {
-    "description": "自体骨髓／造血干细胞移植",
+    "description": "自体骨髓/造血干细胞移植",
     "weight": null,
     "weightTier2": null
   },
@@ -140,17 +140,17 @@
     "weightTier2": null
   },
   "BD29": {
-    "description": "神经刺激发生器置入／置换术",
+    "description": "神经刺激发生器置入/置换术",
     "weight": null,
     "weightTier2": null
   },
   "BD39": {
-    "description": "中枢神经刺激器置入／置换术",
+    "description": "中枢神经刺激器置入/置换术",
     "weight": null,
     "weightTier2": null
   },
   "BD49": {
-    "description": "周围神经刺激器置入／置换术",
+    "description": "周围神经刺激器置入/置换术",
     "weight": null,
     "weightTier2": null
   },
@@ -425,7 +425,7 @@
     "weightTier2": null
   },
   "BX29": {
-    "description": "脑神经／周围神经疾病",
+    "description": "脑神经/周围神经疾病",
     "weight": null,
     "weightTier2": null
   },
@@ -665,7 +665,7 @@
     "weightTier2": null
   },
   "DD39": {
-    "description": "中耳／内耳／侧颅底手术",
+    "description": "中耳/内耳/侧颅底手术",
     "weight": null,
     "weightTier2": null
   },
@@ -730,7 +730,7 @@
     "weightTier2": null
   },
   "DG29": {
-    "description": "扁桃体和／或腺样体切除手术",
+    "description": "扁桃体和/或腺样体切除手术",
     "weight": null,
     "weightTier2": null
   },
@@ -870,67 +870,67 @@
     "weightTier2": null
   },
   "EK11": {
-    "description": "复杂呼吸介入手术／操作,伴严重合并症或并发症",
+    "description": "复杂呼吸介入手术/操作,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK13": {
-    "description": "复杂呼吸介入手术／操作,伴一般合并症或并发症",
+    "description": "复杂呼吸介入手术/操作,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK15": {
-    "description": "复杂呼吸介入手术／操作,不伴合并症或并发症",
+    "description": "复杂呼吸介入手术/操作,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK1G": {
-    "description": "复杂呼吸介入手术／操作,不伴合并症或并发症,大于等于70岁",
+    "description": "复杂呼吸介入手术/操作,不伴合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
   "EK21": {
-    "description": "一般呼吸介入手术／操作,伴严重合并症或并发症",
+    "description": "一般呼吸介入手术/操作,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK23": {
-    "description": "一般呼吸介入手术／操作,伴一般合并症或并发症",
+    "description": "一般呼吸介入手术/操作,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK25": {
-    "description": "一般呼吸介入手术／操作,不伴合并症或并发症",
+    "description": "一般呼吸介入手术/操作,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK31": {
-    "description": "常规呼吸诊断性手术／操作,伴严重合并症或并发症",
+    "description": "常规呼吸诊断性手术/操作,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK33": {
-    "description": "常规呼吸诊断性手术／操作,伴一般合并症或并发症",
+    "description": "常规呼吸诊断性手术/操作,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK35": {
-    "description": "常规呼吸诊断性手术／操作,不伴合并症或并发症",
+    "description": "常规呼吸诊断性手术/操作,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EK3E": {
-    "description": "常规呼吸诊断性手术／操作,伴严重合并症或并发症,大于等于70岁",
+    "description": "常规呼吸诊断性手术/操作,伴严重合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
   "EK3F": {
-    "description": "常规呼吸诊断性手术／操作,伴一般合并症或并发症,大于等于70岁",
+    "description": "常规呼吸诊断性手术/操作,伴一般合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
   "EK3G": {
-    "description": "常规呼吸诊断性手术／操作,不伴合并症或并发症,大于等于70岁",
+    "description": "常规呼吸诊断性手术/操作,不伴合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
@@ -940,17 +940,17 @@
     "weightTier2": null
   },
   "EM11": {
-    "description": "呼吸系统感染／炎症的无创呼吸支持技术,伴严重合并症或并发症",
+    "description": "呼吸系统感染/炎症的无创呼吸支持技术,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EM15": {
-    "description": "呼吸系统感染／炎症的无创呼吸支持技术,不伴严重合并症或并发症",
+    "description": "呼吸系统感染/炎症的无创呼吸支持技术,不伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "EM1G": {
-    "description": "呼吸系统感染／炎症的无创呼吸支持技术,不伴严重合并症或并发症,大于等于70岁",
+    "description": "呼吸系统感染/炎症的无创呼吸支持技术,不伴严重合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
@@ -1030,32 +1030,32 @@
     "weightTier2": null
   },
   "ES41": {
-    "description": "呼吸系统感染／炎症,伴严重合并症或并发症",
+    "description": "呼吸系统感染/炎症,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "ES43": {
-    "description": "呼吸系统感染／炎症,伴一般合并症或并发症",
+    "description": "呼吸系统感染/炎症,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "ES45": {
-    "description": "呼吸系统感染／炎症,不伴合并症或并发症",
+    "description": "呼吸系统感染/炎症,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "ES4E": {
-    "description": "呼吸系统感染／炎症,伴严重合并症或并发症,大于等于70岁",
+    "description": "呼吸系统感染/炎症,伴严重合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
   "ES4F": {
-    "description": "呼吸系统感染／炎症,伴一般合并症或并发症,大于等于70岁",
+    "description": "呼吸系统感染/炎症,伴一般合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
   "ES4G": {
-    "description": "呼吸系统感染／炎症,不伴合并症或并发症,大于等于70岁",
+    "description": "呼吸系统感染/炎症,不伴合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
@@ -1215,12 +1215,12 @@
     "weightTier2": null
   },
   "FF23": {
-    "description": "外周血管（除大隐静脉外）其他的手术,伴合并症或并发症",
+    "description": "外周血管(除大隐静脉外)其他的手术,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "FF25": {
-    "description": "外周血管（除大隐静脉外）其他的手术,不伴合并症或并发症",
+    "description": "外周血管(除大隐静脉外)其他的手术,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -1245,17 +1245,17 @@
     "weightTier2": null
   },
   "FK29": {
-    "description": "伴急性心肌梗死／心衰／休克的心脏除颤器及心室同步",
+    "description": "伴急性心肌梗死/心衰/休克的心脏除颤器及心室同步",
     "weight": null,
     "weightTier2": null
   },
   "FK39": {
-    "description": "不伴急性心肌梗死／心衰／休克的心脏除颤器及心室同步",
+    "description": "不伴急性心肌梗死/心衰/休克的心脏除颤器及心室同步",
     "weight": null,
     "weightTier2": null
   },
   "FK49": {
-    "description": "永久性起搏器植入／置换／更新",
+    "description": "永久性起搏器植入/置换/更新",
     "weight": null,
     "weightTier2": null
   },
@@ -1270,7 +1270,7 @@
     "weightTier2": null
   },
   "FL39": {
-    "description": "经皮心脏消融术伴房颤和／或房扑",
+    "description": "经皮心脏消融术伴房颤和/或房扑",
     "weight": null,
     "weightTier2": null
   },
@@ -1385,7 +1385,7 @@
     "weightTier2": null
   },
   "FR59": {
-    "description": "冠状动脉粥样硬化／血栓／闭塞",
+    "description": "冠状动脉粥样硬化/血栓/闭塞",
     "weight": null,
     "weightTier2": null
   },
@@ -1465,7 +1465,7 @@
     "weightTier2": null
   },
   "FV39": {
-    "description": "晕厥及／或虚脱",
+    "description": "晕厥及/或虚脱",
     "weight": null,
     "weightTier2": null
   },
@@ -1515,12 +1515,12 @@
     "weightTier2": null
   },
   "GB40": {
-    "description": "小肠、大肠（含直肠）的大手术,机器人辅助手术",
+    "description": "小肠、大肠(含直肠)的大手术,机器人辅助手术",
     "weight": null,
     "weightTier2": null
   },
   "GB49": {
-    "description": "小肠、大肠（含直肠）的大手术",
+    "description": "小肠、大肠(含直肠)的大手术",
     "weight": null,
     "weightTier2": null
   },
@@ -1545,12 +1545,12 @@
     "weightTier2": null
   },
   "GC31": {
-    "description": "小肠、大肠（含直肠）的其他手术,伴严重合并症或并发症",
+    "description": "小肠、大肠(含直肠)的其他手术,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "GC35": {
-    "description": "小肠、大肠（含直肠）的其他手术,不伴严重合并症或并发症",
+    "description": "小肠、大肠(含直肠)的其他手术,不伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -1625,12 +1625,12 @@
     "weightTier2": null
   },
   "GH13": {
-    "description": "腹腔／盆腔内粘连松解术,伴合并症或并发症",
+    "description": "腹腔/盆腔内粘连松解术,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "GH15": {
-    "description": "腹腔／盆腔内粘连松解术,不伴合并症或并发症",
+    "description": "腹腔/盆腔内粘连松解术,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -1755,22 +1755,22 @@
     "weightTier2": null
   },
   "HB13": {
-    "description": "胰切除和／或分流手术,伴合并症或并发症",
+    "description": "胰切除和/或分流手术,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "HB15": {
-    "description": "胰切除和／或分流手术,不伴合并症或并发症",
+    "description": "胰切除和/或分流手术,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "HB23": {
-    "description": "肝切除和／或分流手术,伴合并症或并发症",
+    "description": "肝切除和/或分流手术,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "HB25": {
-    "description": "肝切除和／或分流手术,不伴合并症或并发症",
+    "description": "肝切除和/或分流手术,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -2020,7 +2020,7 @@
     "weightTier2": null
   },
   "IC19": {
-    "description": "髋、肩、膝、肘和踝关节假体翻修／修正手术",
+    "description": "髋、肩、膝、肘和踝关节假体翻修/修正手术",
     "weight": null,
     "weightTier2": null
   },
@@ -2040,12 +2040,12 @@
     "weightTier2": null
   },
   "IC49": {
-    "description": "除置换／翻修外的髋、肩、膝、肘、踝和足部关节的修复、重建手术",
+    "description": "除置换/翻修外的髋、肩、膝、肘、踝和足部关节的修复、重建手术",
     "weight": null,
     "weightTier2": null
   },
   "IC59": {
-    "description": "除置换／翻修外的髋、肩、膝、肘、踝和足部关节其他手术",
+    "description": "除置换/翻修外的髋、肩、膝、肘、踝和足部关节其他手术",
     "weight": null,
     "weightTier2": null
   },
@@ -2100,7 +2100,7 @@
     "weightTier2": null
   },
   "IE69": {
-    "description": "指／趾再植手术",
+    "description": "指/趾再植手术",
     "weight": null,
     "weightTier2": null
   },
@@ -2110,7 +2110,7 @@
     "weightTier2": null
   },
   "IF19": {
-    "description": "骨科固定装置去除／修正术",
+    "description": "骨科固定装置去除/修正术",
     "weight": null,
     "weightTier2": null
   },
@@ -2255,17 +2255,17 @@
     "weightTier2": null
   },
   "IZ13": {
-    "description": "肌肉骨骼系统植入物／假体的康复照护,伴合并症或并发症",
+    "description": "肌肉骨骼系统植入物/假体的康复照护,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "IZ15": {
-    "description": "肌肉骨骼系统植入物／假体的康复照护,不伴合并症或并发症",
+    "description": "肌肉骨骼系统植入物/假体的康复照护,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "IZ1F": {
-    "description": "肌肉骨骼系统植入物／假体的康复照护,伴合并症或并发症,大于等于70岁",
+    "description": "肌肉骨骼系统植入物/假体的康复照护,伴合并症或并发症,大于等于70岁",
     "weight": null,
     "weightTier2": null
   },
@@ -2845,17 +2845,17 @@
     "weightTier2": null
   },
   "NB19": {
-    "description": "女性生殖系统重建手术（移植物植入）",
+    "description": "女性生殖系统重建手术(移植物植入)",
     "weight": null,
     "weightTier2": null
   },
   "NB23": {
-    "description": "女性生殖系统重建手术（无移植物植入）,伴合并症或并发症",
+    "description": "女性生殖系统重建手术(无移植物植入),伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "NB25": {
-    "description": "女性生殖系统重建手术（无移植物植入）,不伴合并症或并发症",
+    "description": "女性生殖系统重建手术(无移植物植入),不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -2870,7 +2870,7 @@
     "weightTier2": null
   },
   "NC29": {
-    "description": "子宫（除子宫腔内病变以外）手术",
+    "description": "子宫(除子宫腔内病变以外)手术",
     "weight": null,
     "weightTier2": null
   },
@@ -3040,27 +3040,27 @@
     "weightTier2": null
   },
   "PB19": {
-    "description": "新生儿（出生年龄＜29天）心血管手术",
+    "description": "新生儿(出生年龄<29天)心血管手术",
     "weight": null,
     "weightTier2": null
   },
   "PC19": {
-    "description": "新生儿（出生年龄＜29天）除心血管外复杂手术",
+    "description": "新生儿(出生年龄<29天)除心血管外复杂手术",
     "weight": null,
     "weightTier2": null
   },
   "PD13": {
-    "description": "新生儿（出生年龄＜29天）腹部手术,伴合并症或并发症",
+    "description": "新生儿(出生年龄<29天)腹部手术,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PD15": {
-    "description": "新生儿（出生年龄＜29天）腹部手术,不伴合并症或并发症",
+    "description": "新生儿(出生年龄<29天)腹部手术,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PJ19": {
-    "description": "新生儿（出生年龄＜29天）其他手术",
+    "description": "新生儿(出生年龄<29天)其他手术",
     "weight": null,
     "weightTier2": null
   },
@@ -3095,47 +3095,47 @@
     "weightTier2": null
   },
   "PS19": {
-    "description": "极度发育不全（入院体重＜1000g）",
+    "description": "极度发育不全(入院体重<1000g)",
     "weight": null,
     "weightTier2": null
   },
   "PS29": {
-    "description": "极度发育不全（入院体重1000-1499g）",
+    "description": "极度发育不全(入院体重1000-1499g)",
     "weight": null,
     "weightTier2": null
   },
   "PS39": {
-    "description": "早产儿（入院体重1500-1999g）",
+    "description": "早产儿(入院体重1500-1999g)",
     "weight": null,
     "weightTier2": null
   },
   "PS41": {
-    "description": "早产儿（入院体重2000-2499g）,伴严重合并症或并发症",
+    "description": "早产儿(入院体重2000-2499g),伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PS43": {
-    "description": "早产儿（入院体重2000-2499g）,伴一般合并症或并发症",
+    "description": "早产儿(入院体重2000-2499g),伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PS45": {
-    "description": "早产儿（入院体重2000-2499g）,不伴合并症或并发症",
+    "description": "早产儿(入院体重2000-2499g),不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PS51": {
-    "description": "早产儿（入院体重≥2500g）,伴严重合并症或并发症",
+    "description": "早产儿(入院体重≥2500g),伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PS53": {
-    "description": "早产儿（入院体重≥2500g）,伴一般合并症或并发症",
+    "description": "早产儿(入院体重≥2500g),伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PS55": {
-    "description": "早产儿（入院体重≥2500g）,不伴合并症或并发症",
+    "description": "早产儿(入院体重≥2500g),不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -3175,17 +3175,17 @@
     "weightTier2": null
   },
   "PV11": {
-    "description": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,伴严重合并症或并发症",
+    "description": "源于新生儿(29天≤出生年龄<1周岁)诊断的婴儿疾病,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PV13": {
-    "description": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,伴一般合并症或并发症",
+    "description": "源于新生儿(29天≤出生年龄<1周岁)诊断的婴儿疾病,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "PV15": {
-    "description": "源于新生儿（29天≤出生年龄＜1周岁）诊断的婴儿疾病,不伴合并症或并发症",
+    "description": "源于新生儿(29天≤出生年龄<1周岁)诊断的婴儿疾病,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -3350,37 +3350,37 @@
     "weightTier2": null
   },
   "RK11": {
-    "description": "急性白血病化学治疗和／或其他治疗,伴严重合并症或并发症",
+    "description": "急性白血病化学治疗和/或其他治疗,伴严重合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RK13": {
-    "description": "急性白血病化学治疗和／或其他治疗,伴一般合并症或并发症",
+    "description": "急性白血病化学治疗和/或其他治疗,伴一般合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RK15": {
-    "description": "急性白血病化学治疗和／或其他治疗,不伴合并症或并发症",
+    "description": "急性白血病化学治疗和/或其他治疗,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RK23": {
-    "description": "淋巴瘤、多发骨髓瘤化学治疗和／或其他治疗,伴合并症或并发症",
+    "description": "淋巴瘤、多发骨髓瘤化学治疗和/或其他治疗,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RK25": {
-    "description": "淋巴瘤、多发骨髓瘤化学治疗和／或其他治疗,不伴合并症或并发症",
+    "description": "淋巴瘤、多发骨髓瘤化学治疗和/或其他治疗,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RL13": {
-    "description": "恶性及增生性疾病放射联合化疗／靶向／免疫治疗,伴合并症或并发症",
+    "description": "恶性及增生性疾病放射联合化疗/靶向/免疫治疗,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "RL15": {
-    "description": "恶性及增生性疾病放射联合化疗／靶向／免疫治疗,不伴合并症或并发症",
+    "description": "恶性及增生性疾病放射联合化疗/靶向/免疫治疗,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
@@ -3425,7 +3425,7 @@
     "weightTier2": null
   },
   "RM19": {
-    "description": "恶性及增生性疾病介入联合化疗／靶向／免疫治疗",
+    "description": "恶性及增生性疾病介入联合化疗/靶向/免疫治疗",
     "weight": null,
     "weightTier2": null
   },
@@ -3895,12 +3895,12 @@
     "weightTier2": null
   },
   "WB29": {
-    "description": "烧伤面积≥30%,＜50%,或三度面积≥10%,＜20%的烧伤,伴有手术操作",
+    "description": "烧伤面积≥30%,<50%,或三度面积≥10%,<20%的烧伤,伴有手术操作",
     "weight": null,
     "weightTier2": null
   },
   "WB39": {
-    "description": "烧伤面积＜30%或其他烧伤,伴有手术操作",
+    "description": "烧伤面积<30%或其他烧伤,伴有手术操作",
     "weight": null,
     "weightTier2": null
   },
@@ -3915,12 +3915,12 @@
     "weightTier2": null
   },
   "WR23": {
-    "description": "烧伤面积＜30%的烧伤或其他烧伤,伴合并症或并发症",
+    "description": "烧伤面积<30%的烧伤或其他烧伤,伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },
   "WR25": {
-    "description": "烧伤面积＜30%的烧伤或其他烧伤,不伴合并症或并发症",
+    "description": "烧伤面积<30%的烧伤或其他烧伤,不伴合并症或并发症",
     "weight": null,
     "weightTier2": null
   },

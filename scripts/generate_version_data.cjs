@@ -11,7 +11,7 @@ const {
   inferCommonPatientInfoFields,
   inferVersionPatientInfoFields,
 } = require('./lib/patient_info_fields.cjs');
-const { resolvePackageChain } = require('./lib/icd_package.cjs');
+const { getParentPackageId, resolvePackageChain } = require('./lib/icd_package.cjs');
 const { writeFileIfChanged } = require('./lib/write_if_changed.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -73,25 +73,19 @@ function valuesEqual(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
-function getStrategyOverrides(resolvedStrategy) {
+function getOverrides(resolvedStrategy, defaults) {
   return Object.fromEntries(
     Object.entries(resolvedStrategy).filter(([field, value]) => {
       return (
-        !Object.prototype.hasOwnProperty.call(strategyDefaults, field) ||
-        !valuesEqual(value, strategyDefaults[field])
+        !Object.prototype.hasOwnProperty.call(defaults, field) ||
+        !valuesEqual(value, defaults[field])
       );
     }),
   );
 }
 
-function getVersionStrategyOverrides(resolvedStrategy) {
-  return Object.fromEntries(
-    Object.entries(resolvedStrategy).filter(([field, value]) => (
-      !Object.prototype.hasOwnProperty.call(versionStrategyDefaults, field)
-      || !valuesEqual(value, versionStrategyDefaults[field])
-    )),
-  );
-}
+const getStrategyOverrides = resolvedStrategy => getOverrides(resolvedStrategy, strategyDefaults);
+const getVersionStrategyOverrides = resolvedStrategy => getOverrides(resolvedStrategy, versionStrategyDefaults);
 
 function ensureFileExists(filePath, description) {
   if (!fs.existsSync(filePath)) {
@@ -103,6 +97,110 @@ function ensureFileExists(filePath, description) {
   if (!stat.isFile()) {
     throw new Error(`Expected file for ${description}: ${filePath}`);
   }
+}
+
+const versionStrategyCodeTypes = Object.freeze({
+  diagnosis: Object.freeze({
+    field: 'diagnosisCodes',
+    codePattern: /^[A-Z]\d{2}(?:\.[0-9A-Za-zxX]+)*$/u,
+  }),
+  procedure: Object.freeze({
+    field: 'procedureCodes',
+    codePattern: /^\d{2}\.[0-9A-Za-zxX]+$/u,
+  }),
+});
+
+function resolveVersionStrategyCodeGroup(versionId, group, groupIndex) {
+  if (group === null || typeof group !== 'object' || Array.isArray(group)) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction.groups[${groupIndex}] must be an object`,
+    );
+  }
+
+  const strategyKey = typeof group.strategyKey === 'string'
+    ? group.strategyKey.trim()
+    : '';
+  const outputFile = typeof group.outputFile === 'string'
+    ? group.outputFile.trim()
+    : '';
+  const codeType = typeof group.codeType === 'string'
+    ? group.codeType.trim()
+    : '';
+  const codeTypeDefinition = Object.prototype.hasOwnProperty.call(
+    versionStrategyCodeTypes,
+    codeType,
+  )
+    ? versionStrategyCodeTypes[codeType]
+    : undefined;
+
+  if (!strategyKey) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction.groups[${groupIndex}] `
+      + 'requires a non-empty strategyKey',
+    );
+  }
+  if (!codeTypeDefinition) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction.groups[${groupIndex}] `
+      + `has unsupported codeType: ${codeType || '(missing)'}`,
+    );
+  }
+  if (
+    !outputFile
+    || path.basename(outputFile) !== outputFile
+    || !/^[A-Z][A-Z0-9_]*\.dat$/u.test(outputFile)
+  ) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction.groups[${groupIndex}] `
+      + 'requires a safe uppercase .dat outputFile',
+    );
+  }
+
+  return {
+    strategyKey,
+    filename: outputFile,
+    field: codeTypeDefinition.field,
+    codePattern: codeTypeDefinition.codePattern,
+  };
+}
+
+function readVersionStrategyCodeList(versionId, definition) {
+  const filePath = path.join(paths.versionsDir, versionId, 'raw', definition.filename);
+  ensureFileExists(filePath, `${versionId} version strategy source ${definition.filename}`);
+  const codes = [];
+  const seen = new Set();
+  const lines = fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
+  for (const [index, rawLine] of lines.entries()) {
+    const lineNumber = index + 1;
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    const fields = line.split(/\t+/u).map(field => field.trim());
+    if (fields.length !== 2 || !fields[0] || !fields[1]) {
+      throw new Error(
+        `Malformed ${versionId} version strategy source ${definition.filename} at line ${lineNumber}; expected code and name separated by a tab`,
+      );
+    }
+
+    const code = fields[0];
+    if (!definition.codePattern.test(code)) {
+      throw new Error(
+        `Malformed ${versionId} version strategy source ${definition.filename} at line ${lineNumber}: invalid code ${code}`,
+      );
+    }
+    if (seen.has(code)) {
+      throw new Error(
+        `Duplicate ${versionId} version strategy code ${code} in ${definition.filename} at line ${lineNumber}`,
+      );
+    }
+    seen.add(code);
+    codes.push(code);
+  }
+
+  if (codes.length === 0) {
+    throw new Error(`Empty ${versionId} version strategy source: ${definition.filename}`);
+  }
+  return codes;
 }
 
 function writeGeneratedFile(filePath, content) {
@@ -136,21 +234,15 @@ function getCrosswalkBaseId(packageId) {
   if (separator < 0) throw new Error(`Invalid crosswalk package id: ${packageId}`);
   const clinicalId = packageId.slice(0, separator);
   const insuranceId = packageId.slice(separator + 2);
-  const clinicalChain = resolvePackageChain(
+  const parentClinicalId = getParentPackageId(
     path.join(paths.sharedJsonDir, 'icd-datasets/clinical'),
     clinicalId,
-  );
-  const insuranceChain = resolvePackageChain(
+  ) ?? clinicalId;
+  const parentInsuranceId = getParentPackageId(
     path.join(paths.sharedJsonDir, 'icd-datasets/insurance'),
     insuranceId,
-  );
-  if (clinicalChain.length === 1 && insuranceChain.length === 1) return null;
-  const parentClinicalId = clinicalChain.length > 1
-    ? clinicalChain[clinicalChain.length - 2].id
-    : clinicalId;
-  const parentInsuranceId = insuranceChain.length > 1
-    ? insuranceChain[insuranceChain.length - 2].id
-    : insuranceId;
+  ) ?? insuranceId;
+  if (parentClinicalId === clinicalId && parentInsuranceId === insuranceId) return null;
   return `${parentClinicalId}__${parentInsuranceId}`;
 }
 
@@ -188,6 +280,67 @@ function readVersionConfig(versionId) {
   const versionStrategy = getVersionStrategyOverrides(
     resolvedConfig.versionStrategy,
   );
+  const specialContentExtraction = rawConfig.specialContentExtraction;
+  if (
+    specialContentExtraction !== undefined
+    && (specialContentExtraction === null
+      || typeof specialContentExtraction !== 'object'
+      || Array.isArray(specialContentExtraction))
+  ) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction must be an object`,
+    );
+  }
+  const specialContentGroups = specialContentExtraction?.groups;
+  if (specialContentGroups !== undefined && !Array.isArray(specialContentGroups)) {
+    throw new Error(
+      `${versionId}/config.json specialContentExtraction.groups must be an array`,
+    );
+  }
+  const seenStrategyKeys = new Set();
+  const seenOutputFiles = new Set();
+  for (const [groupIndex, rawGroup] of (specialContentGroups || []).entries()) {
+    const definition = resolveVersionStrategyCodeGroup(versionId, rawGroup, groupIndex);
+    if (seenStrategyKeys.has(definition.strategyKey)) {
+      throw new Error(
+        `${versionId}/config.json specialContentExtraction.groups contains duplicate strategyKey: `
+        + definition.strategyKey,
+      );
+    }
+    if (seenOutputFiles.has(definition.filename)) {
+      throw new Error(
+        `${versionId}/config.json specialContentExtraction.groups contains duplicate outputFile: `
+        + definition.filename,
+      );
+    }
+    seenStrategyKeys.add(definition.strategyKey);
+    seenOutputFiles.add(definition.filename);
+    if (!Object.prototype.hasOwnProperty.call(versionStrategy, definition.strategyKey)) {
+      throw new Error(
+        `${versionId}/config.json specialContentExtraction group ${definition.strategyKey} `
+        + 'must reference a configured non-empty version strategy array',
+      );
+    }
+    versionStrategy[definition.strategyKey] = {
+      ...versionStrategy[definition.strategyKey],
+      [definition.field]: readVersionStrategyCodeList(versionId, definition),
+    };
+  }
+  const unlinkedStrategyKeys = Object.entries(versionStrategy)
+    .filter(([, value]) => (
+      value
+      && typeof value === 'object'
+      && Array.isArray(value.adrgCodes)
+      && value.adrgCodes.length > 0
+    ))
+    .map(([strategyKey]) => strategyKey)
+    .filter(strategyKey => !seenStrategyKeys.has(strategyKey));
+  if (unlinkedStrategyKeys.length > 0) {
+    throw new Error(
+      `${versionId}/config.json strategy entries require matching `
+      + `specialContentExtraction groups: ${unlinkedStrategyKeys.join(', ')}`,
+    );
+  }
   const versionConfig = Object.fromEntries(
     Object.entries(rawConfig).filter(([field]) => field !== 'strategy'),
   );

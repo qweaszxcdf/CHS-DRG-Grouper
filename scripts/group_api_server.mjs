@@ -83,7 +83,7 @@ function createStaticFileIndex(directory) {
         body,
         size: body.length,
         modified: null,
-        etag: `\"${digest}\"`,
+        etag: `"${digest}"`,
         contentType: MIME_TYPES[path.posix.extname(urlPath).toLowerCase()] || 'application/octet-stream',
       });
     }
@@ -112,7 +112,7 @@ function createStaticFileIndex(directory) {
             body: null,
             size: stats.size,
             modified: stats.mtime.toUTCString(),
-            etag: `W/\"${stats.size.toString(16)}-${Math.trunc(stats.mtimeMs).toString(16)}\"`,
+            etag: `W/"${stats.size.toString(16)}-${Math.trunc(stats.mtimeMs).toString(16)}"`,
             contentType: MIME_TYPES[path.extname(filePath).toLowerCase()] || 'application/octet-stream',
           });
         }
@@ -316,8 +316,7 @@ async function handleRequest(req, res) {
           procedures = convertProceduresArray(procedures, version);
         }
 
-        const groupingResult = groupPatientByVersion(diagnoses, procedures, patientInfo || {}, version);
-        const result = groupingResult instanceof Promise ? await groupingResult : groupingResult;
+        const result = await groupPatientByVersion(diagnoses, procedures, patientInfo || {}, version);
         return sendJson(res, 200, {
           ...result,
           version,
@@ -344,8 +343,8 @@ async function startWorkerServer() {
   const [versionedGrouper, versionRegistry, codeConversion, glDataLoader] = await Promise.all([
     import('../src/services/versionedGrouper.ts'),
     import('../src/services/generated/versionRegistry.ts'),
-    import('../src/services/CodeConversion.js'),
-    import('../src/services/glDataLoader.js'),
+    import('../src/services/CodeConversion.ts'),
+    import('../src/services/glDataLoader.ts'),
   ]);
   ({ groupPatientByVersion, preloadRuleVersion } = versionedGrouper);
   ({ DEFAULT_RULE_VERSION } = versionRegistry);

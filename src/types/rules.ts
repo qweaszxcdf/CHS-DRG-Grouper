@@ -53,7 +53,7 @@ export interface MdcDefinition {
   code: string;
   description: string;
   identifyingDiagnoses: string[];
-  identifyingDiagnosesSet?: Set<string>;
+  identifyingDiagnosesSet: Set<string>;
   mdczCategories?: Record<string, string[]> | null;
 }
 
@@ -138,17 +138,17 @@ export interface RuleSet {
   loadCCECodes(): Record<string, string>;
   loadAllProcedureCodes(): Record<string, boolean>;
   /** Small derived exclusion set used by QY/anyProcedureRequired matching. */
-  loadQyDiffCodes?(): Record<string, boolean>;
-  isInvalidDiagnosis(code: string | null | undefined): boolean;
-  isInvalidProcedure(code: string | null | undefined): boolean;
-  isGrayDiag(code: string | null | undefined): boolean;
-  isGrayProc(code: string | null | undefined): boolean;
+  loadQyDiffCodes(): Record<string, boolean>;
+  isInvalidDiagnosis(code: string): boolean;
+  isInvalidProcedure(code: string): boolean;
+  isGrayDiag(code: string): boolean;
+  isGrayProc(code: string): boolean;
   loadDRGSubgroupRules(): DrgSubgroupRule[];
   loadDRGSubgroupRulesForADRG(adrgCode: string): DrgSubgroupRule[];
-  getADRGsForMDC(mdcCode: string | null | undefined): AdrgDefinition[];
+  getADRGsForMDC(mdcCode: string): AdrgDefinition[];
   MDCs: MdcDefinition[];
   mdcByCode: Map<string, MdcDefinition>;
-  diagToMDCZCategories: Map<string, Set<string>>;
+  diagToMDCZCategories: Map<string, string>;
   getADRGByCode(code: string): AdrgDefinition | undefined;
   loadDRGMap(): Record<string, DrgMapEntry>;
   loadADRGRules(): AdrgDefinition[];

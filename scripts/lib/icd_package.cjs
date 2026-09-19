@@ -21,6 +21,31 @@ function parseIcdPackageDatLine(line) {
   return Object.freeze({ code, value, removed });
 }
 
+function forEachPackageDatEntry(packageRoot, packageId, filename, callback) {
+  const chain = resolvePackageChain(packageRoot, packageId);
+
+  for (const [index, packageInfo] of chain.entries()) {
+    const sourcePath = path.join(packageInfo.dir, 'raw', filename);
+    if (!fs.existsSync(sourcePath)) {
+      if (index === 0) {
+        throw new Error(`Missing required ICD package source: ${sourcePath}`);
+      }
+      continue;
+    }
+
+    let lines;
+    try {
+      lines = fs.readFileSync(sourcePath, 'utf8').split(/\r?\n/);
+    } catch (error) {
+      throw new Error(`Unable to read required ICD package source ${sourcePath}: ${error.message}`, { cause: error });
+    }
+    for (const line of lines) {
+      const entry = parseIcdPackageDatLine(line);
+      if (entry) callback(entry, packageInfo);
+    }
+  }
+}
+
 // A dated package such as yb-2.0-2027.01 is a delta over the closest earlier
 // package in the same series.
 function inferBasePackageId(packageRoot, packageId) {
@@ -83,7 +108,13 @@ function resolvePackageChain(packageRoot, packageId) {
   return chain;
 }
 
+function getParentPackageId(packageRoot, packageId, chain = resolvePackageChain(packageRoot, packageId)) {
+  return chain.length > 1 ? chain[chain.length - 2].id : null;
+}
+
 module.exports = {
+  forEachPackageDatEntry,
+  getParentPackageId,
   parseIcdPackageDatLine,
   resolvePackageChain,
 };

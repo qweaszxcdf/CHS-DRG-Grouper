@@ -13,24 +13,23 @@ import type {
   PatientInfoInput,
   PatientScalarInput,
 } from '../types/grouper.js';
+import {
+  PATIENT_BOOLEAN_FIELDS,
+  PATIENT_INFO_FIELDS,
+  PATIENT_NUMERIC_FIELDS,
+} from '../types/patient_info_fields.ts';
 
 // lite build flag - allows dead-code elimination when VITE_LITE=true
-let IS_LITE = import.meta.env?.VITE_LITE === 'true';
+let IS_LITE = (import.meta.env as ImportMetaEnv | undefined)?.VITE_LITE === 'true';
 
 // helper for tests to override behavior
 export function _setLite(val: unknown): void { IS_LITE = !!val; }
-
-const DEFAULT_VERSION_STRATEGY = {
-  daySurgeryAsNoCC: false,
-  robotAssistedSurgery: { adrgCodes: [], procedureCodes: [] },
-  highRiskPregnancyAsMcc: { adrgCodes: [], diagnosisCodes: [] },
-};
 
 // Moved helpers (see `src/services/grouper/*`)
 import { createMdcAdrgSelection } from './grouper/mdcAdrgSelection.ts';
 import { createSubgroupEvaluator } from './grouper/subgroupEval.ts';
 
-export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy = DEFAULT_VERSION_STRATEGY }: CreateGrouperEngineOptions): GrouperEngine {
+export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy }: CreateGrouperEngineOptions): GrouperEngine {
 const { isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
 const drgMap = loadDRGMap();
 const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, commonStrategy);
@@ -40,9 +39,7 @@ const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, ma
     versionStrategy,
   );
 
-// Public re-exports (kept for compatibility; prefer importing from `src/services/grouper/*` directly)
-
-// Note: code conversion moved to `src/services/CodeConversion.js` for caller-side control.
+// Note: code conversion moved to `src/services/CodeConversion.ts` for caller-side control.
 
 /**
  * GrouperEngine — central runtime for DRG grouping.
@@ -59,15 +56,15 @@ const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, ma
  */
 // Validation helpers (inlined from `grouper/validations.js`).
 // Kept inline to reduce indirection for early input sanitization.
-function checkInvalidPrincipalDiagnosis(principalDiagnosis: string | null): GroupingResult | null {
-    if (principalDiagnosis && isInvalidDiagnosis(principalDiagnosis)) {
+function checkInvalidPrincipalDiagnosis(principalDiagnosis: string): GroupingResult | null {
+    if (isInvalidDiagnosis(principalDiagnosis)) {
         // lite build omits weight / special-payment entirely
     const base: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '编码不规范：主要诊断无效',
-            matchTrace: [{ stage: 'Validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in ZD_INVALID list` }]
+            matchTrace: [{ event: 'validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in ZD_INVALID list` }]
         };
     if (!IS_LITE) {
         base.weight = null;
@@ -80,14 +77,14 @@ function checkInvalidPrincipalDiagnosis(principalDiagnosis: string | null): Grou
     return null;
 }
 
-function checkGrayPrincipalDiagnosis(principalDiagnosis: string | null): GroupingResult | null {
-    if (principalDiagnosis && typeof isGrayDiag === 'function' && isGrayDiag(principalDiagnosis)) {
+function checkGrayPrincipalDiagnosis(principalDiagnosis: string): GroupingResult | null {
+    if (isGrayDiag(principalDiagnosis)) {
         const out: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '主要诊断为灰码（不确定/需人工判定）',
-            matchTrace: [{ stage: 'Validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in gray-code list` }]
+            matchTrace: [{ event: 'validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in gray-code list` }]
         };
         if (!IS_LITE) {
             out.weight = null;
@@ -104,13 +101,13 @@ function checkGrayPrincipalProcedure(principalProcedure: string | null): Groupin
     if (principalProcedure && ALLOWED_GRAY_PRINCIPAL_PROCEDURES.has(principalProcedure)) {
         return null;
     }
-    if (principalProcedure && typeof isGrayProc === 'function' && isGrayProc(principalProcedure)) {
+    if (principalProcedure && isGrayProc(principalProcedure)) {
         const out: GroupingResult = {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '主要手术为灰码（不确定/需人工判定）',
-            matchTrace: [{ stage: 'Validation', error: true, description: `Principal procedure ${principalProcedure} is in gray-code list` }]
+            matchTrace: [{ event: 'validation', error: true, description: `Principal procedure ${principalProcedure} is in gray-code list` }]
         };
         if (!IS_LITE) {
             out.weight = null;
@@ -123,44 +120,22 @@ function checkGrayPrincipalProcedure(principalProcedure: string | null): Groupin
 
 const ALLOWED_INVALID_PROCEDURES = new Set(commonStrategy.allowedInvalidPrincipalProcedures);
 function sanitizeProcedures(effectiveProcedures: Array<string | null>, matchTrace: MatchTraceEntry[]): { effectiveProcedures: Array<string | null>; principalProcedure: string | null } {
-    let principalProcedure = effectiveProcedures.length > 0 ? effectiveProcedures[0] : null;
+    let principalProcedure = effectiveProcedures[0] ?? null;
     if (principalProcedure && isInvalidProcedure(principalProcedure) && !ALLOWED_INVALID_PROCEDURES.has(principalProcedure)) {
-        if (commonStrategy.invalidPrincipalProcedureAction === 'shift') {
-            effectiveProcedures.shift();
-        } else if (commonStrategy.invalidPrincipalProcedureAction === 'null-slot') {
-            effectiveProcedures[0] = null;
-        } else if (commonStrategy.invalidPrincipalProcedureAction === 'keep') {
-            return { effectiveProcedures, principalProcedure };
-        }
-        matchTrace.push({ stage: 'Validation', warning: true, description: `Removed invalid principal procedure: ${principalProcedure}` });
+        // Procedure positions are part of the grouping contract; never promote a later procedure.
+        // Removal applies to Pre-MDC/ADRG routing and QY checks only; subgroup
+        // evaluation still receives the original procedure list below.
+        effectiveProcedures[0] = null;
+        matchTrace.push({ event: 'validation', warning: true, description: `Removed invalid principal procedure: ${principalProcedure}` });
         principalProcedure = null;
     }
-    return { effectiveProcedures, principalProcedure: principalProcedure ?? null };
+    return { effectiveProcedures, principalProcedure };
 }
 
-const PATIENT_INFO_FIELDS = [
-    'gender',
-    'age',
-    'ageInDays',
-    'birthWeight',
-    'admissionWeight',
-    'dischargeStatus',
-    'newTechnique',
-    'intensiveCare',
-    'icuHours',
-    'crrtHours',
-    'lengthOfStay',
-    'daySurgery',
-] as const;
-const PATIENT_BOOLEAN_FIELDS = [
-    'newTechnique',
-    'intensiveCare',
-    'daySurgery',
-] as const;
 type RawPatientInfoValue = PatientScalarInput | PatientBooleanInput;
 
-function normalizeCodeList(input: CodeListInput | null | undefined): string[] {
-    const values = typeof input === 'string' ? [input] : Array.isArray(input) ? [...input] : [];
+function normalizeCodeList(input: CodeListInput): string[] {
+    const values = typeof input === 'string' ? [input] : [...input];
     return values.map(code => code.trim()).filter(Boolean);
 }
 
@@ -177,16 +152,7 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
     for (const field of PATIENT_INFO_FIELDS) {
         if (Object.prototype.hasOwnProperty.call(patientInfo, field)) normalized[field] = patientInfo[field];
     }
-    const numericFields: Array<[keyof NormalizedPatientInfo, number]> = [
-        ['age', 0],
-        ['ageInDays', 0],
-        ['birthWeight', 1],
-        ['admissionWeight', 1],
-        ['icuHours', 0],
-        ['crrtHours', 0],
-        ['lengthOfStay', 0],
-    ];
-    for (const [field, minimum] of numericFields) {
+    for (const [field, minimum] of PATIENT_NUMERIC_FIELDS) {
         const raw = normalized[field];
         if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
             delete normalized[field];
@@ -254,8 +220,7 @@ function invalidPatientInfoResult(error: unknown): GroupingResult {
         adrg: null,
         description: `病人信息无效：${message}`,
         error: 'INVALID_PATIENT_INFO',
-        matchTrace: [{
-            stage: 'Validation',
+        matchTrace: [{ event: 'validation',
             error: true,
             description: message,
         }],
@@ -272,24 +237,8 @@ function invalidPatientInfoResult(error: unknown): GroupingResult {
 // Imported above as: checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect
 
 
-// evaluateADRGSubgroups implementation lives in `src/services/grouper/subgroupEval.js`.
-// Public re-exports are declared at the top of this file.
-
-// ---------------------------------------------------------------------------
-// Rule evaluation helpers
-// - Rule/section matching lives under `src/services/grouper/` (mdcSelection.js & subgroupEval.js)
-// - Runtime logic evaluation expects `rule._logicRPN` to be pre-compiled at build time
-// ---------------------------------------------------------------------------
-/**
- * Determine whether a parsed `rule` matches a patient (diagnoses/procedures).
- * - Returns an object { matched: boolean, details: { sections: { ... } } }
- * - Uses compiled rule logic when present.
- * @param {Object} rule - parsed rule object (from parseRule)
- * @param {Object} patient - { diagnoses: string[], procedures: string[] }
- */
-// `matchesRule` implementation lives in `src/service./grouper/mdcAdrgSelection.js`.
-// Public re-exports are declared at the top of this file.
-
+// Subgroup evaluation lives in `src/services/grouper/subgroupEval.ts` and is
+// kept internal to the grouping flow.
 
 // ---------------------------------------------------------------------------
 // Public API — grouping functions
@@ -309,7 +258,7 @@ function groupPatient(
     const procedureList = normalizeCodeList(procedures);
     let normalizedPatientInfo: NormalizedPatientInfo;
     try {
-        normalizedPatientInfo = normalizePatientInfo(patientInfo);
+        normalizedPatientInfo = normalizePatientInfo(patientInfo || {});
     } catch (error) {
         return invalidPatientInfoResult(error);
     }
@@ -320,7 +269,7 @@ function groupPatient(
             mdc: null,
             adrg: null,
             description: "编码不规范：无主要诊断或手术",
-            matchTrace: [{ stage: 'Validation', error: true, description: 'No input data provided' }]
+            matchTrace: [{ event: 'validation', error: true, description: 'No input data provided' }]
         };
         if (!IS_LITE) {
             out.weight = null;
@@ -330,7 +279,7 @@ function groupPatient(
     }
     // Keep token boundaries and ordering exactly; only trim outer whitespace.
     // Accept single-string inputs (treat as one token) but do NOT split on delimiters.
-    const principalDiagnosis = diagnosisList.length > 0 ? diagnosisList[0] ?? null : null;
+    const principalDiagnosis = diagnosisList[0]!;
 
     // Initialize match trace early so any early-return or pre-checks can
     // safely reference it without hitting temporal-dead-zone errors.
@@ -346,7 +295,7 @@ function groupPatient(
 
     // Validation 1c: Gray-code check for principal procedure
     let effectiveProcedures: Array<string | null> = [...procedureList];
-    let principalProcedure: string | null = effectiveProcedures.length > 0 ? effectiveProcedures[0] ?? null : null;
+    let principalProcedure: string | null = effectiveProcedures[0] ?? null;
     const grayProcEarly = checkGrayPrincipalProcedure(principalProcedure);
     if (grayProcEarly) return grayProcEarly;
 
@@ -357,10 +306,7 @@ function groupPatient(
     let matchedADRG = null;
     let ruleMatchDetail = null;
 
-    // Pre-MDC checks: treat these MDCs as pre-MDC ADRG candidates
-    // Evaluate ADRG rules for MDCA, MDCP, MDCY, MDCZ in priority order,
-    // but only attempt MDCP/MDCY/MDCZ if their identifying criteria are met.
-    // Extracted pre-MDC ADRG checks into helper
+    // Evaluate configured Pre-MDC candidates in order, subject to their identifying criteria.
     const premdc = checkPreMDCADRGs(diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
     matchedMDC = premdc.matchedMDC;
     matchedADRG = premdc.matchedADRG;
@@ -381,17 +327,20 @@ function groupPatient(
     // 4. Check if matched ADRG should be redirected to QY group
     // Rule: If ADRG second letter > 'Q' (medical groups R-Z) AND the principal
     // procedure satisfies the 3.0 all-procedure/QY condition, redirect to QY.
-    const qyRedirect = checkQYRedirect(matchedADRG?.code ?? null, matchedMDC?.code ?? null, principalProcedure, matchTrace);
+    const qyRedirect = matchedADRG && principalProcedure
+        ? checkQYRedirect(matchedADRG.code, matchedMDC!.code, principalProcedure, matchTrace)
+        : null;
     if (qyRedirect) return qyRedirect;
-
-    if (!matchedADRG) {
-        matchTrace.push({ stage: 'ADRG', matched: false, description: 'No matching ADRG found' });
-    }
 
     // --- Step 4: Find DRG within ADRG ---
     // DRGs are evaluated once, in their DRG.dat order. A raw/subgroup_rules source
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
-    const { matchedDRG } = evaluateADRGSubgroups(matchedADRG?.code ?? null, diagnosisList, procedureList, normalizedPatientInfo, matchTrace);
+    // Use the original procedure list: version-specific subgroup rules may match
+    // an operation excluded from principal-procedure routing (e.g. Jiangsu LR1S).
+    const subgroupResult = matchedADRG
+        ? evaluateADRGSubgroups(matchedADRG.code, diagnosisList, procedureList, normalizedPatientInfo, matchTrace)
+        : null;
+    const matchedDRG = subgroupResult?.matchedDRG ?? null;
 
     const out: GroupingResult = {
         drg: matchedDRG ? matchedDRG.code : "0000",
@@ -440,11 +389,9 @@ function groupPatient(
  */
 function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
     // Expect an array of row objects: { id?, diagnoses?, procedures?, patientInfo? }
-    if (!Array.isArray(rows)) return [];
-
     const out: BatchGroupingResult[] = [];
     for (let i = 0; i < rows.length; i++) {
-        const row = rows[i] || {};
+        const row = rows[i]!;
         try {
             // groupPatient owns code normalization; keep the batch input unchanged here.
             const diagnoses = row.diagnoses ?? [];
@@ -454,7 +401,7 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
             // This preserves CSV cell contents like 'M35.002+J99.1*' as a single diagnosis token.
             const patientInfo = row.patientInfo || {};
 
-            const res = groupPatient(diagnoses, procedures, patientInfo) || {};
+            const res = groupPatient(diagnoses, procedures, patientInfo);
 
             // Preserve id and original arrays for downstream UI
             const result = {
@@ -467,7 +414,7 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
         } catch (e: unknown) {
             const message = e instanceof Error ? e.message : String(e);
             out.push({
-                id: row && row.id ? row.id : null,
+                id: row.id || null,
                 drg: null,
                 code: 'ERR',
                 mdc: null,
@@ -482,7 +429,7 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
 
     return out;
 }
-return { groupPatient, groupBatch, matchesRule, evaluateADRGSubgroups };
+return { groupPatient, groupBatch };
 }
 
 const defaultVersionDefinition = getVersionDefinition();
@@ -493,5 +440,3 @@ const defaultEngine = createGrouperEngine({
 });
 export const groupPatient = defaultEngine.groupPatient;
 export const groupBatch = defaultEngine.groupBatch;
-export const matchesRule = defaultEngine.matchesRule;
-export const evaluateADRGSubgroups = defaultEngine.evaluateADRGSubgroups;

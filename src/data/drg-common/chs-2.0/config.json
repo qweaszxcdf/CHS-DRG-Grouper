@@ -5,6 +5,6 @@
     "insuranceIcd": "yb-2.0"
   },
   "strategy": {
-    "mdcyPrincipalDiagnosisOnly": false
+    "preMdc": ["MDCA", "MDCP", "MDCY", "MDCZ"]
   }
 }

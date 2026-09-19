@@ -2,10 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 const COMMON_STRATEGY_DEFAULTS = Object.freeze({
-  invalidPrincipalProcedureAction: 'null-slot',
   allowedInvalidPrincipalProcedures: Object.freeze([]),
   allowedGrayPrincipalProcedures: Object.freeze(['99.1000']),
-  mdcyPrincipalDiagnosisOnly: true,
+  preMdc: Object.freeze(['MDCA', 'MDCP', 'MDCY', 'MDCZ']),
 });
 
 const VERSION_STRATEGY_DEFAULTS = Object.freeze({
@@ -19,16 +18,6 @@ const VERSION_STRATEGY_DEFAULTS = Object.freeze({
     diagnosisCodes: Object.freeze([]),
   }),
 });
-
-const allowedInvalidPrincipalProcedureActions = new Set([
-  'null-slot',
-  'shift',
-  'keep',
-]);
-
-const booleanCommonStrategyFields = Object.freeze([
-  'mdcyPrincipalDiagnosisOnly',
-]);
 
 const arrayCommonStrategyFields = Object.freeze([
   'allowedInvalidPrincipalProcedures',
@@ -98,7 +87,8 @@ function freezeOptionalObject(config, field, description) {
 }
 
 function resolveCommonStrategy(commonPackageId, suppliedStrategy) {
-  const movedFields = Object.keys(suppliedStrategy || {})
+  const supplied = suppliedStrategy || {};
+  const movedFields = Object.keys(supplied)
     .filter(field => versionOwnedStrategyFields.has(field));
   if (movedFields.length > 0) {
     throw new Error(
@@ -106,19 +96,23 @@ function resolveCommonStrategy(commonPackageId, suppliedStrategy) {
       + `${movedFields.join(', ')}`,
     );
   }
+  const unknownFields = Object.keys(supplied).filter(
+    field => !Object.prototype.hasOwnProperty.call(
+      COMMON_STRATEGY_DEFAULTS,
+      field,
+    ),
+  );
+  if (unknownFields.length > 0) {
+    throw new Error(
+      `drg-common/${commonPackageId}/config.json strategy contains unsupported fields: `
+      + unknownFields.join(', '),
+    );
+  }
 
   const strategy = {
     ...COMMON_STRATEGY_DEFAULTS,
-    ...(suppliedStrategy || {}),
+    ...supplied,
   };
-  if (!allowedInvalidPrincipalProcedureActions.has(
-    strategy.invalidPrincipalProcedureAction,
-  )) {
-    throw new Error(
-      `drg-common/${commonPackageId}/config.json ` +
-      'strategy.invalidPrincipalProcedureAction must be null-slot, shift, or keep',
-    );
-  }
 
   for (const field of arrayCommonStrategyFields) {
     const value = strategy[field];
@@ -136,14 +130,15 @@ function resolveCommonStrategy(commonPackageId, suppliedStrategy) {
     ]);
   }
 
-  for (const field of booleanCommonStrategyFields) {
-    if (typeof strategy[field] !== 'boolean') {
-      throw new Error(
-        `drg-common/${commonPackageId}/config.json ` +
-        `strategy.${field} must be boolean`,
-      );
-    }
+  const preMdc = strategy.preMdc;
+  if (!Array.isArray(preMdc)
+    || preMdc.some(code => typeof code !== 'string' || !/^MDC[A-Z]$/.test(code))
+    || new Set(preMdc).size !== preMdc.length) {
+    throw new Error(
+      `drg-common/${commonPackageId}/config.json strategy.preMdc must be an ordered array of unique MDC codes`,
+    );
   }
+  strategy.preMdc = Object.freeze([...preMdc]);
 
   return Object.freeze(strategy);
 }
@@ -174,9 +169,15 @@ function resolveVersionStrategy(versionId, suppliedStrategy) {
   }
 
   for (const field of adrgLimitedVersionStrategyFields) {
+    const suppliedValue = supplied[field];
+    if (suppliedValue !== undefined && !Array.isArray(suppliedValue)) {
+      throw new Error(
+        `${versionId}/config.json strategy.${field} must be an ADRG code array`,
+      );
+    }
     const value = {
       ...VERSION_STRATEGY_DEFAULTS[field],
-      ...(strategy[field] || {}),
+      ...(suppliedValue === undefined ? {} : { adrgCodes: suppliedValue }),
     };
     const codeListField = field === 'robotAssistedSurgery'
       ? 'procedureCodes'
@@ -187,12 +188,13 @@ function resolveVersionStrategy(versionId, suppliedStrategy) {
       || value.adrgCodes.some(
         code => typeof code !== 'string' || code.trim() === '' || !adrgCodePattern.test(code.trim().toUpperCase()),
       )
-      || !Array.isArray(value[codeListField])
-      || value[codeListField].some(code => typeof code !== 'string' || code.trim() === '')
+      || (value[codeListField] !== undefined
+        && (!Array.isArray(value[codeListField])
+          || value[codeListField].some(code => typeof code !== 'string' || code.trim() === '')))
     ) {
       throw new Error(
         `${versionId}/config.json strategy.${field} ` +
-        `must contain arrays of ADRG codes and ${codeListField}`,
+        'must be an ADRG code array with valid ADRG codes',
       );
     }
     strategy[field] = Object.freeze({

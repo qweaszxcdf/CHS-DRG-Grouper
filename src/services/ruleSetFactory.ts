@@ -25,9 +25,7 @@ function splitNameMap(raw: NameMapWithInitials | undefined): {
 }
 
 function createCodeChecker(index: Record<string, unknown>) {
-  return (code: string | null | undefined): boolean => (
-    !!code && Object.hasOwn(index, code)
-  );
+  return (code: string): boolean => Object.hasOwn(index, code);
 }
 
 export function createRuleSet(data: RuleData): RuleSet {
@@ -90,16 +88,14 @@ export function createRuleSet(data: RuleData): RuleSet {
 
   // Build an index of subgroup rules by ADRG code for fast lookup during grouping
   const adrgToSubgroupRules = new Map<string, DrgSubgroupRule[]>();
-  if (Array.isArray(drgSubgroupRules)) {
-    for (const r of drgSubgroupRules) {
-      const list = adrgToSubgroupRules.get(r.adrgCode) || [];
-      list.push(r);
-      adrgToSubgroupRules.set(r.adrgCode, list);
-    }
+  for (const r of drgSubgroupRules) {
+    const list = adrgToSubgroupRules.get(r.adrgCode) ?? [];
+    list.push(r);
+    adrgToSubgroupRules.set(r.adrgCode, list);
   }
 
   function loadDRGSubgroupRulesForADRG(adrgCode: string) {
-    return adrgToSubgroupRules.get(adrgCode) || [];
+    return adrgToSubgroupRules.get(adrgCode) ?? [];
   }
 
   // --- Rule Loader ---
@@ -112,83 +108,79 @@ export function createRuleSet(data: RuleData): RuleSet {
   const adrgList: AdrgDefinition[] = [];
 
   // Process MDC entries (use only build-time parsed fields)
-  if (Array.isArray(mdcRules)) {
-    for (const item of mdcRules) {
-      if (item.type === 'MDC') {
-        const identifyingDiagnoses = Array.isArray(item.identifyingDiagnoses) ? item.identifyingDiagnoses : [];
-        const mdczCategories = item.mdczCategories || null;
+  for (const item of mdcRules) {
+    if (item.type === 'MDC') {
+      const identifyingDiagnoses = item.identifyingDiagnoses ?? [];
+      const mdczCategories = item.mdczCategories ?? null;
 
-        mdcMap[item.code] = {
-          code: item.code,
-          description: item.name ?? '',
-          identifyingDiagnoses,
-          mdczCategories
-        };
-      }
+      mdcMap[item.code] = {
+        code: item.code,
+        description: item.name ?? '',
+        identifyingDiagnoses,
+        identifyingDiagnosesSet: new Set(identifyingDiagnoses),
+        mdczCategories
+      };
     }
   }
 
   // Process ADRG entries (use only build-time parsed `item.rule`)
-  if (Array.isArray(adrgRules)) {
-    for (const item of adrgRules) {
-      if (item.type === 'ADRG') {
-        const ruleObj = item.rule || null;
+  for (const item of adrgRules) {
+    if (item.type === 'ADRG') {
+      const ruleObj = item.rule ?? null;
 
-        const adrg = {
-          ...item,
-          code: item.code,
-          description: item.name,
-          rule: ruleObj
-        };
-        adrgMap[item.code] = adrg;
-        adrgList.push(adrg);
-      }
+      const adrg = {
+        ...item,
+        code: item.code,
+        description: item.name,
+        rule: ruleObj
+      };
+      adrgMap[item.code] = adrg;
+      adrgList.push(adrg);
     }
   }
 
   // Build a mapping from ADRG first-letter -> ADRG objects for fast lookup
   const adrgByFirstChar = new Map<string, AdrgDefinition[]>();
   for (const a of adrgList) {
-    const k = String(a.code || '').charAt(0);
-    const arr = adrgByFirstChar.get(k) || [];
+    const k = a.code.charAt(0);
+    const arr = adrgByFirstChar.get(k) ?? [];
     arr.push(a);
     adrgByFirstChar.set(k, arr);
   }
 
   // Cached resolver: compute ADRG objects for a given MDC code using the first-char rule
   const _adrgByMdcCache = new Map<string, AdrgDefinition[]>();
-  function getADRGsForMDC(mdcCode: string | null | undefined): AdrgDefinition[] {
-    if (!mdcCode) return [];
+  function getADRGsForMDC(mdcCode: string): AdrgDefinition[] {
     // Only resolve ADRGs for known MDC codes
     if (!mdcByCode.has(mdcCode)) return [];
-    if (_adrgByMdcCache.has(mdcCode)) return _adrgByMdcCache.get(mdcCode) as AdrgDefinition[];
+    const cached = _adrgByMdcCache.get(mdcCode);
+    if (cached) return cached;
 
-    const mdcLetter = String(mdcCode).replace(/^MDC/, '').charAt(0);
-    const list = adrgByFirstChar.get(mdcLetter) || [];
+    const mdcLetter = mdcCode.replace(/^MDC/, '').charAt(0);
+    const list = adrgByFirstChar.get(mdcLetter) ?? [];
     _adrgByMdcCache.set(mdcCode, list);
     return list;
   }
 
   // --- Post-processing: build quick lookup maps and Sets for fast runtime checks
-  // Convert identifyingDiagnoses arrays to Sets and build mdcByCode
+  // Build the MDC lookup map.
   const mdcByCode = new Map<string, MdcDefinition>();
   for (const [code, m] of Object.entries(mdcMap)) {
-    const ids = Array.isArray(m.identifyingDiagnoses) ? m.identifyingDiagnoses : [];
-    m.identifyingDiagnosesSet = new Set(ids);
-    const mdc = mdcMap[code];
-    if (mdc) mdcByCode.set(code, mdc);
+    mdcByCode.set(code, m);
   }
 
   // Build diag -> MDCZ categories mapping for fast MDCZ detection
-  const diagToMDCZCategories = new Map<string, Set<string>>();
-  const mdczItem = Array.isArray(mdcRules) ? mdcRules.find((r) => r.type === 'MDC' && r.code === 'MDCZ') : undefined;
+  const diagToMDCZCategories = new Map<string, string>();
+  const mdczItem = mdcRules.find((r) => r.type === 'MDC' && r.code === 'MDCZ');
   if (mdczItem && mdczItem.mdczCategories) {
     const categories = mdczItem.mdczCategories;
     for (const [cat, codes] of Object.entries(categories)) {
       for (const code of codes) {
-        const s = diagToMDCZCategories.get(code) || new Set<string>();
-        s.add(cat);
-        diagToMDCZCategories.set(code, s);
+        const existingCategory = diagToMDCZCategories.get(code);
+        if (existingCategory !== undefined && existingCategory !== cat) {
+          throw new Error(`MDCZ diagnosis ${code} belongs to multiple categories: ${existingCategory}, ${cat}`);
+        }
+        diagToMDCZCategories.set(code, cat);
       }
     }
   }
@@ -201,24 +193,24 @@ export function createRuleSet(data: RuleData): RuleSet {
 
   // --- Loader exports for centralized JSON access ---
   function loadDRGMap() {
-    return drgMap || {};
+    return drgMap;
   }
   function loadADRGRules() {
-    return adrgRules || [];
+    return adrgRules;
   }
   function loadMDCRules() {
-    return mdcRules || [];
+    return mdcRules;
   }
   function loadGLDiagNames() { return glDiagNamesOnly; }
   function loadGLProcNames() { return glProcNamesOnly; }
   function loadYBDiagNames() { return ybDiagNamesOnly; }
   function loadYBProcNames() { return ybProcNamesOnly; }
-  function loadGLInitialsDiag() { return _glDiagInitials || {}; }
-  function loadGLInitialsProc() { return _glProcInitials || {}; }
-  function loadYBInitialsDiag() { return _ybDiagInitials || {}; }
-  function loadYBInitialsProc() { return _ybProcInitials || {}; }
-  function loadICDGlYBMap() { return icdGlToYbRaw || {}; }
-  function loadICD9GlYBMap() { return icd9GlToYbRaw || {}; }
+  function loadGLInitialsDiag() { return _glDiagInitials; }
+  function loadGLInitialsProc() { return _glProcInitials; }
+  function loadYBInitialsDiag() { return _ybDiagInitials; }
+  function loadYBInitialsProc() { return _ybProcInitials; }
+  function loadICDGlYBMap() { return icdGlToYbRaw; }
+  function loadICD9GlYBMap() { return icd9GlToYbRaw; }
   return {
     loadCCCodes,
     loadMCCCodes,

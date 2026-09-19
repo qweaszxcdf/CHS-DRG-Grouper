@@ -55,14 +55,32 @@ type PreMdcResult = {
   ruleMatchDetail: RuleMatchResult | null;
 };
 
-export function createMdcAdrgSelection(ruleSet: RuleSet, strategy: CommonStrategy) {
+type MdcAdrgRuleSet = Pick<
+  RuleSet,
+  | 'MDCs'
+  | 'mdcByCode'
+  | 'diagToMDCZCategories'
+  | 'getADRGsForMDC'
+  | 'getADRGByCode'
+  | 'loadQyDiffCodes'
+>;
+
+/**
+ * Internal MDC/ADRG selection factory.
+ *
+ * @internal Use the public grouping API from `GrouperEngine` instead.
+ */
+export function createMdcAdrgSelection(ruleSet: MdcAdrgRuleSet, strategy: CommonStrategy) {
   const { MDCs, mdcByCode, diagToMDCZCategories, getADRGsForMDC, getADRGByCode } = ruleSet;
-  const qyDiffCodes = new Set(
-    typeof ruleSet.loadQyDiffCodes === 'function'
-      ? Object.keys(ruleSet.loadQyDiffCodes() ?? {})
-      : [],
-  );
+  const preMdcCodes = strategy.preMdc;
+  const preMdcCodeSet = new Set(preMdcCodes);
+  const qyDiffCodes = new Set(Object.keys(ruleSet.loadQyDiffCodes()));
   const hasQyDiffCodes = qyDiffCodes.size > 0;
+
+  function matchesAllProcedureRequirement(principalProcedure: string | null | undefined): boolean {
+    return principalProcedure != null
+      && (!hasQyDiffCodes || !qyDiffCodes.has(principalProcedure));
+  }
 
 const _sectionClassCache = new Map<string, SectionClassification>();
 const _referencedProcedureSetCache = new WeakMap<AdrgRule, Set<string>>();
@@ -71,7 +89,7 @@ const _patientLookupCache = new WeakMap<RulePatient, PatientLookup>();
 const _rpnEvaluatorCache = new WeakMap<AdrgRule, RpnEvaluator | null>();
 
 function buildSectionClassification(sectionName: string): SectionClassification {
-  const normalized = String(sectionName || '');
+  const normalized = sectionName;
   const isDiag = normalized.includes('诊断');
   const isProc = normalized.includes('手术') || normalized.includes('操作');
   const isPrincipal = normalized.includes('主要');
@@ -86,39 +104,30 @@ function buildSectionClassification(sectionName: string): SectionClassification 
   return Object.freeze({ category, position, isSimultaneous });
 }
 
-function getReferencedProcedureSet(rule: AdrgRule): Set<string> {
-  if (_referencedProcedureSetCache.has(rule)) return _referencedProcedureSetCache.get(rule) as Set<string>;
-
-  const procCodes = new Set<string>();
-  for (const refCode of rule.referencedADRGs ?? []) {
-    const refADRG = getADRGByCode(refCode);
-    if (!refADRG || !refADRG.rule) continue;
-
-    const refRuleMeta = getRuleSectionMeta(refADRG.rule);
-    if (!refRuleMeta || !Array.isArray(refRuleMeta.sectionDetails)) continue;
-
-    for (const secMeta of refRuleMeta.sectionDetails) {
-      if (secMeta.category !== 'procedure' || !secMeta.codeSet) continue;
-      for (const code of secMeta.codeSet) procCodes.add(code);
-    }
-  }
-
-  _referencedProcedureSetCache.set(rule, procCodes);
-  return procCodes;
-}
-
-function getReferencedProcedureSetForADRG(refCode: string): Set<string> {
+function getProcedureCodesForADRG(refCode: string): Set<string> {
   const refADRG = getADRGByCode(refCode);
   if (!refADRG || !refADRG.rule) return new Set();
 
   const refRuleMeta = getRuleSectionMeta(refADRG.rule);
-  if (!refRuleMeta || !Array.isArray(refRuleMeta.sectionDetails)) return new Set();
 
   const procCodes = new Set<string>();
   for (const secMeta of refRuleMeta.sectionDetails) {
-    if (secMeta.category !== 'procedure' || !secMeta.codeSet) continue;
+    if (secMeta.category !== 'procedure') continue;
     for (const code of secMeta.codeSet) procCodes.add(code);
   }
+  return procCodes;
+}
+
+function getReferencedProcedureSet(rule: AdrgRule): Set<string> {
+  const cached = _referencedProcedureSetCache.get(rule);
+  if (cached) return cached;
+
+  const procCodes = new Set<string>();
+  for (const refCode of rule.referencedADRGs ?? []) {
+    for (const code of getProcedureCodesForADRG(refCode)) procCodes.add(code);
+  }
+
+  _referencedProcedureSetCache.set(rule, procCodes);
   return procCodes;
 }
 
@@ -130,12 +139,12 @@ function getSectionCodes(
   if (visited.has(sectionName)) return [];
   visited.add(sectionName);
 
-  const sections = (rule && rule.sections) || {};
-  const codes = Array.isArray(sections[sectionName]) ? sections[sectionName] : [];
+  const sections = rule.sections ?? {};
+  const codes = sections[sectionName] ?? [];
   if (codes.length > 0) return codes;
 
   const aliasTarget = rule.sectionAliases?.[sectionName];
-  if (typeof aliasTarget === 'string') {
+  if (aliasTarget !== undefined) {
     const aliasCodes = getSectionCodes(rule, aliasTarget, visited);
     if (aliasCodes.length > 0) return aliasCodes;
   }
@@ -143,11 +152,12 @@ function getSectionCodes(
 }
 
 function getRuleSectionMeta(rule: AdrgRule): RuleSectionMeta {
-  if (_ruleSectionMetaCache.has(rule)) return _ruleSectionMetaCache.get(rule) as RuleSectionMeta;
+  const cached = _ruleSectionMetaCache.get(rule);
+  if (cached) return cached;
 
   const sectionNames = [...new Set([
-    ...Object.keys((rule && rule.sections) || {}),
-    ...Object.keys((rule && rule.sectionAliases) || {}),
+    ...Object.keys(rule.sections ?? {}),
+    ...Object.keys(rule.sectionAliases ?? {}),
   ])];
   let hasDiagSection = false;
   let hasProcSection = false;
@@ -175,7 +185,7 @@ function checkSectionMatchByMeta(
   sectionMeta: SectionMeta,
   patientLookup: PatientLookup,
 ): MatchCodeDetail {
-  if (!sectionMeta || !sectionMeta.codes || sectionMeta.codes.length === 0) return { matched: false, matchedCodes: [] };
+  if (sectionMeta.codes.length === 0) return { matched: false, matchedCodes: [] };
 
   // Callers initialize the lookup for each evaluated category.
   if (sectionMeta.category === 'diagnosis') {
@@ -188,10 +198,10 @@ function checkSectionMatchByMeta(
 }
 
 function createCodeLookup(patientCodes: Array<string | null>): CodeLookup {
-  const src = Array.isArray(patientCodes) ? patientCodes : [];
+  const src = patientCodes;
   return {
     codes: src,
-    principal: src.length > 0 ? (src[0] ?? null) : null,
+    principal: src[0] ?? null,
     allSet: new Set(src),
     secondarySet: src.length > 1 ? new Set(src.slice(1)) : null,
   };
@@ -218,7 +228,7 @@ function compileRpnEvaluator(
 ): RpnEvaluator | null {
   const stack: RpnEvaluator[] = [];
   for (const token of rpn) {
-    if (token !== null && typeof token === 'object' && token.type === 'SECTION') {
+    if (typeof token === 'object') {
       const sectionMeta = sectionByName.get(token.name);
       stack.push(sectionMeta ? resolveSection => resolveSection(sectionMeta) : () => false);
     } else if (token === '!') {
@@ -246,10 +256,9 @@ function evaluateRPN(
   rule: AdrgRule,
   resolveSection: SectionResolver,
 ): boolean {
-  const rpn = rule._logicRPN;
-  if (!Array.isArray(rpn)) return false;
+  const rpn = rule._logicRPN!;
   let evaluator = _rpnEvaluatorCache.get(rule);
-  if (evaluator === undefined && !_rpnEvaluatorCache.has(rule)) {
+  if (evaluator === undefined) {
     evaluator = compileRpnEvaluator(rpn, getRuleSectionMeta(rule).sectionByName);
     _rpnEvaluatorCache.set(rule, evaluator);
   }
@@ -258,8 +267,9 @@ function evaluateRPN(
 
 // Rule-evaluation helpers (migrated here from `ruleEval.js`)
 function classifySection(sectionName: string): SectionClassification {
-  const key = String(sectionName || '');
-  if (_sectionClassCache.has(key)) return _sectionClassCache.get(key) as SectionClassification;
+  const key = sectionName;
+  const cached = _sectionClassCache.get(key);
+  if (cached) return cached;
   const classification = buildSectionClassification(key);
   _sectionClassCache.set(key, classification);
   return classification;
@@ -286,17 +296,11 @@ function matchCodesForPosition(
   section: SectionMeta,
   patientCodeLookup: CodeLookup,
 ): MatchCodeDetail {
-  const { codes, position, minimumMatches = 1, minimumOccurrences, codeSet } = section;
-  if (!codes || codes.length === 0) return { matched: false, matchedCodes: [] };
-  const eligibleCodeSet = codeSet ?? new Set(codes);
+  const { position, minimumMatches = 1, minimumOccurrences, codeSet } = section;
   const patientCodes = patientCodeLookup.codes;
 
-  const occurrenceMinimum = Number.isInteger(minimumOccurrences) && Number(minimumOccurrences) >= 1
-    ? Number(minimumOccurrences)
-    : undefined;
-
   const finalize = (hits: string[]): MatchCodeDetail => {
-    const occurrenceHits = occurrenceMinimum === undefined
+    const occurrenceHits = minimumOccurrences === undefined
       ? null
       : (() => {
         const positionedCodes = position === 'principal'
@@ -305,16 +309,16 @@ function matchCodesForPosition(
             ? patientCodes.slice(1)
             : patientCodes;
         return positionedCodes.filter((code): code is string => (
-          code !== null && eligibleCodeSet.has(code)
+          code !== null && codeSet.has(code)
         ));
       })();
     const countedHits = occurrenceHits ?? hits;
     const matchedCodes = [...new Set(countedHits)].sort();
     const matchedCount = occurrenceHits === null ? matchedCodes.length : occurrenceHits.length;
-    const requiredCount = occurrenceMinimum
-      ?? (Number.isInteger(minimumMatches) && minimumMatches > 1 ? minimumMatches : undefined);
+    const requiredCount = minimumOccurrences
+      ?? (minimumMatches > 1 ? minimumMatches : undefined);
     return {
-      matched: matchedCount >= (occurrenceMinimum ?? minimumMatches),
+      matched: matchedCount >= (minimumOccurrences ?? minimumMatches),
       matchedCodes,
       ...(requiredCount === undefined ? {} : { matchedCount, requiredCount }),
     };
@@ -322,25 +326,25 @@ function matchCodesForPosition(
 
   // Occurrence-counted sections derive the count from the patient list; the
   // finalized trace is sorted deterministically, so no section scan is needed.
-  if (occurrenceMinimum !== undefined) return finalize([]);
+  if (minimumOccurrences !== undefined) return finalize([]);
 
   if (position === 'principal') {
     const principal = patientCodeLookup.principal;
-    const hit = principal != null && eligibleCodeSet.has(principal);
-    return finalize(hit ? [principal] : []);
+    const hit = principal != null && codeSet.has(principal);
+      return finalize(hit ? [principal] : []);
   }
   if (position === 'other') {
     const secondarySet = patientCodeLookup.secondarySet;
-    return finalize(secondarySet ? intersectCodeSets(eligibleCodeSet, secondarySet) : []);
+    return finalize(secondarySet ? intersectCodeSets(codeSet, secondarySet) : []);
   }
 
   const allSet = patientCodeLookup.allSet;
-  return finalize(intersectCodeSets(eligibleCodeSet, allSet));
+  return finalize(intersectCodeSets(codeSet, allSet));
 }
 
 function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
-  const patientDiagnoses = Array.isArray(patient.diagnoses) ? patient.diagnoses : [];
-  const patientProcedures = Array.isArray(patient.procedures) ? patient.procedures : [];
+  const patientDiagnoses = patient.diagnoses;
+  const patientProcedures = patient.procedures;
   let patientLookup = _patientLookupCache.get(patient);
   if (!patientLookup) {
     patientLookup = { diagnosisLookup: null, procedureLookup: null };
@@ -349,8 +353,8 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
 
   const details: RuleMatchDetails = { sections: {} };
   const matchInfo: RuleMatchResult = { matched: false, details };
-  if (rule?.intensiveCare === true) {
-    const intensiveCare = patient?.patientInfo?.intensiveCare === true;
+  if (rule.intensiveCare === true) {
+    const intensiveCare = patient.patientInfo.intensiveCare === true;
     matchInfo.details.intensiveCare = {
       matched: intensiveCare,
       reason: intensiveCare ? 'patientInfo.intensiveCare is true' : 'rule.intensiveCare requires patientInfo.intensiveCare=true',
@@ -358,10 +362,10 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
     if (!intensiveCare) return matchInfo;
   }
 
-  if (rule.requiredReferencedADRGs && Array.isArray(rule.requiredReferencedADRGs) && rule.requiredReferencedADRGs.length > 0) {
+  if (rule.requiredReferencedADRGs && rule.requiredReferencedADRGs.length > 0) {
     const procedureSet = ensurePatientCodeLookup(patientLookup, 'procedureLookup', patientProcedures).allSet;
     const requiredDetails = rule.requiredReferencedADRGs.map((refCode) => {
-      const procCodes = getReferencedProcedureSetForADRG(refCode);
+      const procCodes = getProcedureCodesForADRG(refCode);
       const matchedCodes = [];
       for (const code of procCodes) {
         if (procedureSet.has(code)) matchedCodes.push(code);
@@ -374,9 +378,10 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
     return matchInfo;
   }
 
-  if (rule.referencedADRGs && Array.isArray(rule.referencedADRGs) && rule.referencedADRGs.length > 0) {
+  if (rule.referencedADRGs && rule.referencedADRGs.length > 0) {
     const procCodes = getReferencedProcedureSet(rule);
-    const matched = patientProcedures.some(p => p !== null && procCodes.has(p));
+    const principalProcedure = patientProcedures[0];
+    const matched = principalProcedure != null && procCodes.has(principalProcedure);
     matchInfo.details.referencedADRGs = { codes: rule.referencedADRGs, matched };
     matchInfo.matched = matched;
     return matchInfo;
@@ -385,11 +390,8 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
   if (rule.anyProcedureRequired) {
     // The unified flag accepts a principal procedure except for the small
     // valid-YB procedure set omitted from the PDF all-procedure list.
-    const principalProcedure = patientProcedures[0];
-    const hasProc = principalProcedure != null
-      && (!hasQyDiffCodes || !qyDiffCodes.has(principalProcedure));
     matchInfo.details.anyProcedureRequired = true;
-    matchInfo.matched = hasProc;
+    matchInfo.matched = matchesAllProcedureRequirement(patientProcedures[0]);
     return matchInfo;
   }
 
@@ -408,7 +410,7 @@ function matchesRule(rule: AdrgRule, patient: RulePatient): RuleMatchResult {
       }
       return { group, matchedCodes, matched: matchedCodes.length > 0 };
     });
-    matchInfo.matched = matchInfo.details.requiredProcedureGroups?.every(g => g.matched) ?? false;
+    matchInfo.matched = matchInfo.details.requiredProcedureGroups.every(g => g.matched);
     return matchInfo;
   }
 
@@ -468,71 +470,83 @@ function checkPreMDCADRGs(
   patientInfo: NormalizedPatientInfo,
   matchTrace: MatchTraceEntry[],
 ): PreMdcResult {
-  const preMDCList = ['MDCA', 'MDCP', 'MDCY', 'MDCZ'];
   const patientForMatch = { diagnoses, procedures: effectiveProcedures, patientInfo };
-  for (const preCode of preMDCList) {
-    const mdc = (typeof mdcByCode !== 'undefined') ? mdcByCode.get(preCode) : null;
+  for (const preCode of preMdcCodes) {
+    const mdc = mdcByCode.get(preCode);
     if (!mdc) continue;
 
     // Resolve ADRG objects for this MDC
     const adrgObjects = getADRGsForMDC(preCode);
-    if (!adrgObjects || adrgObjects.length === 0) continue;
+    if (adrgObjects.length === 0) continue;
 
     let applicable = true;
     if (preCode === 'MDCP') {
-      applicable = patientInfo && patientInfo.ageInDays != null && patientInfo.ageInDays < 365 && !patientInfo.age;
+      applicable = patientInfo.ageInDays != null && patientInfo.ageInDays < 366;
     } else if (preCode === 'MDCY') {
-      const identifyingDiagnosesSet = mdc.identifyingDiagnosesSet;
-      applicable = !!(identifyingDiagnosesSet && Array.isArray(diagnoses) && (
-        strategy.mdcyPrincipalDiagnosisOnly
-          ? diagnoses[0] !== undefined && identifyingDiagnosesSet.has(diagnoses[0])
-          : diagnoses.some(dx => identifyingDiagnosesSet.has(dx))
-      ));
+      applicable = diagnoses.some(dx => mdc.identifyingDiagnosesSet.has(dx));
     } else if (preCode === 'MDCZ') {
-      try {
-        const presentCats = new Set();
-        if (Array.isArray(diagnoses) && typeof diagToMDCZCategories !== 'undefined') {
-          for (const dx of diagnoses) {
-            const cats = diagToMDCZCategories.get(dx);
-            if (cats) for (const c of cats) presentCats.add(c);
-          }
-        }
-        applicable = presentCats.size >= 2;
-      } catch {
-        applicable = false;
+      // The official MDCZ rule binds ZYZD to the principal diagnosis and
+      // QTZD to a later diagnosis from a different trauma category.
+      const mdczDiagnosisMatches: Array<{ code: string; categories: string[] }> = [];
+      let principalCategory: string | undefined;
+      const presentCats = new Set<string>();
+      for (const [index, dx] of diagnoses.entries()) {
+        const category = diagToMDCZCategories.get(dx);
+        if (category === undefined) continue;
+        mdczDiagnosisMatches.push({ code: dx, categories: [category] });
+        presentCats.add(category);
+        if (index === 0) principalCategory = category;
+      }
+      applicable = principalCategory !== undefined && presentCats.size >= 2;
+      if (mdczDiagnosisMatches.length > 0) {
+        matchTrace.push({
+          event: 'mdcz-category-check',
+          matched: applicable,
+          description: `Checking ${preCode} ADRGs`,
+          detail: { reasonCode: applicable ? 'category-threshold-met' : 'category-threshold-not-met' },
+          mdczDiagnosisMatches,
+          requiredCategoryCount: 2,
+          actualCategoryCount: presentCats.size,
+        });
       }
     }
     if (!applicable) continue;
 
-    matchTrace.push({ stage: 'Pre-MDC', description: `Checking ${preCode} ADRGs` });
+    // Candidate probing is an implementation detail; only emit a match or a failure.
     for (const adrg of adrgObjects) {
-      if (!adrg || !adrg.rule) continue;
+      if (!adrg.rule) continue;
 
       if (preCode === 'MDCP' && adrg.description) {
-        const desc = String(adrg.description);
+        const desc = adrg.description;
+        const isOlderInfantAdrg = desc.includes('29天≤出生年龄＜1周岁');
 
-        const ageInDays = patientInfo.ageInDays;
-        if (ageInDays === undefined) continue;
-        if (!desc.includes('29天≤出生年龄＜1周岁') && ageInDays >= 29) continue;
-        if (desc.includes('29天≤出生年龄＜1周岁') && ageInDays < 29) continue;
+        const ageInDays = patientInfo.ageInDays!;
+        if (!isOlderInfantAdrg && ageInDays >= 29) continue;
+        if (isOlderInfantAdrg && ageInDays < 29) continue;
+
+        // The official CHS 3.0 PV1 condition excludes procedures in OP_ALL.
+        // QY_DIFF is the compact complement for valid YB procedure codes;
+        // without it, fail closed for any non-empty principal procedure.
+        if (isOlderInfantAdrg) {
+          const principalProcedure = effectiveProcedures[0] ?? null;
+          if (
+            principalProcedure != null
+            && (!hasQyDiffCodes || !qyDiffCodes.has(principalProcedure))
+          ) continue;
+        }
 
         const weightMarkers = [...desc.matchAll(/(?:出生|入院)体重/gu)];
         let weightConditionsMatch = true;
-        for (let index = 0; index < weightMarkers.length; index += 1) {
-          const markerMatch = weightMarkers[index];
-          if (!markerMatch) {
-            weightConditionsMatch = false;
-            break;
-          }
+        for (const [index, markerMatch] of weightMarkers.entries()) {
           const weightMarker = markerMatch[0];
           const weightField = weightMarker === '出生体重' ? 'birthWeight' : 'admissionWeight';
-          const weight = Number(patientInfo[weightField]);
-          if (!Number.isFinite(weight)) {
+          const weight = patientInfo[weightField];
+          if (weight === undefined) {
             weightConditionsMatch = false;
             break;
           }
 
-          const markerStart = markerMatch.index ?? 0;
+          const markerStart = markerMatch.index;
           const nextMarkerStart = weightMarkers[index + 1]?.index ?? desc.length;
           const weightText = desc.slice(markerStart, nextMarkerStart).replace(/[－—–]/g, '-');
           const rangeMatch = weightText.match(/(\d{1,4})\s*-\s*(\d{1,4})/);
@@ -572,8 +586,8 @@ function checkPreMDCADRGs(
 
       const matchResult = matchesRule(adrg.rule, patientForMatch);
 
-      if (matchResult && matchResult.matched) {
-        matchTrace.push({ stage: 'Pre-MDC', matched: true, code: adrg.code, description: adrg.description, detail: matchResult });
+      if (matchResult.matched) {
+        matchTrace.push({ event: 'pre-mdc-match', matched: true, code: adrg.code, description: adrg.description, detail: { ruleMatch: matchResult } });
         return { matchedMDC: mdc, matchedADRG: adrg, ruleMatchDetail: matchResult };
       }
     }
@@ -583,40 +597,38 @@ function checkPreMDCADRGs(
 }
 
 function findMDCByPrincipal(
-  principalDiagnosis: string | null,
+  principalDiagnosis: string,
   gender: NormalizedPatientInfo['gender'],
   matchTrace: MatchTraceEntry[],
 ): MdcDefinition | null {
-  if (!principalDiagnosis) return null;
-  const preMDCSet = new Set(['MDCA', 'MDCP', 'MDCY', 'MDCZ']);
-  const isMale = gender === 1 || gender === '1';
-  const isFemale = gender === 2 || gender === '2';
+  const isMale = gender === 1;
+  const isFemale = gender === 2;
 
   const matchedMDCs = MDCs.filter(mdc =>
-    !preMDCSet.has(mdc.code) &&
+    !preMdcCodeSet.has(mdc.code) &&
     (!isMale || mdc.code !== 'MDCN') &&
     (!isFemale || mdc.code !== 'MDCM') &&
-    mdc.identifyingDiagnosesSet &&
     mdc.identifyingDiagnosesSet.has(principalDiagnosis)
   );
 
-  if (!matchedMDCs || matchedMDCs.length === 0) return null;
   const selectedMDC = matchedMDCs[0];
   if (!selectedMDC) return null;
-  matchTrace.push({ stage: 'MDC', matched: true, code: selectedMDC.code, description: selectedMDC.description });
+  matchTrace.push({ event: 'mdc-match', matched: true, code: selectedMDC.code, description: selectedMDC.description });
   return selectedMDC;
 }
 
 function findADRGInMDC(
-  mdcCode: string | null,
+  mdcCode: string,
   diagnoses: string[],
   effectiveProcedures: Array<string | null>,
   patientInfo: NormalizedPatientInfo,
   matchTrace: MatchTraceEntry[],
 ): { matchedADRG: AdrgDefinition | null; ruleMatchDetail: RuleMatchResult | null } {
-  if (mdcCode === null) return { matchedADRG: null, ruleMatchDetail: null };
   const adrgObjects = getADRGsForMDC(mdcCode);
-  if (!adrgObjects || adrgObjects.length === 0) return { matchedADRG: null, ruleMatchDetail: null };
+  if (adrgObjects.length === 0) {
+    matchTrace.push({ event: 'adrg-no-match', matched: false, description: 'No matching ADRG found' });
+    return { matchedADRG: null, ruleMatchDetail: null };
+  }
   // A null principal slot means there is no effective principal procedure for
   // ADRG routing. This intentionally treats [null, laterProcedure] as the
   // medical path while preserving the original array and its positions for
@@ -625,44 +637,40 @@ function findADRGInMDC(
     || effectiveProcedures[0] == null;
   const patientForMatch = { diagnoses, procedures: effectiveProcedures, patientInfo };
 
-  matchTrace.push({ stage: 'ADRG', description: 'Checking MDC ADRGs' });
   for (const adrg of adrgObjects) {
     if (noEffectivePrincipalProcedure) {
-      const secondCharacter = String(adrg?.code || '').charAt(1).toUpperCase();
+      const secondCharacter = adrg.code.charAt(1).toUpperCase();
       if (secondCharacter < 'R' || secondCharacter > 'Z') continue;
     }
-    if (adrg && adrg.rule) {
+    if (adrg.rule) {
       const matchResult = matchesRule(adrg.rule, patientForMatch);
-      if (matchResult && matchResult.matched) {
-        matchTrace.push({ stage: 'ADRG', matched: true, code: adrg.code, description: adrg.description, detail: matchResult });
+      if (matchResult.matched) {
+        matchTrace.push({ event: 'adrg-match', matched: true, code: adrg.code, description: adrg.description, detail: { ruleMatch: matchResult } });
         return { matchedADRG: adrg, ruleMatchDetail: matchResult };
       }
     }
   }
-  matchTrace.push({ stage: 'ADRG', matched: false, description: 'No matching ADRG found' });
+  matchTrace.push({ event: 'adrg-no-match', matched: false, description: 'No matching ADRG found' });
   return { matchedADRG: null, ruleMatchDetail: null };
 }
 
 function checkQYRedirect(
-  adrgCode: string | null,
-  mdcCode: string | null,
-  principalProcedure: string | null,
+  adrgCode: string,
+  mdcCode: string,
+  principalProcedure: string,
   matchTrace: MatchTraceEntry[],
 ): GroupingResult | null {
-  if (!adrgCode || !principalProcedure || mdcCode === null) return null;
-  if (adrgCode.length < 2) return null;
-
   const secondLetter = adrgCode.charAt(1).toUpperCase();
   if (!/^[A-Z]$/.test(secondLetter) || secondLetter <= 'Q') return null;
 
   // A procedure from the small valid-YB complement of the PDF all-procedure
   // list must not reach the synthetic QY group through a medical fallback.
-  if (hasQyDiffCodes && qyDiffCodes.has(principalProcedure)) return null;
+  if (!matchesAllProcedureRequirement(principalProcedure)) return null;
 
-  const mdcLetter = String(mdcCode).replace('MDC', '');
+  const mdcLetter = mdcCode.replace('MDC', '');
   const qyCode = mdcLetter + 'QY';
 
-  matchTrace.push({ stage: 'QY Redirect', description: `Redirecting ${adrgCode} to synthetic ${qyCode}` });
+  matchTrace.push({ event: 'qy-redirect', code: qyCode, matched: true, description: `Redirecting ${adrgCode} to synthetic ${qyCode}` });
   return {
     drg: qyCode,
     weight: null,
@@ -674,5 +682,5 @@ function checkQYRedirect(
     matchTrace: matchTrace
   };
 }
-  return { classifySection, matchCodesForPosition, matchesRule, checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect };
+  return { matchesRule, checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect };
 }

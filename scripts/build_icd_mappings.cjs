@@ -2,7 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { pinyin } = require('pinyin-pro');
 const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
-const { parseIcdPackageDatLine, resolvePackageChain } = require('./lib/icd_package.cjs');
+const {
+  forEachPackageDatEntry,
+  getParentPackageId,
+  parseIcdPackageDatLine,
+  resolvePackageChain,
+} = require('./lib/icd_package.cjs');
 const { writeFileIfChanged } = require('./lib/write_if_changed.cjs');
 
 const projectRoot = path.resolve(__dirname, '..');
@@ -10,6 +15,27 @@ const configResolver = createDrgConfigResolver(projectRoot);
 const icdDatasetRoot = path.join(projectRoot, 'src/data/icd-datasets');
 const clinicalPackageRoot = path.join(icdDatasetRoot, 'clinical');
 const insurancePackageRoot = path.join(icdDatasetRoot, 'insurance');
+
+const ICD_PACKAGE_SPECS = {
+  clinical: { label: 'Clinical', prefix: 'gl', root: clinicalPackageRoot, nameFiles: ['ICD10GL.dat', 'ICD9GL.dat'] },
+  insurance: {
+    label: 'Insurance', prefix: 'yb', root: insurancePackageRoot,
+    nameFiles: ['ICD10YB.dat', 'ICD9YB.dat'],
+    grayFiles: [['ICD10YB-灰码.dat', 'icd10_gray_codes.json'], ['ICD9YB-灰码.dat', 'icd9_gray_codes.json']],
+  },
+};
+
+const CROSSWALK_SPECS = [
+  { key: 'icd10', type: 'ICD10', expandedFile: 'ICD10GL2YB.expanded.dat', mapFile: 'icd_gl_yb_map.json', grayFile: 'icd10_gray_codes.json', grayCsv: 'ICD10GL2YB_gray.csv', removedKey: 'icdGlToYbRaw' },
+  { key: 'icd9', type: 'ICD9', expandedFile: 'ICD9GL2YB.expanded.dat', mapFile: 'icd9cm3_gl_yb_map.json', grayFile: 'icd9_gray_codes.json', grayCsv: 'ICD9GL2YB_gray.csv', removedKey: 'icd9GlToYbRaw' },
+];
+
+function getCrosswalkParentPackageIds(clinicalId, insuranceId, chains = {}) {
+  return {
+    clinicalId: getParentPackageId(clinicalPackageRoot, clinicalId, chains.clinicalChain) ?? clinicalId,
+    insuranceId: getParentPackageId(insurancePackageRoot, insuranceId, chains.insuranceChain) ?? insuranceId,
+  };
+}
 
 const ROMAN_TO_ARABIC = {
   '\u2160':'1','\u2161':'2','\u2162':'3','\u2163':'4','\u2164':'5',
@@ -95,27 +121,14 @@ function buildGrayCodeMap(filePath) {
   for (const line of readDatFile(filePath)) {
     const entry = parseIcdPackageDatLine(line);
     const code = normalize(entry?.code);
-    if (code) {
-      out[code] = !entry.removed;
-    }
+    if (code) out[code] = !entry.removed;
   }
   return out;
 }
 
-const ALLOWED_CROSSWALKS = new Set([
-  'ICD9GL2YB.expanded.dat',
-  'ICD10GL2YB.expanded.dat'
-]);
-
-function readCodeSet(filePath, label) {
-  if (!fs.existsSync(filePath)) throw new Error(`Missing ${label}: ${filePath}`);
-  const codes = new Set();
-  for (const line of readDatFile(filePath)) {
-    const code = normalizeCrosswalkCode(line.match(/^\S+/)?.[0]);
-    if (code) codes.add(code);
-  }
-  return codes;
-}
+const CROSSWALK_BY_FILE = new Map(
+  CROSSWALK_SPECS.map(spec => [spec.expandedFile, spec]),
+);
 
 function readExplicitCrosswalk(filePath) {
   if (!fs.existsSync(filePath)) throw new Error(`Missing explicit crosswalk source: ${filePath}`);
@@ -136,29 +149,39 @@ function hasExplicitCrosswalkSources(crosswalkDir) {
   ));
 }
 
-function readEffectiveExplicitCrosswalk(clinicalId, insuranceId, type, cache = new Map()) {
+function getCrosswalkContext(clinicalId, insuranceId) {
   const combination = `${clinicalId}__${insuranceId}`;
-  const cacheKey = `${combination}:${type}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
-
   const clinicalChain = resolvePackageChain(clinicalPackageRoot, clinicalId);
   const insuranceChain = resolvePackageChain(insurancePackageRoot, insuranceId);
-  const parentClinicalId = clinicalChain.length > 1
-    ? clinicalChain[clinicalChain.length - 2].id
-    : clinicalId;
-  const parentInsuranceId = insuranceChain.length > 1
-    ? insuranceChain[insuranceChain.length - 2].id
-    : insuranceId;
-  const crosswalkDir = path.join(projectRoot, 'src/data/crosswalks', combination);
+  const parentPackageIds = getCrosswalkParentPackageIds(clinicalId, insuranceId, { clinicalChain, insuranceChain });
+  const parentCombination = `${parentPackageIds.clinicalId}__${parentPackageIds.insuranceId}`;
+  const baseCombination = `${clinicalChain[0].id}__${insuranceChain[0].id}`;
+  return {
+    clinicalId,
+    insuranceId,
+    combination,
+    crosswalkDir: path.join(projectRoot, 'src/data/crosswalks', combination),
+    clinicalChain, insuranceChain,
+    isOverlay: clinicalChain.length > 1 || insuranceChain.length > 1,
+    parentPackageIds,
+    parentCombination, parentCrosswalkDir: path.join(projectRoot, 'src/data/crosswalks', parentCombination),
+    baseCombination, baseCrosswalkDir: path.join(projectRoot, 'src/data/crosswalks', baseCombination),
+  };
+}
+
+function readEffectiveExplicitCrosswalk(clinicalId, insuranceId, type, cache = new Map()) {
+  const cacheKey = `${clinicalId}__${insuranceId}:${type}`;
+  if (cache.has(cacheKey)) return cache.get(cacheKey);
+  const { crosswalkDir, parentPackageIds } = getCrosswalkContext(clinicalId, insuranceId);
+
   const explicitPath = path.join(crosswalkDir, 'raw', `${type}GL2YB.explicit.dat`);
   let mapping;
-
-  if (parentClinicalId === clinicalId && parentInsuranceId === insuranceId) {
+  if (parentPackageIds.clinicalId === clinicalId && parentPackageIds.insuranceId === insuranceId) {
     mapping = readExplicitCrosswalk(explicitPath);
   } else {
     mapping = new Map(readEffectiveExplicitCrosswalk(
-      parentClinicalId,
-      parentInsuranceId,
+      parentPackageIds.clinicalId,
+      parentPackageIds.insuranceId,
       type,
       cache,
     ));
@@ -173,27 +196,14 @@ function readEffectiveExplicitCrosswalk(clinicalId, insuranceId, type, cache = n
   return mapping;
 }
 
-function readPackageCodeSet(packageRoot, packageId, filename, label) {
-  const chain = resolvePackageChain(packageRoot, packageId);
+function readPackageCodeSet(packageRoot, packageId, filename) {
   const codes = new Set();
-  const removedCodes = new Set();
-
-  for (const [index, packageInfo] of chain.entries()) {
-    const sourcePath = path.join(packageInfo.dir, 'raw', filename);
-    if (!fs.existsSync(sourcePath)) {
-      if (index === 0) throw new Error(`Missing ${label}: ${sourcePath}`);
-      continue;
-    }
-    for (const line of readDatFile(sourcePath)) {
-      const entry = parseIcdPackageDatLine(line);
-      const code = normalizeCrosswalkCode(entry?.code);
-      if (!code) continue;
-      if (entry.removed) removedCodes.add(code);
-      else codes.add(code);
-    }
-  }
-
-  for (const code of removedCodes) codes.delete(code);
+  forEachPackageDatEntry(packageRoot, packageId, filename, entry => {
+    const code = normalizeCrosswalkCode(entry.code);
+    if (!code) return;
+    if (entry.removed) codes.delete(code);
+    else codes.add(code);
+  });
   return codes;
 }
 
@@ -205,8 +215,8 @@ function collectExpandedCrosswalk(
   explicitMapping = null,
 ) {
   const explicitPath = path.join(crosswalkSourceDir, 'raw', `${type}GL2YB.explicit.dat`);
-  const glCodes = readPackageCodeSet(clinicalPackageRoot, clinicalId, `${type}GL.dat`, 'clinical ICD source');
-  const ybCodes = readPackageCodeSet(insurancePackageRoot, insuranceId, `${type}YB.dat`, 'insurance ICD source');
+  const glCodes = readPackageCodeSet(clinicalPackageRoot, clinicalId, `${type}GL.dat`);
+  const ybCodes = readPackageCodeSet(insurancePackageRoot, insuranceId, `${type}YB.dat`);
   const explicit = explicitMapping || readExplicitCrosswalk(explicitPath);
   const entries = [];
   let fallbackCount = 0;
@@ -283,30 +293,19 @@ function readCompactCrosswalkMap(crosswalkDir, filename, { required = true } = {
 }
 
 function readEffectiveCrosswalkMap(clinicalId, insuranceId, filename, cache = new Map()) {
-  const combination = `${clinicalId}__${insuranceId}`;
-  const cacheKey = `${combination}:${filename}`;
+  const cacheKey = `${clinicalId}__${insuranceId}:${filename}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
+  const { crosswalkDir, parentPackageIds } = getCrosswalkContext(clinicalId, insuranceId);
 
-  const clinicalChain = resolvePackageChain(clinicalPackageRoot, clinicalId);
-  const insuranceChain = resolvePackageChain(insurancePackageRoot, insuranceId);
-  const crosswalkDir = path.join(projectRoot, 'src/data/crosswalks', combination);
-
-  const parentClinicalId = clinicalChain.length > 1
-    ? clinicalChain[clinicalChain.length - 2].id
-    : clinicalId;
-  const parentInsuranceId = insuranceChain.length > 1
-    ? insuranceChain[insuranceChain.length - 2].id
-    : insuranceId;
   let mapping;
-
-  if (parentClinicalId === clinicalId && parentInsuranceId === insuranceId) {
+  if (parentPackageIds.clinicalId === clinicalId && parentPackageIds.insuranceId === insuranceId) {
     if (!fs.existsSync(crosswalkDir)) {
       throw new Error(`Missing generated crosswalk dependency: ${crosswalkDir}`);
     }
     mapping = readCompactCrosswalkMap(crosswalkDir, filename);
   } else {
     mapping = {
-      ...readEffectiveCrosswalkMap(parentClinicalId, parentInsuranceId, filename, cache),
+      ...readEffectiveCrosswalkMap(parentPackageIds.clinicalId, parentPackageIds.insuranceId, filename, cache),
       ...readCompactCrosswalkMap(crosswalkDir, filename, { required: false }),
     };
     const removedPath = path.join(crosswalkDir, 'generated', 'removed_codes.json');
@@ -389,18 +388,17 @@ function removeDerivedCrosswalkArtifacts(crosswalkDir) {
 
 /**
  * Build crosswalk maps (GL -> YB) using approved crosswalk files.
- * Returns { icd10Map, icd9Map } where keys are GL codes.
+ * Returns one GL-code map per configured crosswalk type.
  */
 function buildCrosswalkMaps(datasetDir, files, nameDB_gl, nameDB_yb) {
-  const icd10Map = {};
-  const icd9Map = {};
-  const crosswalks = files.filter(f => ALLOWED_CROSSWALKS.has(f));
+  const maps = Object.fromEntries(CROSSWALK_SPECS.map(({ key }) => [key, {}]));
+  const crosswalks = files.filter(file => CROSSWALK_BY_FILE.has(file));
   if (crosswalks.length === 0) throw new Error(`No allowed crosswalk files found in ${datasetDir}`);
 
-  for (const f of crosswalks) {
-    const p = path.join(datasetDir, f);
-    const lines = readDatFile(p);
-    const isICD9 = /icd9|icd-9|9cm3/i.test(f);
+  for (const file of crosswalks) {
+    const spec = CROSSWALK_BY_FILE.get(file);
+    const filePath = path.join(datasetDir, file);
+    const lines = readDatFile(filePath);
     for (const line of lines) {
       const m = line.match(/^(\S+)\s+(\S+)$/);
       if (!m) continue;
@@ -411,13 +409,13 @@ function buildCrosswalkMaps(datasetDir, files, nameDB_gl, nameDB_yb) {
         ybCode: right,
         glName: nameDB_gl[left] || null,
         ybName: nameDB_yb[right] || null,
-        sourceFile: f
+        sourceFile: file,
       };
-      if (isICD9) icd9Map[left] = entry; else icd10Map[left] = entry;
+      maps[spec.key][left] = entry;
     }
   }
 
-  return { icd10Map, icd9Map };
+  return maps;
 }
 
 /**
@@ -436,27 +434,20 @@ function splitNameDBs(nameDB) {
 }
 
 function parseNamePackage(packageRoot, packageId, filenames, { deltaOnly = false } = {}) {
-  const chain = resolvePackageChain(packageRoot, packageId);
-  const packageEntries = deltaOnly ? [chain[chain.length - 1]] : chain;
   const names = {};
-
-  for (const [index, packageInfo] of packageEntries.entries()) {
-    const packageNames = {};
-    const requireAll = index === 0 && (chain.length === 1 || !deltaOnly);
-    for (const filename of filenames) {
-      const sourcePath = path.join(packageInfo.dir, 'raw', filename);
-      if (!fs.existsSync(sourcePath)) {
-        if (requireAll) throw new Error(`Missing ICD package source: ${sourcePath}`);
-        continue;
-      }
-      for (const line of readDatFile(sourcePath)) {
-        const entry = parseIcdPackageDatLine(line);
-        if (!entry || entry.removed || !entry.value) continue;
-        const code = normalize(entry.code);
-        if (code && !packageNames[code]) packageNames[code] = entry.value;
-      }
-    }
-    Object.assign(names, packageNames);
+  const deltaNames = {};
+  for (const filename of filenames) {
+    forEachPackageDatEntry(packageRoot, packageId, filename, (entry, packageInfo) => {
+      if (deltaOnly && packageInfo.id !== packageId) return;
+      const target = deltaOnly ? deltaNames : names;
+      const code = normalize(entry.code);
+      if (!code) return;
+      if (entry.removed) delete target[code];
+      else if (entry.value) target[code] = entry.value;
+    });
+  }
+  if (deltaOnly) {
+    Object.assign(names, deltaNames);
   }
 
   return names;
@@ -470,7 +461,9 @@ function readRemovedCodes(packageDir, filenames) {
     for (const line of readDatFile(sourcePath)) {
       const entry = parseIcdPackageDatLine(line);
       const code = normalize(entry?.code);
-      if (entry?.removed && code) removed.add(code);
+      if (!code) continue;
+      if (entry.removed) removed.add(code);
+      else if (entry.value) removed.delete(code);
     }
   }
   return removed;
@@ -508,40 +501,8 @@ function ensureGeneratedDir(packageDir) {
   fs.mkdirSync(path.join(packageDir, 'generated'), { recursive: true });
 }
 
-function buildClinicalPackage(packageId) {
-  const packageDir = path.join(clinicalPackageRoot, packageId);
-  const chain = resolvePackageChain(clinicalPackageRoot, packageId);
-  const isOverlay = chain.length > 1;
-  const names = parseNamePackage(
-    clinicalPackageRoot,
-    packageId,
-    ['ICD10GL.dat', 'ICD9GL.dat'],
-    { deltaOnly: isOverlay },
-  );
-  ensureGeneratedDir(packageDir);
-  writeNameMaps(packageDir, 'gl', splitNameDBs(names), isOverlay);
-  writeRemovedCodes(packageDir, ['ICD10GL.dat', 'ICD9GL.dat']);
-  console.log(`Clinical ICD package generated: ${packageId} (${Object.keys(names).length} names)`);
-}
-
-function buildInsurancePackage(packageId) {
-  const packageDir = path.join(insurancePackageRoot, packageId);
-  const chain = resolvePackageChain(insurancePackageRoot, packageId);
-  const isOverlay = chain.length > 1;
-  const names = parseNamePackage(
-    insurancePackageRoot,
-    packageId,
-    ['ICD10YB.dat', 'ICD9YB.dat'],
-    { deltaOnly: isOverlay },
-  );
-  const maps = splitNameDBs(names);
-  ensureGeneratedDir(packageDir);
-  writeNameMaps(packageDir, 'yb', maps, isOverlay);
-  writeRemovedCodes(packageDir, ['ICD10YB.dat', 'ICD9YB.dat']);
-  for (const [source, output] of [
-    ['ICD10YB-灰码.dat', 'icd10_gray_codes.json'],
-    ['ICD9YB-灰码.dat', 'icd9_gray_codes.json'],
-  ]) {
+function writeGrayCodeMaps(packageDir, grayFiles, isOverlay) {
+  for (const [source, output] of grayFiles) {
     const sourcePath = path.join(packageDir, 'raw', source);
     const outputPath = path.join(packageDir, 'generated', output);
     if (!fs.existsSync(sourcePath)) {
@@ -556,14 +517,34 @@ function buildInsurancePackage(packageId) {
     }
     writeFileIfChanged(outputPath, JSON.stringify(grayCodes, null, 2), 'utf8');
   }
-  console.log(`Insurance ICD package generated: ${packageId} (${Object.keys(names).length} names)`);
+}
+
+function buildIcdPackage(kind, packageId) {
+  const spec = ICD_PACKAGE_SPECS[kind];
+  const packageDir = path.join(spec.root, packageId);
+  const isOverlay = resolvePackageChain(spec.root, packageId).length > 1;
+  const names = parseNamePackage(spec.root, packageId, spec.nameFiles, { deltaOnly: isOverlay });
+
+  ensureGeneratedDir(packageDir);
+  writeNameMaps(packageDir, spec.prefix, splitNameDBs(names), isOverlay);
+  writeRemovedCodes(packageDir, spec.nameFiles);
+  if (spec.grayFiles) writeGrayCodeMaps(packageDir, spec.grayFiles, isOverlay);
+  console.log(`${spec.label} ICD package generated: ${packageId} (${Object.keys(names).length} names)`);
 }
 
 function readGeneratedNames(packageRoot, packageId, filenames) {
   const chain = resolvePackageChain(packageRoot, packageId);
   const names = {};
-  const removedCodes = new Set();
   for (const [index, packageInfo] of chain.entries()) {
+    const removedPath = path.join(packageInfo.dir, 'generated', 'removed_codes.json');
+    let removedCodes = [];
+    if (fs.existsSync(removedPath)) {
+      removedCodes = JSON.parse(fs.readFileSync(removedPath, 'utf8'));
+      if (!Array.isArray(removedCodes)) {
+        throw new Error(`ICD removal-code index must be an array: ${removedPath}`);
+      }
+    }
+
     for (const filename of filenames) {
       const filePath = path.join(packageInfo.dir, 'generated', filename);
       if (!fs.existsSync(filePath)) {
@@ -575,15 +556,7 @@ function readGeneratedNames(packageRoot, packageId, filenames) {
         if (code !== '_initials') names[code] = name;
       }
     }
-    const removedPath = path.join(packageInfo.dir, 'generated', 'removed_codes.json');
-    if (fs.existsSync(removedPath)) {
-      for (const code of JSON.parse(fs.readFileSync(removedPath, 'utf8'))) {
-        removedCodes.add(code);
-      }
-    }
-  }
-  for (const code of removedCodes) {
-    delete names[code];
+    for (const code of removedCodes) delete names[code];
   }
   return names;
 }
@@ -629,101 +602,111 @@ function writeCrosswalkCsv(mapping, grayCodes, outputPath) {
   console.log(`Crosswalk CSV generated: ${path.basename(outputPath)} (${rows.length} rows)`);
 }
 
-function buildCrosswalkPackage(clinicalId, insuranceId) {
-  const combination = `${clinicalId}__${insuranceId}`;
-  const crosswalkDir = path.join(projectRoot, 'src/data/crosswalks', combination);
-  const clinicalChain = resolvePackageChain(clinicalPackageRoot, clinicalId);
-  const insuranceChain = resolvePackageChain(insurancePackageRoot, insuranceId);
-  const isOverlay = clinicalChain.length > 1 || insuranceChain.length > 1;
-  const parentClinicalId = clinicalChain.length > 1
-    ? clinicalChain[clinicalChain.length - 2].id
-    : clinicalId;
-  const parentInsuranceId = insuranceChain.length > 1
-    ? insuranceChain[insuranceChain.length - 2].id
-    : insuranceId;
-  const parentCombination = `${parentClinicalId}__${parentInsuranceId}`;
-  const parentCrosswalkDir = path.join(projectRoot, 'src/data/crosswalks', parentCombination);
-  let crosswalkSourceDir = crosswalkDir;
-  let baseCrosswalkDir = null;
-  if (isOverlay) {
-    const parentGeneratedDir = path.join(parentCrosswalkDir, 'generated');
-    if (!fs.existsSync(parentGeneratedDir)) {
-      buildCrosswalkPackage(parentClinicalId, parentInsuranceId);
-    }
-    const baseCombination = `${clinicalChain[0].id}__${insuranceChain[0].id}`;
-    baseCrosswalkDir = path.join(projectRoot, 'src/data/crosswalks', baseCombination);
-    if (!hasExplicitCrosswalkSources(baseCrosswalkDir)) {
-      throw new Error(`Missing inherited crosswalk source: ${baseCrosswalkDir}`);
-    }
-    if (!hasExplicitCrosswalkSources(crosswalkSourceDir)) {
-      console.log(`Crosswalk source inherited: ${combination} <- ${baseCombination}`);
-      crosswalkSourceDir = baseCrosswalkDir;
-    }
-  }
-  const clinicalNames = readGeneratedNames(clinicalPackageRoot, clinicalId, ['icd_gl_names_diag.json', 'icd_gl_names_proc.json']);
-  const insuranceNames = readGeneratedNames(insurancePackageRoot, insuranceId, ['icd_yb_names_diag.json', 'icd_yb_names_proc.json']);
-  const icd10GrayCodes = readGeneratedGrayCodes(insurancePackageRoot, insuranceId, 'icd10_gray_codes.json');
-  const icd9GrayCodes = readGeneratedGrayCodes(insurancePackageRoot, insuranceId, 'icd9_gray_codes.json');
+function prepareCrosswalkSource(context) {
+  if (!context.isOverlay) return context.crosswalkDir;
 
-  if (!isOverlay) {
-    fs.mkdirSync(path.join(crosswalkDir, 'generated'), { recursive: true });
-    const files = [
-      buildExpandedCrosswalk(clinicalId, insuranceId, crosswalkSourceDir, crosswalkDir, 'ICD10'),
-      buildExpandedCrosswalk(clinicalId, insuranceId, crosswalkSourceDir, crosswalkDir, 'ICD9'),
-    ];
-    const { icd10Map, icd9Map } = buildCrosswalkMaps(path.join(crosswalkDir, 'raw'), files, clinicalNames, insuranceNames);
-    writeCrosswalkMap(crosswalkDir, 'icd_gl_yb_map.json', icd10Map);
-    writeCrosswalkMap(crosswalkDir, 'icd9cm3_gl_yb_map.json', icd9Map);
-    writeCrosswalkCsv(icd10Map, icd10GrayCodes, path.join(crosswalkDir, 'generated', 'ICD10GL2YB_gray.csv'));
-    writeCrosswalkCsv(icd9Map, icd9GrayCodes, path.join(crosswalkDir, 'generated', 'ICD9GL2YB_gray.csv'));
-    console.log(`Crosswalk generated: ${combination}`);
-    return;
+  const parentGeneratedDir = path.join(context.parentCrosswalkDir, 'generated');
+  if (!fs.existsSync(parentGeneratedDir)) {
+    buildCrosswalkPackage(context.parentPackageIds.clinicalId, context.parentPackageIds.insuranceId);
   }
+  if (!hasExplicitCrosswalkSources(context.baseCrosswalkDir)) {
+    throw new Error(`Missing inherited crosswalk source: ${context.baseCrosswalkDir}`);
+  }
+  if (!hasExplicitCrosswalkSources(context.crosswalkDir)) {
+    console.log(`Crosswalk source inherited: ${context.combination} <- ${context.baseCombination}`);
+    return context.baseCrosswalkDir;
+  }
+  return context.crosswalkDir;
+}
 
+function buildBaseCrosswalk(context, sourceDir, clinicalNames, insuranceNames, grayCodes) {
+  fs.mkdirSync(path.join(context.crosswalkDir, 'generated'), { recursive: true });
+  const files = CROSSWALK_SPECS.map(({ type }) => (
+    buildExpandedCrosswalk(
+      context.clinicalId,
+      context.insuranceId,
+      sourceDir,
+      context.crosswalkDir,
+      type,
+    )
+  ));
+  const maps = buildCrosswalkMaps(path.join(context.crosswalkDir, 'raw'), files, clinicalNames, insuranceNames);
+  for (const spec of CROSSWALK_SPECS) {
+    const map = maps[spec.key];
+    writeCrosswalkMap(context.crosswalkDir, spec.mapFile, map);
+    writeCrosswalkCsv(
+      map,
+      grayCodes[spec.key],
+      path.join(context.crosswalkDir, 'generated', spec.grayCsv),
+    );
+  }
+  console.log(`Crosswalk generated: ${context.combination}`);
+}
+
+function buildOverlayCrosswalk(context, sourceDir, clinicalNames, insuranceNames) {
   const explicitCache = new Map();
-  const icd10Entries = collectExpandedCrosswalk(
-    clinicalId,
-    insuranceId,
-    crosswalkSourceDir,
-    'ICD10',
-    readEffectiveExplicitCrosswalk(clinicalId, insuranceId, 'ICD10', explicitCache),
-  ).entries;
-  const icd9Entries = collectExpandedCrosswalk(
-    clinicalId,
-    insuranceId,
-    crosswalkSourceDir,
-    'ICD9',
-    readEffectiveExplicitCrosswalk(clinicalId, insuranceId, 'ICD9', explicitCache),
-  ).entries;
-  const icd10Map = buildCrosswalkMap(icd10Entries, clinicalNames, insuranceNames, 'ICD10GL2YB.expanded.dat');
-  const icd9Map = buildCrosswalkMap(icd9Entries, clinicalNames, insuranceNames, 'ICD9GL2YB.expanded.dat');
-  const icd10Diff = buildCrosswalkDiff(
-    icd10Map,
-    readEffectiveCrosswalkMap(parentClinicalId, parentInsuranceId, 'icd_gl_yb_map.json'),
-  );
-  const icd9Diff = buildCrosswalkDiff(
-    icd9Map,
-    readEffectiveCrosswalkMap(parentClinicalId, parentInsuranceId, 'icd9cm3_gl_yb_map.json'),
-  );
-  const hasDiff = Object.keys(icd10Diff.mapping).length > 0
-    || icd10Diff.removed.length > 0
-    || Object.keys(icd9Diff.mapping).length > 0
-    || icd9Diff.removed.length > 0;
-  if (hasDiff) {
-    fs.mkdirSync(path.join(crosswalkDir, 'generated'), { recursive: true });
+  const maps = Object.fromEntries(CROSSWALK_SPECS.map(spec => {
+    const entries = collectExpandedCrosswalk(
+      context.clinicalId,
+      context.insuranceId,
+      sourceDir,
+      spec.type,
+      readEffectiveExplicitCrosswalk(context.clinicalId, context.insuranceId, spec.type, explicitCache),
+    ).entries;
+    return [spec.key, buildCrosswalkMap(entries, clinicalNames, insuranceNames, spec.expandedFile)];
+  }));
+  const diffs = Object.fromEntries(CROSSWALK_SPECS.map(spec => [
+    spec.key,
+    buildCrosswalkDiff(
+      maps[spec.key],
+      readEffectiveCrosswalkMap(
+        context.parentPackageIds.clinicalId,
+        context.parentPackageIds.insuranceId,
+        spec.mapFile,
+      ),
+    ),
+  ]));
+  const hasDiff = CROSSWALK_SPECS.some(spec => (
+    Object.keys(diffs[spec.key].mapping).length > 0 || diffs[spec.key].removed.length > 0
+  ));
+  if (hasDiff) fs.mkdirSync(path.join(context.crosswalkDir, 'generated'), { recursive: true });
+  for (const spec of CROSSWALK_SPECS) {
+    writeCrosswalkDiff(context.crosswalkDir, spec.mapFile, diffs[spec.key]);
   }
-  writeCrosswalkDiff(crosswalkDir, 'icd_gl_yb_map.json', icd10Diff);
-  writeCrosswalkDiff(crosswalkDir, 'icd9cm3_gl_yb_map.json', icd9Diff);
-  writeCrosswalkRemovedCodes(crosswalkDir, {
-    icdGlToYbRaw: icd10Diff.removed,
-    icd9GlToYbRaw: icd9Diff.removed,
-  });
-  removeDerivedCrosswalkArtifacts(crosswalkDir);
-  console.log(
-    `Crosswalk diff generated: ${combination} <- ${parentCombination} ` +
-    `(ICD10 +${Object.keys(icd10Diff.mapping).length}/-${icd10Diff.removed.length}, ` +
-    `ICD9 +${Object.keys(icd9Diff.mapping).length}/-${icd9Diff.removed.length})`,
+  writeCrosswalkRemovedCodes(
+    context.crosswalkDir,
+    Object.fromEntries(CROSSWALK_SPECS.map(spec => [spec.removedKey, diffs[spec.key].removed])),
   );
+  removeDerivedCrosswalkArtifacts(context.crosswalkDir);
+  console.log(
+    `Crosswalk diff generated: ${context.combination} <- ${context.parentCombination} ` +
+    `(${CROSSWALK_SPECS.map(spec => {
+      const diff = diffs[spec.key];
+      return `${spec.type} +${Object.keys(diff.mapping).length}/-${diff.removed.length}`;
+    }).join(', ')})`,
+  );
+}
+
+function buildCrosswalkPackage(clinicalId, insuranceId) {
+  const context = getCrosswalkContext(clinicalId, insuranceId);
+  const sourceDir = prepareCrosswalkSource(context);
+  const clinicalNames = readGeneratedNames(
+    clinicalPackageRoot,
+    clinicalId,
+    ['icd_gl_names_diag.json', 'icd_gl_names_proc.json'],
+  );
+  const insuranceNames = readGeneratedNames(
+    insurancePackageRoot,
+    insuranceId,
+    ['icd_yb_names_diag.json', 'icd_yb_names_proc.json'],
+  );
+  const grayCodes = Object.fromEntries(CROSSWALK_SPECS.map(spec => [
+    spec.key,
+    readGeneratedGrayCodes(insurancePackageRoot, insuranceId, spec.grayFile),
+  ]));
+
+  if (context.isOverlay) buildOverlayCrosswalk(context, sourceDir, clinicalNames, insuranceNames);
+  else buildBaseCrosswalk(context, sourceDir, clinicalNames, insuranceNames, grayCodes);
 }
 
 function readConfiguredPackages() {
@@ -748,8 +731,8 @@ function buildConfiguredPackages() {
       };
       return getDepth(left) - getDepth(right) || left.localeCompare(right);
     });
-  for (const packageId of clinicalIds) buildClinicalPackage(packageId);
-  for (const packageId of insuranceIds) buildInsurancePackage(packageId);
+  for (const packageId of clinicalIds) buildIcdPackage('clinical', packageId);
+  for (const packageId of insuranceIds) buildIcdPackage('insurance', packageId);
   for (const combination of combinations) {
     const separator = combination.indexOf('__');
     buildCrosswalkPackage(combination.slice(0, separator), combination.slice(separator + 2));
@@ -759,8 +742,8 @@ function buildConfiguredPackages() {
 if (require.main === module) {
   const [scope = 'all', firstId, secondId] = process.argv.slice(2);
   if (scope === 'all') buildConfiguredPackages();
-  else if (scope === 'clinical' && firstId) buildClinicalPackage(firstId);
-  else if (scope === 'insurance' && firstId) buildInsurancePackage(firstId);
+  else if (scope === 'clinical' && firstId) buildIcdPackage('clinical', firstId);
+  else if (scope === 'insurance' && firstId) buildIcdPackage('insurance', firstId);
   else if (scope === 'crosswalk' && firstId && secondId) buildCrosswalkPackage(firstId, secondId);
   else throw new Error('Usage: build_icd_mappings.cjs [all | clinical <id> | insurance <id> | crosswalk <clinical-id> <insurance-id>]');
 }
