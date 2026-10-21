@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createDrgConfigResolver } = require('./lib/drg_config.cjs');
-const { forEachPackageDatEntry } = require('./lib/icd_package.cjs');
+const { readGeneratedGrayCodes, readGeneratedNames } = require('./lib/icd_package.cjs');
 const { writeFileIfChanged } = require('./lib/write_if_changed.cjs');
 
 function readDatLines(filePath) {
@@ -41,7 +41,30 @@ function loadDat(filePath, type) {
   return index;
 }
 
-function deriveQyDiffEntries(insurancePackageId, allProcedureCodes, ssInvalid) {
+function extractAllProcedureEntriesFromAdrg(adrgRulesRaw, ybProcedureNames) {
+  const codes = new Set();
+  for (const { filename, content } of adrgRulesRaw) {
+    for (const rawLine of content.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      const match = line.match(/^(\d{2}\.[A-Za-z0-9]+)(?:\s|$)/u);
+      if (match) codes.add(match[1]);
+      else if (/^\d{2}\./u.test(line)) {
+        throw new Error(`Malformed ICD-9 procedure line in ${filename}: ${line}`);
+      }
+    }
+  }
+  if (codes.size === 0) throw new Error('No ICD-9 procedure codes found in ADRG rules');
+
+  return [...codes].sort().map(code => {
+    const name = ybProcedureNames[code];
+    if (typeof name !== 'string' || !name.trim()) {
+      throw new Error(`Missing generated YB procedure name for ADRG code: ${code}`);
+    }
+    return { code, name };
+  });
+}
+
+function deriveQyDiffEntries(insurancePackageId, ybProcedureNames, allProcedureCodes, ssInvalid) {
   if (allProcedureCodes === undefined) {
     return undefined;
   }
@@ -49,25 +72,10 @@ function deriveQyDiffEntries(insurancePackageId, allProcedureCodes, ssInvalid) {
     throw new Error('ALL_PROCEDURE code list is present but empty');
   }
 
-  const ybProcedureNames = {};
-  forEachPackageDatEntry(
+  const grayProcedureCodes = readGeneratedGrayCodes(
     insurancePackagesDir,
     insurancePackageId,
-    'ICD9YB.dat',
-    entry => {
-      if (entry.removed) delete ybProcedureNames[entry.code];
-      else if (entry.value) ybProcedureNames[entry.code] = entry.value;
-    },
-  );
-  const grayProcedureCodes = {};
-  forEachPackageDatEntry(
-    insurancePackagesDir,
-    insurancePackageId,
-    'ICD9YB-灰码.dat',
-    entry => {
-      if (entry.removed) delete grayProcedureCodes[entry.code];
-      else grayProcedureCodes[entry.code] = true;
-    },
+    'icd9_gray_codes.json',
   );
   const entries = [];
 
@@ -75,13 +83,13 @@ function deriveQyDiffEntries(insurancePackageId, allProcedureCodes, ssInvalid) {
     left.localeCompare(right, 'en', { numeric: true })
   ))) {
     if (
-      !Object.hasOwn(grayProcedureCodes, code)
+      !grayProcedureCodes.has(code)
       && !Object.hasOwn(ssInvalid, code)
       && !Object.hasOwn(allProcedureCodes, code)
     ) {
-      const name = String(ybProcedureNames[code] || '').trim();
-      if (!name) {
-        throw new Error(`Missing YB procedure name for QY diff code: ${code}`);
+      const name = ybProcedureNames[code];
+      if (typeof name !== 'string' || !name.trim()) {
+        throw new Error(`Missing generated YB procedure name for QY diff code: ${code}`);
       }
       entries.push({ code, name });
     }
@@ -824,8 +832,11 @@ function configureBuildContext(scope, config, commonPackage) {
   cceCodes = loadDat(path.join(commonRulesDir, 'CCE.dat'), 'index');
   zdInvalid = loadDat(path.join(commonRulesDir, 'ZD_INVALID.dat'), 'gray');
   ssInvalid = loadDat(path.join(commonRulesDir, 'SS_INVALID.dat'), 'gray');
+  const commonConfig = configResolver.resolveCommonConfig(commonPackage);
   const allProcedurePath = path.join(commonRulesDir, 'ALL_PROCEDURE.dat');
-  if (fs.existsSync(allProcedurePath)) {
+  if (commonConfig.commonConfig.allProcedureSource === 'adrg-dat') {
+    allProcedureCodes = undefined;
+  } else if (fs.existsSync(allProcedurePath)) {
     allProcedureCodes = loadDat(allProcedurePath, 'simple');
     if (Object.keys(allProcedureCodes).length === 0) {
       throw new Error(`ALL_PROCEDURE.dat exists but contains no entries: ${allProcedurePath}`);
@@ -833,16 +844,8 @@ function configureBuildContext(scope, config, commonPackage) {
   } else {
     allProcedureCodes = undefined;
   }
-  const commonConfig = configResolver.resolveCommonConfig(commonPackage);
-  qyDiffEntries = deriveQyDiffEntries(
-    commonConfig.insuranceIcd,
-    allProcedureCodes,
-    ssInvalid,
-  );
-  const qyDiffRawPath = path.join(commonRulesDir, 'QY_DIFF.dat');
-  qyDiffCodes = qyDiffEntries && fs.existsSync(qyDiffRawPath)
-    ? loadDat(qyDiffRawPath, 'simple')
-    : undefined;
+  qyDiffEntries = undefined;
+  qyDiffCodes = undefined;
   drgMap = readDrgDat(path.join(rulesDir, 'DRG.dat'));
 }
 
@@ -889,6 +892,19 @@ async function buildPackage(scope, config, commonPackage) {
       throw new Error(`Missing required rules directories in ${commonRulesDir}: ${missingRuleDirs.join(', ')}`);
     }
     const adrgRulesRaw = getRulesFromDir(path.join(commonRulesDir, 'ADRG'), 'ADRG');
+    const commonConfig = configResolver.resolveCommonConfig(commonPackage);
+    const ybProcedureNames = (commonConfig.commonConfig.allProcedureSource === 'adrg-dat'
+      || allProcedureCodes !== undefined)
+      ? readGeneratedNames(insurancePackagesDir, commonConfig.insuranceIcd, ['icd_yb_names_proc.json'])
+      : undefined;
+    if (commonConfig.commonConfig.allProcedureSource === 'adrg-dat') {
+      const entries = extractAllProcedureEntriesFromAdrg(adrgRulesRaw, ybProcedureNames);
+      writeFileIfChanged(path.join(commonRulesDir, 'ALL_PROCEDURE.dat'), renderCodeNameDat(entries), 'utf8');
+      allProcedureCodes = Object.fromEntries(entries.map(({ code }) => [code, true]));
+    }
+    qyDiffEntries = deriveQyDiffEntries(
+      commonConfig.insuranceIcd, ybProcedureNames, allProcedureCodes, ssInvalid,
+    );
     const mdcRulesRaw = getRulesFromDir(path.join(commonRulesDir, 'MDC'), 'MDC');
     mdcRules = await buildMdcRules(mdcRulesRaw);
     adrgRules = await buildAdrgRules(adrgRulesRaw, parseRule);

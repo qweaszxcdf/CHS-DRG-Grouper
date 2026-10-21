@@ -4,6 +4,7 @@
     "clinicalIcd": "gl-3.0",
     "insuranceIcd": "yb-2.0"
   },
+  "allProcedureSource": "adrg-dat",
   "strategy": {
     "preMdc": ["MDCA", "MDCP", "MDCY", "MDCZ"]
   }

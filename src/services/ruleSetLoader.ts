@@ -11,7 +11,7 @@ export function loadRuleSet(version = DEFAULT_RULE_VERSION) {
   const cached = ruleSets.get(definition.id);
   if (cached) return cached;
   if (!definition.data) throw new Error(`Rule version ${definition.id} must be loaded with loadRuleSetAsync()`);
-  const ruleSet = createRuleSet(definition.data);
+  const ruleSet = createRuleSet(definition.data, { shareNameMaps: true });
   ruleSets.set(definition.id, ruleSet);
   return ruleSet;
 }
@@ -25,7 +25,7 @@ export async function loadRuleSetAsync(version = DEFAULT_RULE_VERSION) {
   if (pending) return pending;
 
   const next = loadVersionData(version).then((data) => {
-    const ruleSet = createRuleSet(data);
+    const ruleSet = createRuleSet(data, { shareNameMaps: true });
     ruleSets.set(version, ruleSet);
     return ruleSet;
   }).finally(() => pendingRuleSets.delete(version));

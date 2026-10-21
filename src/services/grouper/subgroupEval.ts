@@ -1,3 +1,4 @@
+import { PATIENT_NUMERIC_CONDITIONS, PATIENT_BOOLEAN_CONDITIONS, PATIENT_ENUM_CONDITIONS } from '../../types/patient_info_fields.ts';
 import type {
   MatchTraceEntry,
   NormalizedPatientInfo,
@@ -8,7 +9,6 @@ import type {
   AdrgRule,
   ComparisonOperator,
   DrgSubgroupRule,
-  MatchedSubgroup,
   RuleMatchResult,
   RulePatient,
   RuleSet,
@@ -28,27 +28,9 @@ function compareNumeric(value: number, limit: number, operator: ComparisonOperat
 interface SubgroupPatientData {
   primaryDiagnosis: string | null;
   primaryProcedure: string | null;
-  age?: number;
-  dischargeStatus?: string;
+  patientInfo: NormalizedPatientInfo;
   robotAssistedSurgery: boolean;
-  newTechnique: boolean;
-  intensiveCare: boolean;
-  icuHours?: number;
-  crrtHours?: number;
-  lengthOfStay?: number;
-  daySurgery: boolean;
 }
-
-type NumericDimension = 'AGE' | 'ICU_HOURS' | 'CRRT_HOURS' | 'LOS';
-const NUMERIC_DIMENSIONS: Record<NumericDimension, {
-  field: 'age' | 'icuHours' | 'crrtHours' | 'lengthOfStay';
-  label: string;
-}> = {
-  AGE: { field: 'age', label: 'Age' },
-  ICU_HOURS: { field: 'icuHours', label: 'ICU hours' },
-  CRRT_HOURS: { field: 'crrtHours', label: 'CRRT hours' },
-  LOS: { field: 'lengthOfStay', label: 'Length of stay' },
-};
 
 type SubgroupRuleSet = Pick<
   RuleSet,
@@ -57,7 +39,7 @@ type SubgroupRuleSet = Pick<
 
 export function createSubgroupEvaluator(
   ruleSet: SubgroupRuleSet,
-  matchesAdrgRule: (rule: AdrgRule, patient: RulePatient) => RuleMatchResult,
+  matchesRule: (rule: AdrgRule, patient: RulePatient) => RuleMatchResult,
   versionStrategy: VersionStrategy,
 ) {
   const {
@@ -164,16 +146,16 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
     }
 
     // --- 3. Numeric patient attributes
-    const numericMatch = condition.match(/^(AGE|ICU_HOURS|CRRT_HOURS|LOS)_(LT|LE|GT|GE)_(\d+)$/);
-    if (numericMatch) {
+    const numericMatch = condition.match(/^(.+)_(LT|LE|GT|GE)_(\d+)$/);
+    if (numericMatch && Object.hasOwn(PATIENT_NUMERIC_CONDITIONS, numericMatch[1]!)) {
       const [, dimension, operator, rawLimit] = numericMatch as [
         string,
-        NumericDimension,
+        string,
         ComparisonOperator,
         string,
       ];
-      const { field, label } = NUMERIC_DIMENSIONS[dimension];
-      const value = patientData[field];
+      const { field, label } = PATIENT_NUMERIC_CONDITIONS[dimension]!;
+      const value = patientData.patientInfo[field];
       if (value === undefined) return { matched: false, reason: `${label} not provided` };
 
       const limit = parseInt(rawLimit, 10);
@@ -186,21 +168,16 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
       continue;
     }
 
-    // --- 4. 离院结局校验 (Outcome Checks)
-    if (condition === 'DEATH') {
-      if (patientData.dischargeStatus !== 'death') {
-        return { matched: false, reason: 'Outcome is not Death' };
-      }
+    // --- 4. Registered enum and boolean patient attributes
+    if (Object.hasOwn(PATIENT_ENUM_CONDITIONS, condition)) {
+      const { field, value, missingReason } = PATIENT_ENUM_CONDITIONS[condition]!;
+      if (patientData.patientInfo[field] !== value) return { matched: false, reason: missingReason };
       continue;
     }
 
-    if (condition === 'INTENSIVE_CARE') {
-      if (!patientData.intensiveCare) return { matched: false, reason: 'Intensive care required but not present' };
-      continue;
-    }
-
-    if (condition === 'DAY_SURGERY') {
-      if (!patientData.daySurgery) return { matched: false, reason: 'Day surgery required but not present' };
+    if (Object.hasOwn(PATIENT_BOOLEAN_CONDITIONS, condition)) {
+      const { field, missingReason } = PATIENT_BOOLEAN_CONDITIONS[condition]!;
+      if (!patientData.patientInfo[field]) return { matched: false, reason: missingReason };
       continue;
     }
 
@@ -225,11 +202,6 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
       continue;
     }
 
-    if (condition === 'NEW_TECHNIQUE') {
-      if (!patientData.newTechnique) return { matched: false, reason: 'NEW_TECHNIQUE required but not present' };
-      continue;
-    }
-
     if (condition === 'ADRG_ONLY') {
       continue; // 显式放行
     }
@@ -244,7 +216,8 @@ function evaluateDRGRule(rule: DrgSubgroupRule, patientData: SubgroupPatientData
 
   /**
    * Evaluate detailed subgroup (DRG) rules for a matched ADRG.
-   * - Returns { matchedDRG, matchedSubgroup } where matchedSubgroup contains the matching rule and matchResult.
+   * - Returns a matched DRG and subgroup; an ADRG without a matching subgroup
+   *   violates the generated-rule invariant.
    */
 function evaluateADRGSubgroups(
   adrgCode: string,
@@ -254,7 +227,9 @@ function evaluateADRGSubgroups(
   matchTrace: MatchTraceEntry[],
 ): SubgroupEvaluation {
     const candidateRules = loadDRGSubgroupRulesForADRG(adrgCode);
-    if (candidateRules.length === 0) return { matchedDRG: null, matchedSubgroup: null };
+    if (candidateRules.length === 0) {
+      throw new Error(`No DRG subgroup rules configured for ADRG ${adrgCode}`);
+    }
 
     const principalDiagnosis = diagnoses[0] ?? null;
     const principalProcedure = procedures[0] ?? null;
@@ -305,56 +280,44 @@ function evaluateADRGSubgroups(
     const patientData = {
       primaryDiagnosis: principalDiagnosis,
       primaryProcedure: principalProcedure,
-      age: patientInfo.age,
-      dischargeStatus: patientInfo.dischargeStatus,
+      patientInfo,
       robotAssistedSurgery,
-      newTechnique: !!patientInfo.newTechnique,
-      intensiveCare: !!patientInfo.intensiveCare,
-      icuHours: patientInfo.icuHours,
-      crrtHours: patientInfo.crrtHours,
-      lengthOfStay: patientInfo.lengthOfStay,
-      daySurgery: !!patientInfo.daySurgery
     };
     const patient: RulePatient = { diagnoses, procedures, patientInfo };
-
-    let matchedSubgroup: MatchedSubgroup | null = null;
 
     for (const rule of candidateRules) {
       let adrgMatchResult = null;
       if (rule.adrgRule) {
-        adrgMatchResult = matchesAdrgRule(rule.adrgRule, patient);
+        adrgMatchResult = matchesRule(rule.adrgRule, patient);
         if (!adrgMatchResult.matched) continue;
       }
       const matchResult = evaluateDRGRule(rule, patientData, ccStatus);
       if (matchResult.matched) {
-        matchedSubgroup = { ...rule, matchResult, adrgMatchResult };
         matchTrace.push({
           event: 'subgroup-match',
           matched: true,
-          code: matchedSubgroup.drgCode,
-          description: matchedSubgroup.drgName,
+          code: rule.drgCode,
+          description: rule.drgName,
           candidateCount: candidateRules.length,
           candidates: subgroupCandidates,
           detail: adrgMatchResult
             ? { adrgRule: adrgMatchResult, conditions: matchResult }
             : { conditions: matchResult },
         });
-        break;
+        return {
+          matchedDRG: { code: rule.drgCode, description: rule.drgName },
+        };
       }
     }
 
-    if (!matchedSubgroup) {
-      matchTrace.push({
-        event: 'subgroup-no-match',
-        matched: false,
-        description: 'No detailed rules matched',
-        candidateCount: candidateRules.length,
-        candidates: subgroupCandidates,
-      });
-    }
-
-    const matchedDRG = matchedSubgroup ? { code: matchedSubgroup.drgCode, description: matchedSubgroup.drgName } : null;
-    return { matchedDRG, matchedSubgroup };
+    matchTrace.push({
+      event: 'subgroup-no-match',
+      matched: false,
+      description: 'No detailed rules matched',
+      candidateCount: candidateRules.length,
+      candidates: subgroupCandidates,
+    });
+    throw new Error(`No DRG subgroup matched ADRG ${adrgCode}`);
   }
 
   return { evaluateADRGSubgroups };

@@ -27,12 +27,10 @@ export interface AdrgRule {
   requiredProcedureGroups?: string[][];
   anyProcedureRequired?: boolean;
   zeroProceduresRequired?: boolean;
-  intensiveCare?: boolean;
   [key: string]: unknown;
 }
 
 export interface MdcRule {
-  type?: string;
   code: string;
   name?: string;
   identifyingDiagnoses?: string[];
@@ -41,7 +39,6 @@ export interface MdcRule {
 }
 
 export interface AdrgDefinition {
-  type?: string;
   code: string;
   name?: string;
   description?: string;
@@ -58,29 +55,6 @@ export interface MdcDefinition {
 }
 
 export type ComparisonOperator = 'LT' | 'LE' | 'GT' | 'GE';
-export type AgeCondition = `AGE_${ComparisonOperator}_${number}`;
-export type IcuHoursCondition = `ICU_HOURS_${ComparisonOperator}_${number}`;
-export type CrrtHoursCondition = `CRRT_HOURS_${ComparisonOperator}_${number}`;
-export type LengthOfStayCondition = `LOS_${ComparisonOperator}_${number}`;
-
-export type KnownSubgroupCondition =
-  | 'SPECIFIC_DIAGNOSIS'
-  | 'SPECIFIC_DIAGNOSIS_PREFIX'
-  | 'SPECIFIC_PROCEDURE'
-  | 'SPECIFIC_PROCEDURE_PREFIX'
-  | AgeCondition
-  | IcuHoursCondition
-  | CrrtHoursCondition
-  | LengthOfStayCondition
-  | 'DEATH'
-  | 'INTENSIVE_CARE'
-  | 'DAY_SURGERY'
-  | 'WITH_MCC'
-  | 'WITH_CC'
-  | 'NO_CC'
-  | 'ROBOT_ASSISTED_SURGERY'
-  | 'NEW_TECHNIQUE'
-  | 'ADRG_ONLY';
 
 // Keep runtime input open to future/unknown tokens; the evaluator fails closed.
 export type SubgroupCondition = string;

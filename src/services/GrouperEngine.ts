@@ -1,5 +1,3 @@
-import { loadRuleSet } from './ruleSetLoader.ts';
-import { getVersionDefinition } from './generated/versionRegistry.ts';
 import type {
   BatchGroupingResult,
   BatchGroupingRow,
@@ -18,6 +16,7 @@ import {
   PATIENT_INFO_FIELDS,
   PATIENT_NUMERIC_FIELDS,
 } from '../types/patient_info_fields.ts';
+import { PATIENT_NUMERIC_ENUM_PARSERS, parsePatientBoolean } from '../lib/patientInfoValues.ts';
 
 // lite build flag - allows dead-code elimination when VITE_LITE=true
 let IS_LITE = (import.meta.env as ImportMetaEnv | undefined)?.VITE_LITE === 'true';
@@ -32,12 +31,10 @@ import { createSubgroupEvaluator } from './grouper/subgroupEval.ts';
 export function createGrouperEngine({ ruleSet, commonStrategy, versionStrategy }: CreateGrouperEngineOptions): GrouperEngine {
 const { isInvalidDiagnosis, isInvalidProcedure, isGrayDiag, isGrayProc, loadDRGMap } = ruleSet;
 const drgMap = loadDRGMap();
+const ybDiagNames = ruleSet.loadYBDiagNames();
+const ybProcNames = ruleSet.loadYBProcNames();
 const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, matchesRule } = createMdcAdrgSelection(ruleSet, commonStrategy);
-  const { evaluateADRGSubgroups } = createSubgroupEvaluator(
-    ruleSet,
-    matchesRule,
-    versionStrategy,
-  );
+const { evaluateADRGSubgroups } = createSubgroupEvaluator(ruleSet, matchesRule, versionStrategy,);
 
 // Note: code conversion moved to `src/services/CodeConversion.ts` for caller-side control.
 
@@ -58,39 +55,27 @@ const { checkPreMDCADRGs, findMDCByPrincipal, findADRGInMDC, checkQYRedirect, ma
 // Kept inline to reduce indirection for early input sanitization.
 function checkInvalidPrincipalDiagnosis(principalDiagnosis: string): GroupingResult | null {
     if (isInvalidDiagnosis(principalDiagnosis)) {
-        // lite build omits weight / special-payment entirely
-    const base: GroupingResult = {
+        // Un-grouped validation failures have no DRG weight to attach.
+        return {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '编码不规范：主要诊断无效',
             matchTrace: [{ event: 'validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in ZD_INVALID list` }]
         };
-    if (!IS_LITE) {
-        base.weight = null;
-        base.weightTier2 = null;
-        // special‑payment flag not needed; weight '/' indicates it when present
-
-    }
-    return base;
     }
     return null;
 }
 
 function checkGrayPrincipalDiagnosis(principalDiagnosis: string): GroupingResult | null {
     if (isGrayDiag(principalDiagnosis)) {
-        const out: GroupingResult = {
+        return {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '主要诊断为灰码（不确定/需人工判定）',
             matchTrace: [{ event: 'validation', error: true, description: `Principal diagnosis ${principalDiagnosis} is in gray-code list` }]
         };
-        if (!IS_LITE) {
-            out.weight = null;
-            // flag omitted
-        }
-        return out;
     }
     return null;
 }
@@ -102,18 +87,13 @@ function checkGrayPrincipalProcedure(principalProcedure: string | null): Groupin
         return null;
     }
     if (principalProcedure && isGrayProc(principalProcedure)) {
-        const out: GroupingResult = {
+        return {
             drg: '0000',
             mdc: null,
             adrg: null,
             description: '主要手术为灰码（不确定/需人工判定）',
             matchTrace: [{ event: 'validation', error: true, description: `Principal procedure ${principalProcedure} is in gray-code list` }]
         };
-        if (!IS_LITE) {
-            out.weight = null;
-            // flag omitted
-        }
-        return out;
     }
     return null;
 }
@@ -125,6 +105,7 @@ function sanitizeProcedures(effectiveProcedures: Array<string | null>, matchTrac
         // Procedure positions are part of the grouping contract; never promote a later procedure.
         // Removal applies to Pre-MDC/ADRG routing and QY checks only; subgroup
         // evaluation still receives the original procedure list below.
+        effectiveProcedures = effectiveProcedures.slice();
         effectiveProcedures[0] = null;
         matchTrace.push({ event: 'validation', warning: true, description: `Removed invalid principal procedure: ${principalProcedure}` });
         principalProcedure = null;
@@ -135,8 +116,15 @@ function sanitizeProcedures(effectiveProcedures: Array<string | null>, matchTrac
 type RawPatientInfoValue = PatientScalarInput | PatientBooleanInput;
 
 function normalizeCodeList(input: CodeListInput): string[] {
-    const values = typeof input === 'string' ? [input] : [...input];
-    return values.map(code => code.trim()).filter(Boolean);
+    const values = typeof input === 'string' ? [input] : Array.isArray(input) ? input : [...input];
+    const normalized: string[] = new Array(values.length);
+    let count = 0;
+    for (const code of values) {
+        const value = code.trim();
+        if (value) normalized[count++] = value;
+    }
+    normalized.length = count;
+    return normalized;
 }
 
 function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): NormalizedPatientInfo {
@@ -174,15 +162,15 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
             throw new TypeError('patientInfo.age must be 0 or omitted when patientInfo.ageInDays is provided');
         }
     }
-    if (normalized.gender !== undefined && normalized.gender !== null && String(normalized.gender).trim() !== '') {
-        if (typeof normalized.gender !== 'number' && typeof normalized.gender !== 'string') {
-            throw new TypeError('patientInfo.gender must be 1 or 2');
+    for (const { key, parse, expected } of PATIENT_NUMERIC_ENUM_PARSERS) {
+        const raw = normalized[key];
+        if (raw === undefined || raw === null || String(raw).trim() === '') {
+            delete normalized[key];
+            continue;
         }
-        const gender = String(normalized.gender).trim();
-        if (gender !== '1' && gender !== '2') throw new TypeError('patientInfo.gender must be 1 or 2');
-        normalized.gender = Number(gender);
-    } else {
-        delete normalized.gender;
+        const value = typeof raw === 'number' || typeof raw === 'string' ? parse(raw) : undefined;
+        if (value === undefined) throw new TypeError(`patientInfo.${key} must be ${expected}`);
+        normalized[key] = value;
     }
     for (const field of PATIENT_BOOLEAN_FIELDS) {
         const raw = normalized[field];
@@ -190,30 +178,16 @@ function normalizePatientInfo(patientInfo: PatientInfoInput | null = {}): Normal
             delete normalized[field];
             continue;
         }
-        if (raw === true || raw === false) continue;
-        if (typeof raw !== 'number' && typeof raw !== 'string') {
-            throw new TypeError(`patientInfo.${field} must be a boolean or a recognized true/false value`);
-        }
-        const value = String(raw).trim().toLowerCase();
-        if (['true', '1', 'yes', 'y', 'on', '是'].includes(value)) normalized[field] = true;
-        else if (['false', '0', 'no', 'n', 'off', '否'].includes(value)) normalized[field] = false;
-        else throw new TypeError(`patientInfo.${field} must be a boolean or a recognized true/false value`);
-    }
-    if (normalized.dischargeStatus !== undefined && normalized.dischargeStatus !== null && String(normalized.dischargeStatus).trim() !== '') {
-        if (typeof normalized.dischargeStatus !== 'number' && typeof normalized.dischargeStatus !== 'string') {
-            throw new TypeError('patientInfo.dischargeStatus must be a string or number');
-        }
-        const status = String(normalized.dischargeStatus).trim();
-        normalized.dischargeStatus = status === '5' || status.toLowerCase() === 'death' ? 'death' : status;
-    } else {
-        delete normalized.dischargeStatus;
+        const value = parsePatientBoolean(raw);
+        if (value === undefined) throw new TypeError(`patientInfo.${field} must be a boolean or a recognized true/false value`);
+        normalized[field] = value;
     }
     return normalized as NormalizedPatientInfo;
 }
 
 function invalidPatientInfoResult(error: unknown): GroupingResult {
     const message = error instanceof Error ? error.message : String(error);
-    const out: GroupingResult = {
+    return {
         drg: null,
         code: 'ERR',
         mdc: null,
@@ -225,11 +199,6 @@ function invalidPatientInfoResult(error: unknown): GroupingResult {
             description: message,
         }],
     };
-    if (!IS_LITE) {
-        out.weight = null;
-        out.weightTier2 = null;
-    }
-    return out;
 }
 
 
@@ -264,18 +233,13 @@ function groupPatient(
     }
 
     if (diagnosisList.length === 0) {
-        const out: GroupingResult = {
+        return {
             drg: "0000",
             mdc: null,
             adrg: null,
             description: "编码不规范：无主要诊断或手术",
             matchTrace: [{ event: 'validation', error: true, description: 'No input data provided' }]
         };
-        if (!IS_LITE) {
-            out.weight = null;
-            // flag omitted
-        }
-        return out;
     }
     // Keep token boundaries and ordering exactly; only trim outer whitespace.
     // Accept single-string inputs (treat as one token) but do NOT split on delimiters.
@@ -284,6 +248,24 @@ function groupPatient(
     // Initialize match trace early so any early-return or pre-checks can
     // safely reference it without hitting temporal-dead-zone errors.
     const matchTrace: MatchTraceEntry[] = [];
+
+    // Principal codes must belong to this version's insurance code library.
+    // Check exact membership before any routing, without promoting later codes.
+    const unknownPrincipal = !Object.hasOwn(ybDiagNames, principalDiagnosis)
+        ? { kind: '主要诊断', code: principalDiagnosis }
+        : procedureList[0] && !Object.hasOwn(ybProcNames, procedureList[0])
+            ? { kind: '主要手术/操作', code: procedureList[0] }
+            : null;
+    if (unknownPrincipal) {
+        return {
+            drg: '0000',
+            mdc: null,
+            adrg: null,
+            description: `编码不规范：${unknownPrincipal.kind}不在医保代码库中`,
+            matchTrace: [{ event: 'validation', error: true,
+                description: `${unknownPrincipal.kind} ${unknownPrincipal.code} 不在当前版本医保代码库中` }],
+        };
+    }
 
     // Validation 1: Gray-code check (treat as ungroupable)
     const grayDiagEarly = checkGrayPrincipalDiagnosis(principalDiagnosis);
@@ -294,7 +276,7 @@ function groupPatient(
     if (invalidDiagEarly) return invalidDiagEarly;
 
     // Validation 1c: Gray-code check for principal procedure
-    let effectiveProcedures: Array<string | null> = [...procedureList];
+    let effectiveProcedures: Array<string | null> = procedureList;
     let principalProcedure: string | null = effectiveProcedures[0] ?? null;
     const grayProcEarly = checkGrayPrincipalProcedure(principalProcedure);
     if (grayProcEarly) return grayProcEarly;
@@ -302,12 +284,18 @@ function groupPatient(
     // Validation 2: SS_INVALID check (sanitize procedure list)
     ({ effectiveProcedures, principalProcedure } = sanitizeProcedures(effectiveProcedures, matchTrace));
 
+    const routingPatient = {
+        diagnoses: diagnosisList,
+        procedures: effectiveProcedures,
+        patientInfo: normalizedPatientInfo,
+    };
+
     let matchedMDC = null;
     let matchedADRG = null;
     let ruleMatchDetail = null;
 
     // Evaluate configured Pre-MDC candidates in order, subject to their identifying criteria.
-    const premdc = checkPreMDCADRGs(diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
+    const premdc = checkPreMDCADRGs(routingPatient, matchTrace);
     matchedMDC = premdc.matchedMDC;
     matchedADRG = premdc.matchedADRG;
     ruleMatchDetail = premdc.ruleMatchDetail;
@@ -320,15 +308,27 @@ function groupPatient(
     }
     // 3. Try to match ADRGs in the MDC (extracted helper)
     if (!matchedADRG && matchedMDC) {
-        const adrgRes = findADRGInMDC(matchedMDC.code, diagnosisList, effectiveProcedures, normalizedPatientInfo, matchTrace);
+        const adrgRes = findADRGInMDC(matchedMDC.code, routingPatient, matchTrace);
         matchedADRG = adrgRes.matchedADRG;
         ruleMatchDetail = adrgRes.ruleMatchDetail;
     }
+    if (!matchedMDC || !matchedADRG) {
+        const out: GroupingResult = {
+            drg: "0000",
+            mdc: matchedMDC ? matchedMDC.code : null,
+            adrg: null,
+            description: matchedMDC ? "不能进入该MDC内任意ADRG" : "不能进入任意MDC",
+            ruleMatchDetail: ruleMatchDetail,
+            matchTrace: matchTrace
+        };
+        return out;
+    }
     // 4. Check if matched ADRG should be redirected to QY group
     // Rule: If ADRG second letter > 'Q' (medical groups R-Z) AND the principal
-    // procedure satisfies the 3.0 all-procedure/QY condition, redirect to QY.
-    const qyRedirect = matchedADRG && principalProcedure
-        ? checkQYRedirect(matchedADRG.code, matchedMDC!.code, principalProcedure, matchTrace)
+    // procedure satisfies the all-procedure/QY condition, redirect to QY
+    // when enabled by the version strategy.
+    const qyRedirect = versionStrategy.enableQyRedirect && principalProcedure
+        ? checkQYRedirect(matchedADRG.code, matchedMDC.code, principalProcedure, matchTrace)
         : null;
     if (qyRedirect) return qyRedirect;
 
@@ -337,35 +337,22 @@ function groupPatient(
     // attaches an ADRG-style matcher to the corresponding DRG candidate.
     // Use the original procedure list: version-specific subgroup rules may match
     // an operation excluded from principal-procedure routing (e.g. Jiangsu LR1S).
-    const subgroupResult = matchedADRG
-        ? evaluateADRGSubgroups(matchedADRG.code, diagnosisList, procedureList, normalizedPatientInfo, matchTrace)
-        : null;
-    const matchedDRG = subgroupResult?.matchedDRG ?? null;
+    const matchedDRG = evaluateADRGSubgroups(matchedADRG.code, diagnosisList, procedureList, normalizedPatientInfo, matchTrace).matchedDRG;
 
     const out: GroupingResult = {
-        drg: matchedDRG ? matchedDRG.code : "0000",
-        mdc: matchedMDC ? matchedMDC.code : null,
-        adrg: matchedADRG ? matchedADRG.code : null,
-        description: matchedDRG ? matchedDRG.description : (
-            matchedADRG ? "不能进入该ADRG内任意DRG" : (
-                matchedMDC ? "不能进入该MDC内任意ADRG" : "不能进入任意MDC"
-            )
-        ),
+        drg: matchedDRG.code,
+        mdc: matchedMDC.code,
+        adrg: matchedADRG.code,
+        description: matchedDRG.description,
         ruleMatchDetail: ruleMatchDetail,
         matchTrace: matchTrace
     };
     if (!IS_LITE) {
         // base weight and optional tier‑2 hospital weight
-        const drgEntry = matchedDRG ? drgMap[matchedDRG.code] : undefined;
-        if (drgEntry) {
-          out.weight = drgEntry.weight ?? null;
-          out.weightTier2 = drgEntry.weightTier2 ?? null;
-          // special payment is now represented simply by '/' in either weight field
-        } else {
-          out.weight = null;
-          out.weightTier2 = null;
-          // no special payment flag needed – absence of a slash weight implies false
-        }
+        const drgEntry = drgMap[matchedDRG.code];
+        out.weight = drgEntry?.weight ?? null;
+        out.weightTier2 = drgEntry?.weightTier2 ?? null;
+        // special payment is now represented simply by '/' in either weight field
     }
     return out;
 }
@@ -405,7 +392,7 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
 
             // Preserve id and original arrays for downstream UI
             const result = {
-                id: row.id || null,
+                id: row.id ?? null,
                 diagnoses: typeof diagnoses === 'string' ? [diagnoses] : [...diagnoses],
                 procedures: typeof procedures === 'string' ? [procedures] : [...procedures],
                 ...res
@@ -414,7 +401,7 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
         } catch (e: unknown) {
             const message = e instanceof Error ? e.message : String(e);
             out.push({
-                id: row.id || null,
+                id: row.id ?? null,
                 drg: null,
                 code: 'ERR',
                 mdc: null,
@@ -431,12 +418,3 @@ function groupBatch(rows: BatchGroupingRow[] = []): BatchGroupingResult[] {
 }
 return { groupPatient, groupBatch };
 }
-
-const defaultVersionDefinition = getVersionDefinition();
-const defaultEngine = createGrouperEngine({
-    ruleSet: loadRuleSet(),
-    commonStrategy: defaultVersionDefinition.commonStrategy,
-    versionStrategy: defaultVersionDefinition.versionStrategy,
-});
-export const groupPatient = defaultEngine.groupPatient;
-export const groupBatch = defaultEngine.groupBatch;

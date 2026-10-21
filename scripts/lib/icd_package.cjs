@@ -108,6 +108,54 @@ function resolvePackageChain(packageRoot, packageId) {
   return chain;
 }
 
+function readGeneratedNames(packageRoot, packageId, filenames) {
+  const chain = resolvePackageChain(packageRoot, packageId);
+  const names = {};
+  for (const [index, packageInfo] of chain.entries()) {
+    const removedPath = path.join(packageInfo.dir, 'generated', 'removed_codes.json');
+    let removedCodes = [];
+    if (fs.existsSync(removedPath)) {
+      removedCodes = JSON.parse(fs.readFileSync(removedPath, 'utf8'));
+      if (!Array.isArray(removedCodes)) {
+        throw new Error(`ICD removal-code index must be an array: ${removedPath}`);
+      }
+    }
+
+    for (const filename of filenames) {
+      const filePath = path.join(packageInfo.dir, 'generated', filename);
+      if (!fs.existsSync(filePath)) {
+        if (index === 0) throw new Error(`Missing generated ICD dependency: ${filePath}`);
+        continue;
+      }
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      for (const [code, name] of Object.entries(data)) {
+        if (code !== '_initials') names[code] = name;
+      }
+    }
+    for (const code of removedCodes) delete names[code];
+  }
+  return names;
+}
+
+function readGeneratedGrayCodes(packageRoot, packageId, filename) {
+  const chain = resolvePackageChain(packageRoot, packageId);
+  const codes = new Set();
+  for (const [index, packageInfo] of chain.entries()) {
+    const filePath = path.join(packageInfo.dir, 'generated', filename);
+    if (!fs.existsSync(filePath)) {
+      if (index === 0) throw new Error(`Missing generated ICD dependency: ${filePath}`);
+      continue;
+    }
+    const patch = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    for (const [code, enabled] of Object.entries(patch)) {
+      if (enabled === true) codes.add(code);
+      else if (enabled === false) codes.delete(code);
+      else throw new Error(`Gray-code index value must be boolean: ${filePath} (${code})`);
+    }
+  }
+  return codes;
+}
+
 function getParentPackageId(packageRoot, packageId, chain = resolvePackageChain(packageRoot, packageId)) {
   return chain.length > 1 ? chain[chain.length - 2].id : null;
 }
@@ -116,5 +164,7 @@ module.exports = {
   forEachPackageDatEntry,
   getParentPackageId,
   parseIcdPackageDatLine,
+  readGeneratedGrayCodes,
+  readGeneratedNames,
   resolvePackageChain,
 };

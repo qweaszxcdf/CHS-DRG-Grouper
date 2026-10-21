@@ -23,7 +23,7 @@
     "build:crosswalk": "node scripts/build_icd_mappings.cjs crosswalk",
     "build:version-data": "node scripts/generate_version_data.cjs",
     "build:icd-mappings": "node scripts/build_icd_mappings.cjs all",
-    "build:data": "npm run build:rules && npm run build:icd-mappings && npm run build:version-data",
+    "build:data": "npm run build:icd-mappings && npm run build:rules && npm run build:version-data",
     "build": "vite build",
     "build:lite": "VITE_LITE=true vite build",
     "build:release": "npm run build:data && npm run build && npm run build:lite",

@@ -1,5 +1,5 @@
+import type { PatientInfoDefinition, PatientInfoFieldKey } from './patient_info_fields.ts';
 import type {
-  DrgSubgroupRule,
   RuleData,
   RuleMatchResult,
   RuleSet,
@@ -16,79 +16,42 @@ export function toCodeList(input: CodeListInput | null | undefined): string[] {
 export type PatientScalarInput = string | number | null | undefined;
 export type PatientBooleanInput = boolean | number | string | null | undefined;
 
-export interface PatientDemographicsInput {
-  gender?: PatientScalarInput;
-  age?: PatientScalarInput;
-  ageInDays?: PatientScalarInput;
-  birthWeight?: PatientScalarInput;
-  admissionWeight?: PatientScalarInput;
-}
+type NormalizedPatientByKind = {
+  numericEnum: number;
+  nonNegativeInteger: number;
+  boolean: boolean;
+};
 
-export interface PatientOutcomeInput {
-  dischargeStatus?: PatientScalarInput;
-}
-
-export interface PatientFlagsInput {
-  newTechnique?: PatientBooleanInput;
-  intensiveCare?: PatientBooleanInput;
-  daySurgery?: PatientBooleanInput;
-}
-
-export interface PatientDurationsInput {
-  icuHours?: PatientScalarInput;
-  crrtHours?: PatientScalarInput;
-  lengthOfStay?: PatientScalarInput;
-}
-
-// Public input remains flat for API, SingleTab, and BatchTab compatibility.
-export interface PatientInfoInput extends
-  PatientDemographicsInput,
-  PatientOutcomeInput,
-  PatientFlagsInput,
-  PatientDurationsInput {}
-
-export type PatientInfoField = keyof PatientInfoInput;
+// Public inputs stay flat; adding a registered field also adds its input and normalized types.
+export type PatientInfoInput = {
+  [F in PatientInfoDefinition as F['key']]?: F['kind'] extends 'boolean' ? PatientBooleanInput : PatientScalarInput;
+};
+export type NormalizedPatientInfo = {
+  [F in PatientInfoDefinition as F['key']]?: F extends { kind: 'numericEnum' }
+    ? F extends { allowOtherValues: true } ? number : F['options'][number]['value']
+    : NormalizedPatientByKind[F['kind']];
+};
+export type PatientInfoField = PatientInfoFieldKey;
 
 export interface PatientInfoDisplayConfig {
   basic: readonly PatientInfoField[];
   advanced: readonly PatientInfoField[];
 }
 
-export interface NormalizedPatientDemographics {
-  gender?: 1 | 2;
-  age?: number;
-  ageInDays?: number;
-  birthWeight?: number;
-  admissionWeight?: number;
-}
-
-export interface NormalizedPatientOutcome {
-  dischargeStatus?: string;
-}
-
-export interface NormalizedPatientFlags {
-  newTechnique?: boolean;
-  intensiveCare?: boolean;
-  daySurgery?: boolean;
-}
-
-export interface NormalizedPatientDurations {
-  icuHours?: number;
-  crrtHours?: number;
-  lengthOfStay?: number;
-}
-
-export interface NormalizedPatientInfo extends
-  NormalizedPatientDemographics,
-  NormalizedPatientOutcome,
-  NormalizedPatientFlags,
-  NormalizedPatientDurations {
-}
-
-export type MatchTraceEvent =
-  | 'validation' | 'mdcz-category-check' | 'pre-mdc-match' | 'mdc-match'
-  | 'adrg-match' | 'adrg-no-match' | 'qy-redirect' | 'cc-status'
-  | 'subgroup-match' | 'subgroup-no-match' | 'transport';
+export const MATCH_TRACE_LABELS = Object.freeze({
+  validation: 'Validation',
+  'mdcz-category-check': 'Pre-MDC',
+  'pre-mdc-match': 'Pre-MDC',
+  'mdc-match': 'MDC',
+  'adrg-match': 'ADRG',
+  'adrg-no-match': 'ADRG',
+  'qy-redirect': 'QY Redirect',
+  'cc-status': 'CC/MCC',
+  'subgroup-match': 'DRG',
+  'subgroup-no-match': 'DRG',
+  transport: 'Transport',
+});
+export type MatchTraceEvent = keyof typeof MATCH_TRACE_LABELS;
 
 export interface MatchTraceDetail {
   reasonCode?: 'category-threshold-met' | 'category-threshold-not-met';
@@ -144,6 +107,9 @@ export interface BatchGroupingResult extends GroupingResult {
   id: string | number | null;
   diagnoses?: string[];
   procedures?: string[];
+  original_diagnoses?: string[];
+  original_procedures?: string[];
+  patientInfo?: PatientInfoInput | null;
   version?: VersionId;
 }
 
@@ -155,6 +121,7 @@ export interface CommonStrategy {
 }
 
 export interface VersionStrategy {
+  enableQyRedirect: boolean;
   daySurgeryAsNoCC: boolean;
   robotAssistedSurgery: {
     adrgCodes: string[];
@@ -193,8 +160,7 @@ export interface VersionSummary {
 }
 
 export interface SubgroupEvaluation {
-  matchedDRG: { code: string; description: string } | null;
-  matchedSubgroup: DrgSubgroupRule | null;
+  matchedDRG: { code: string; description: string };
 }
 
 export interface GrouperEngine {

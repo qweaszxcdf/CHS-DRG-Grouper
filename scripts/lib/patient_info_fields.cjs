@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 require('tsx/cjs');
+const { registerPatientNumericConditions } = require('../../src/types/patient_info_fields.ts');
 
 const PATIENT_INFO_FIELD_DEFINITIONS = Object.freeze(
   require('../../src/types/patient_info_fields.ts').PATIENT_INFO_FIELD_DEFINITIONS
@@ -25,11 +26,11 @@ const ADVANCED_PATIENT_INFO_FIELDS = Object.freeze(
     .map(({ key }) => key),
 );
 
-const CONDITION_FIELD_PATTERNS = Object.freeze(
-  PATIENT_INFO_FIELD_DEFINITIONS
-    .filter(({ conditionPattern }) => conditionPattern)
-    .map(({ conditionPattern, key }) => ({ pattern: new RegExp(conditionPattern), field: key })),
-);
+const CONDITION_FIELDS = Object.freeze(Object.fromEntries(
+  PATIENT_INFO_FIELD_DEFINITIONS.flatMap(({ condition, kind, key }) => (
+    condition && kind !== 'nonNegativeInteger' ? [[condition.token, key]] : []
+  )),
+));
 
 function readJson(filePath, description) {
   let value;
@@ -45,13 +46,12 @@ function readJson(filePath, description) {
 }
 
 function collectRuleFields(rules, fields) {
+  const numericConditions = registerPatientNumericConditions(rules, PATIENT_INFO_FIELD_DEFINITIONS);
   for (const rule of rules) {
     for (const condition of rule.conditions || []) {
-      const match = CONDITION_FIELD_PATTERNS.find(({ pattern }) => pattern.test(condition));
-      if (match) fields.add(match.field);
+      if (Object.hasOwn(numericConditions, condition)) fields.add(numericConditions[condition].field);
+      if (Object.hasOwn(CONDITION_FIELDS, condition)) fields.add(CONDITION_FIELDS[condition]);
     }
-    const ruleDetails = rule.adrgRule || rule.rule;
-    if (ruleDetails?.intensiveCare === true) fields.add('intensiveCare');
   }
 }
 

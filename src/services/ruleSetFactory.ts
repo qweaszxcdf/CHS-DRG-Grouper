@@ -8,12 +8,17 @@ import type {
   RuleSet,
 } from '../types/rules.js';
 
-function splitNameMap(raw: NameMapWithInitials | undefined): {
+const sharedNameMaps = new WeakMap<NameMapWithInitials, NameMap>();
+
+function splitNameMap(raw: NameMapWithInitials | undefined, shareNames: boolean): {
   names: NameMap;
   initials: Record<string, string>;
 } {
-  const names: NameMap = {};
   const initials = raw?._initials ?? {};
+  const cached = shareNames && raw ? sharedNameMaps.get(raw) : undefined;
+  if (cached) return { names: cached, initials };
+
+  const names: NameMap = {};
 
   for (const [code, value] of Object.entries(raw ?? {})) {
     if (code !== '_initials' && typeof value === 'string') {
@@ -21,6 +26,10 @@ function splitNameMap(raw: NameMapWithInitials | undefined): {
     }
   }
 
+  if (shareNames && raw) {
+    Object.freeze(names);
+    sharedNameMaps.set(raw, names);
+  }
   return { names, initials };
 }
 
@@ -28,7 +37,8 @@ function createCodeChecker(index: Record<string, unknown>) {
   return (code: string): boolean => Object.hasOwn(index, code);
 }
 
-export function createRuleSet(data: RuleData): RuleSet {
+// Sharing requires an immutable data snapshot; default callers retain writable copies.
+export function createRuleSet(data: RuleData, { shareNameMaps = false }: { shareNameMaps?: boolean } = {}): RuleSet {
   const {
     adrgRules,
     mdcRules,
@@ -51,11 +61,11 @@ export function createRuleSet(data: RuleData): RuleSet {
     icd9GlToYbRaw = {},
   } = data;
 
-  // Split _initials from name maps once at module load, not per lookup.
-  const { names: glDiagNamesOnly, initials: _glDiagInitials } = splitNameMap(glDiagNames);
-  const { names: glProcNamesOnly, initials: _glProcInitials } = splitNameMap(glProcNames);
-  const { names: ybDiagNamesOnly, initials: _ybDiagInitials } = splitNameMap(ybDiagNames);
-  const { names: ybProcNamesOnly, initials: _ybProcInitials } = splitNameMap(ybProcNames);
+  // Split once per rule set, or reuse the same immutable dictionary across versions.
+  const { names: glDiagNamesOnly, initials: _glDiagInitials } = splitNameMap(glDiagNames, shareNameMaps);
+  const { names: glProcNamesOnly, initials: _glProcInitials } = splitNameMap(glProcNames, shareNameMaps);
+  const { names: ybDiagNamesOnly, initials: _ybDiagInitials } = splitNameMap(ybDiagNames, shareNameMaps);
+  const { names: ybProcNamesOnly, initials: _ybProcInitials } = splitNameMap(ybProcNames, shareNameMaps);
 
   // --- CC/MCC/CCE loaders ---
   function loadCCCodes() {
@@ -109,34 +119,30 @@ export function createRuleSet(data: RuleData): RuleSet {
 
   // Process MDC entries (use only build-time parsed fields)
   for (const item of mdcRules) {
-    if (item.type === 'MDC') {
-      const identifyingDiagnoses = item.identifyingDiagnoses ?? [];
-      const mdczCategories = item.mdczCategories ?? null;
+    const identifyingDiagnoses = item.identifyingDiagnoses ?? [];
+    const mdczCategories = item.mdczCategories ?? null;
 
-      mdcMap[item.code] = {
-        code: item.code,
-        description: item.name ?? '',
-        identifyingDiagnoses,
-        identifyingDiagnosesSet: new Set(identifyingDiagnoses),
-        mdczCategories
-      };
-    }
+    mdcMap[item.code] = {
+      code: item.code,
+      description: item.name ?? '',
+      identifyingDiagnoses,
+      identifyingDiagnosesSet: new Set(identifyingDiagnoses),
+      mdczCategories
+    };
   }
 
   // Process ADRG entries (use only build-time parsed `item.rule`)
   for (const item of adrgRules) {
-    if (item.type === 'ADRG') {
-      const ruleObj = item.rule ?? null;
+    const ruleObj = item.rule ?? null;
 
-      const adrg = {
-        ...item,
-        code: item.code,
-        description: item.name,
-        rule: ruleObj
-      };
-      adrgMap[item.code] = adrg;
-      adrgList.push(adrg);
-    }
+    const adrg = {
+      ...item,
+      code: item.code,
+      description: item.name,
+      rule: ruleObj
+    };
+    adrgMap[item.code] = adrg;
+    adrgList.push(adrg);
   }
 
   // Build a mapping from ADRG first-letter -> ADRG objects for fast lookup
@@ -171,7 +177,7 @@ export function createRuleSet(data: RuleData): RuleSet {
 
   // Build diag -> MDCZ categories mapping for fast MDCZ detection
   const diagToMDCZCategories = new Map<string, string>();
-  const mdczItem = mdcRules.find((r) => r.type === 'MDC' && r.code === 'MDCZ');
+  const mdczItem = mdcRules.find((r) => r.code === 'MDCZ');
   if (mdczItem && mdczItem.mdczCategories) {
     const categories = mdczItem.mdczCategories;
     for (const [cat, codes] of Object.entries(categories)) {

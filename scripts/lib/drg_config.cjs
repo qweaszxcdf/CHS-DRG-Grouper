@@ -8,6 +8,7 @@ const COMMON_STRATEGY_DEFAULTS = Object.freeze({
 });
 
 const VERSION_STRATEGY_DEFAULTS = Object.freeze({
+  enableQyRedirect: true,
   daySurgeryAsNoCC: false,
   robotAssistedSurgery: Object.freeze({
     adrgCodes: Object.freeze([]),
@@ -162,6 +163,11 @@ function resolveVersionStrategy(versionId, suppliedStrategy) {
     ...VERSION_STRATEGY_DEFAULTS,
     ...supplied,
   };
+  if (typeof strategy.enableQyRedirect !== 'boolean') {
+    throw new Error(
+      `${versionId}/config.json strategy.enableQyRedirect must be boolean`,
+    );
+  }
   if (typeof strategy.daySurgeryAsNoCC !== 'boolean') {
     throw new Error(
       `${versionId}/config.json strategy.daySurgeryAsNoCC must be boolean`,
@@ -304,6 +310,9 @@ function createDrgConfigResolver(projectRoot) {
       'insuranceIcd',
       `${description} packages`,
     );
+    if (rawConfig.allProcedureSource !== undefined && rawConfig.allProcedureSource !== 'adrg-dat') {
+      throw new Error(`${description} allProcedureSource must be 'adrg-dat'`);
+    }
     if (Object.prototype.hasOwnProperty.call(rawConfig, 'specialContentExtraction')) {
       throw new Error(
         `${description} specialContentExtraction belongs to the version config, not drg-common`,

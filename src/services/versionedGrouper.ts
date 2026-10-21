@@ -40,5 +40,9 @@ export function groupPatientByVersion(diagnoses: CodeListInput, procedures: Code
 }
 
 export function groupBatchByVersion(rows: BatchGroupingRow[], version: VersionId = DEFAULT_RULE_VERSION): Promise<BatchGroupingResult[]> {
-  return resolveEngine(version).then((engine) => engine.groupBatch(rows).map(result => ({ ...result, version })));
+  return resolveEngine(version).then((engine) => {
+    const results = engine.groupBatch(rows);
+    for (const result of results) result.version = version;
+    return results;
+  });
 }

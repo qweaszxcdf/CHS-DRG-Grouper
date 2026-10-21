@@ -55,7 +55,7 @@ function isAdrgRule(value: unknown): value is AdrgRule {
     if (value[field] !== undefined && !isStringArray(value[field])) return false;
   }
   if (value.requiredProcedureGroups !== undefined && (!Array.isArray(value.requiredProcedureGroups) || !value.requiredProcedureGroups.every(isStringArray))) return false;
-  for (const field of ['anyProcedureRequired', 'zeroProceduresRequired', 'intensiveCare']) {
+  for (const field of ['anyProcedureRequired', 'zeroProceduresRequired']) {
     if (value[field] !== undefined && typeof value[field] !== 'boolean') return false;
   }
   return true;
@@ -63,7 +63,7 @@ function isAdrgRule(value: unknown): value is AdrgRule {
 
 function isAdrgDefinition(value: unknown): value is AdrgDefinition {
   if (!isRecord(value) || typeof value.code !== 'string') return false;
-  for (const field of ['type', 'name', 'description', 'filename']) {
+  for (const field of ['name', 'description', 'filename']) {
     if (value[field] !== undefined && typeof value[field] !== 'string') return false;
   }
   return value.rule === undefined || value.rule === null || isAdrgRule(value.rule);
@@ -71,7 +71,7 @@ function isAdrgDefinition(value: unknown): value is AdrgDefinition {
 
 function isMdcRule(value: unknown): value is MdcRule {
   if (!isRecord(value) || typeof value.code !== 'string') return false;
-  for (const field of ['type', 'name']) {
+  for (const field of ['name']) {
     if (value[field] !== undefined && typeof value[field] !== 'string') return false;
   }
   if (value.identifyingDiagnoses !== undefined && !isStringArray(value.identifyingDiagnoses)) return false;

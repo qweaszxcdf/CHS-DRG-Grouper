@@ -21,7 +21,7 @@ type RawVersionDefinition = {
 export const DEFAULT_RULE_VERSION: VersionId = "shanghai-drg-2.0";
 
 export const DEFAULT_COMMON_STRATEGY: CommonStrategy = Object.freeze({"allowedInvalidPrincipalProcedures":[],"allowedGrayPrincipalProcedures":["99.1000"],"preMdc":["MDCA","MDCP","MDCY","MDCZ"]});
-export const DEFAULT_VERSION_STRATEGY: VersionStrategy = Object.freeze({"daySurgeryAsNoCC":false,"robotAssistedSurgery":{"adrgCodes":[],"procedureCodes":[]},"highRiskPregnancyAsMcc":{"adrgCodes":[],"diagnosisCodes":[]}});
+export const DEFAULT_VERSION_STRATEGY: VersionStrategy = Object.freeze({"enableQyRedirect":true,"daySurgeryAsNoCC":false,"robotAssistedSurgery":{"adrgCodes":[],"procedureCodes":[]},"highRiskPregnancyAsMcc":{"adrgCodes":[],"diagnosisCodes":[]}});
 
 export function resolveCommonStrategy(strategy: Partial<CommonStrategy> = {}): CommonStrategy {
   return Object.freeze({
